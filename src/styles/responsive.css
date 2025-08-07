@@ -1,0 +1,357 @@
+/* 반응형 디자인 브레이크포인트 */
+:root {
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1280px;
+  --breakpoint-xl: 1440px;
+}
+
+/* 모바일 우선 접근법 */
+
+/* 태블릿 세로 방향 */
+@media (min-width: 768px) {
+  :root {
+    --container-padding: 32px;
+  }
+}
+
+/* 태블릿 가로 방향 */
+@media (min-width: 1024px) {
+  :root {
+    --container-padding: 48px;
+  }
+}
+
+/* 데스크톱 */
+@media (min-width: 1280px) {
+  :root {
+    --container-padding: 64px;
+  }
+}
+
+/* Header 반응형 */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 12px 16px;
+  }
+
+  .nav {
+    gap: 16px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  .logo-image {
+    height: 32px;
+  }
+}
+
+/* MainContent 반응형 */
+@media (max-width: 1024px) {
+  .content-section {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 0 24px 60px;
+  }
+
+  .left-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    text-align: left;
+  }
+
+  .stat-card .stat-icon {
+    order: -1;
+  }
+
+  .stat-card .stat-label {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-section {
+    padding: 0 16px 40px;
+    margin-top: -20px;
+  }
+
+  .left-section {
+    grid-template-columns: 1fr;
+  }
+
+  .weather-card,
+  .trending-card {
+    padding: 24px;
+  }
+
+  .weather-display {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .weather-emoji {
+    font-size: 48px;
+  }
+
+  .task-info {
+    padding: 24px;
+  }
+
+  .notice-cards-section {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .notice-card-box {
+    width: 100%;
+  }
+}
+
+/* Footer 반응형 */
+@media (max-width: 1024px) {
+  .footer-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .footer-info {
+    flex-direction: column;
+    gap: 32px;
+    text-align: center;
+  }
+
+  .footer-links {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    padding: 32px 16px;
+  }
+
+  .footer-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-link {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .footer-service ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+  }
+}
+
+/* MapSection 반응형 */
+@media (max-width: 1280px) {
+  .final-content {
+    grid-template-columns: 350px 1fr;
+    gap: 32px;
+  }
+
+  .right-area {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .final-content {
+    grid-template-columns: 1fr;
+  }
+
+  .left-panel {
+    max-width: 100%;
+  }
+
+  .center-map {
+    max-width: 100%;
+    height: 500px;
+  }
+
+  .final-tabs {
+    position: relative;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .map-section-final {
+    padding: 40px 0;
+  }
+
+  .final-container {
+    padding: 0 16px;
+  }
+
+  .final-info-panel {
+    padding: 24px;
+  }
+
+  .festival-details-final {
+    gap: 12px;
+  }
+
+  .detail-row-final {
+    padding: 12px;
+  }
+
+  .center-map {
+    height: 400px;
+  }
+
+  .final-marker,
+  .final-exp-marker {
+    width: 36px;
+    height: 36px;
+  }
+
+  .marker-label-final,
+  .exp-marker-name {
+    font-size: 12px;
+  }
+}
+
+/* InfoSection 반응형 */
+@media (max-width: 1024px) {
+  .news-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .info-container {
+    padding: 40px 16px;
+  }
+
+  .cards-carousel {
+    margin: 0 -16px;
+  }
+
+  .cards-wrapper {
+    padding: 0 16px;
+  }
+
+  .recommended-card {
+    min-width: 280px;
+  }
+
+  .news-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .search-button {
+    align-self: flex-end;
+  }
+}
+
+/* 헤더 모바일 메뉴 */
+@media (max-width: 768px) {
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--background-primary);
+    border-top: 1px solid var(--border-primary);
+    padding: 8px 0;
+    justify-content: space-around;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .nav-link {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .nav-indicator {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+  }
+}
+
+/* 접근성 향상 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 고대비 모드 */
+@media (prefers-contrast: high) {
+  :root {
+    --primary-color: #00A896;
+    --text-primary: #000000;
+    --background-primary: #FFFFFF;
+    --border-primary: #000000;
+  }
+}
+
+/* 인쇄 스타일 */
+@media print {
+  .header,
+  .footer,
+  .nav,
+  .scroll-button,
+  .search-button {
+    display: none !important;
+  }
+
+  .content-section {
+    grid-template-columns: 1fr !important;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}

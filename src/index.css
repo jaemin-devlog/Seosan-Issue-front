@@ -1,0 +1,91 @@
+@import './styles/theme.css';
+@import './styles/responsive.css';
+@import './styles/browser-compatibility.css';
+@import './styles/micro-interactions.css';
+@import './components/PerformanceOptimization.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Roboto',
+    'Helvetica Neue', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-secondary);
+  font-weight: var(--font-normal);
+  font-size: var(--font-base);
+  letter-spacing: -0.011em;
+  color: var(--text-primary);
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* 기본 링크 스타일 */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+/* 기본 버튼 초기화 */
+button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* 텍스트 선택 색상 */
+::selection {
+  background-color: var(--primary-background);
+  color: var(--text-primary);
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--background-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--border-primary);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-disabled);
+}
+
+code {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 
+    source-code-pro, Menlo, Consolas, 'Courier New', monospace;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

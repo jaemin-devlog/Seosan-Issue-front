@@ -1,0 +1,288 @@
+/* 서산시 프리미엄 디자인 시스템 */
+:root {
+  /* 브랜드 컬러 - 프리미엄 그라데이션 시스템 */
+  --primary-color: #00D4B5;          /* 서산 시그니처 민트 */
+  --primary-hover: #00BFA5;
+  --primary-dark: #00A896;
+  --primary-light: #66FFE6;
+  --primary-background: rgba(0, 212, 181, 0.04);
+  --primary-gradient: linear-gradient(135deg, #00D4B5 0%, #00A896 100%);
+  --primary-gradient-subtle: linear-gradient(135deg, #00D4B5 0%, #00BFA5 100%);
+  
+  /* 보조 색상 - 서산의 자연과 문화를 담은 팔레트 */
+  --accent-sunset: #FF7F57;         /* 서산 일몰 오렌지 */
+  --accent-ocean: #4ECDC4;          /* 천수만 바다색 */
+  --accent-harvest: #FFB84D;        /* 육쪽마늘 수확의 황금색 */
+  --accent-heritage: #9B5DE5;       /* 해미읍성 문화재 보라 */
+  --accent-cherry: #E91E63;         /* 벚꽃 축제 핑크 */
+  --accent-nature: #66BB6A;         /* 서산 자연 그린 */
+  --accent-festival: #FF6B6B;       /* 축제 레드 */
+  --accent-night: #5C6BC0;          /* 해미읍성 야경 블루 */
+  
+  /* 텍스트 색상 - 명확한 계층 구조 */
+  --text-primary: #1A1F36;
+  --text-secondary: #4E5969;
+  --text-tertiary: #8492A6;
+  --text-disabled: #C5CDD9;
+  --text-white: rgba(255, 255, 255, 0.98);
+  
+  /* 배경 색상 - 프리미엄 민트 화이트 시스템 */
+  --background-primary: #FAFFFE;    /* 메인 민트 화이트 */
+  --background-secondary: #F5FFFC;  /* 서브 민트 화이트 */
+  --background-tertiary: #F0FAF8;   /* 깊은 민트 화이트 */
+  --background-card: #FFFFFF;       /* 카드 순백색 */
+  --background-hover: rgba(0, 212, 181, 0.03);
+  --background-active: rgba(0, 212, 181, 0.06);
+  --background-gradient: linear-gradient(180deg, #FAFFFE 0%, #F5FFFC 100%);
+  --hover-bg: rgba(0, 212, 181, 0.03);
+  --active-bg: rgba(0, 212, 181, 0.06);
+  
+  /* 테두리 색상 */
+  --border-primary: rgba(0, 0, 0, 0.08);
+  --border-secondary: rgba(0, 0, 0, 0.04);
+  --border-focus: #00BFA5;
+  
+  /* 그림자 - 3차원 깊이감을 주는 프리미엄 그림자 */
+  --shadow-sm: 0 2px 8px rgba(0, 50, 50, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 50, 50, 0.06);
+  --shadow-lg: 0 8px 32px rgba(0, 50, 50, 0.08);
+  --shadow-xl: 0 16px 48px rgba(0, 50, 50, 0.12);
+  --shadow-colored: 0 8px 32px rgba(0, 212, 181, 0.12);
+  --shadow-card: 0 0 0 1px rgba(0, 50, 50, 0.05), 0 4px 16px rgba(0, 50, 50, 0.08);
+  --shadow-hover: 0 0 0 1px rgba(0, 212, 181, 0.15), 0 8px 32px rgba(0, 212, 181, 0.15);
+  
+  /* 상태 색상 */
+  --success-color: #52C41A;
+  --warning-color: #FAAD14;
+  --error-color: #F5222D;
+  --info-color: #1890FF;
+  
+  
+  /* 간격 시스템 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  
+  /* 폰트 크기 - 선명한 계층 구조 */
+  --font-xs: 12px;
+  --font-sm: 14px;
+  --font-base: 16px;
+  --font-lg: 18px;
+  --font-xl: 21px;
+  --font-2xl: 28px;
+  --font-3xl: 36px;
+  --font-4xl: 48px;
+  
+  /* 폰트 굵기 */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  
+  /* 테두리 반경 - 더 부드러운 곡선 */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-base: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+  
+  /* z-index 레이어 */
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  
+  /* 스켈레톤 로딩 */
+  --skeleton-base: #e0e0e0;
+  --skeleton-highlight: #f0f0f0;
+  
+  /* 애니메이션 - 부드럽고 자연스러운 모션 */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --transition-smooth: 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-bounce: 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* 글래스모피즘 효과 */
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 50, 50, 0.08);
+  --backdrop-blur: blur(16px);
+}
+
+/* 다크모드 색상 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #4AE3D0;
+    --primary-hover: #3DD4C1;
+    --primary-light: #5FEFD9;
+    --primary-background: rgba(74, 227, 208, 0.1);
+    
+    --text-primary: rgba(255, 255, 255, 0.95);
+    --text-secondary: rgba(255, 255, 255, 0.72);
+    --text-tertiary: rgba(255, 255, 255, 0.56);
+    --text-disabled: rgba(255, 255, 255, 0.4);
+    --text-white: rgba(0, 0, 0, 0.88);
+    
+    --background-primary: #1A1A1A;
+    --background-secondary: #2D2D2D;
+    --background-tertiary: #3D3D3D;
+    --background-hover: rgba(255, 255, 255, 0.08);
+    --background-active: rgba(255, 255, 255, 0.12);
+    
+    --border-primary: rgba(255, 255, 255, 0.12);
+    --border-secondary: rgba(255, 255, 255, 0.08);
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* 공통 유틸리티 클래스 */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-2xl);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--spacing-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+}
+
+/* 포커스 스타일 */
+*:focus-visible {
+  outline: 3px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* 스킵 링크 */
+.skip-link:focus {
+  position: fixed;
+  top: var(--spacing-md);
+  left: var(--spacing-md);
+  z-index: var(--z-tooltip);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 버튼 스타일 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-base);
+  font-weight: var(--font-medium);
+  border-radius: var(--radius-base);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  outline: none;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background: var(--background-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--background-tertiary);
+  border-color: var(--border-secondary);
+}
+
+/* 카드 스타일 */
+.card {
+  background: var(--background-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  border: 1px solid var(--border-secondary);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* 로딩 스피너 */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border-primary);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* 텍스트 선택 색상 */
+::selection {
+  background: var(--primary-light);
+  color: var(--text-primary);
+}
+
+/* 스크롤바 스타일링 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-disabled);
+}
