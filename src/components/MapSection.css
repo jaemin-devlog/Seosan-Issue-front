@@ -6,11 +6,34 @@
   width: 100%;
   min-height: 800px;
   overflow: hidden;
-  background: transparent;
+  background: #E9F5F4;
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   contain: layout style;
+}
+
+.map-section-final::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 2px;
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(0, 212, 181, 0.2) 10%, 
+    rgba(0, 212, 181, 0.35) 30%,
+    rgba(0, 212, 181, 0.4) 50%,
+    rgba(0, 212, 181, 0.35) 70%,
+    rgba(0, 212, 181, 0.2) 90%, 
+    transparent 100%
+  );
+  box-shadow: 0 0 20px rgba(0, 212, 181, 0.15),
+              0 1px 0 rgba(0, 212, 181, 0.1);
+  z-index: 100;
 }
 
 .map-section-final.visible {
@@ -231,27 +254,33 @@
 
 .festival-image-container {
   position: absolute;
-  top: -50px;
-  left: 28px;
-  width: 130px;
-  height: 130px;
+  top: -30px;
+  right: 24px;
+  width: 100px;
+  height: 100px;
   z-index: 2;
-  animation: gentle-float 6s ease-in-out infinite;
-  filter: drop-shadow(0 8px 24px rgba(255, 182, 193, 0.25));
+  animation: gentle-float 8s ease-in-out infinite;
+  filter: drop-shadow(0 4px 16px rgba(255, 182, 193, 0.2));
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  border-radius: 50%;
+  padding: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 182, 193, 0.15);
 }
 
 .festival-image-container:hover {
-  transform: translateY(-5px) scale(1.05);
-  filter: drop-shadow(0 12px 32px rgba(255, 182, 193, 0.35));
+  transform: translateY(-3px) scale(1.03);
+  filter: drop-shadow(0 6px 20px rgba(255, 182, 193, 0.25));
+  border-color: rgba(255, 182, 193, 0.25);
 }
 
 @keyframes gentle-float {
   0%, 100% { 
-    transform: translateY(0) rotate(-2deg);
+    transform: translateY(0) rotate(-1deg);
   }
   50% { 
-    transform: translateY(-10px) rotate(2deg);
+    transform: translateY(-8px) rotate(1deg);
   }
 }
 
@@ -259,12 +288,12 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(255, 182, 193, 0.35));
+  filter: saturate(1.1) brightness(1.05);
 }
 
 /* Festival Panel Content */
 .festival-panel-content {
-  padding-top: 65px;
+  padding-top: 20px;
   position: relative;
 }
 

@@ -2,7 +2,7 @@
   background: transparent;
   padding: 56px 0 64px 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   min-height: 540px;
   display: flex;
   align-items: center;
@@ -10,6 +10,7 @@
   transform: translateY(20px);
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 
 .hero-section.visible {
   opacity: 1;

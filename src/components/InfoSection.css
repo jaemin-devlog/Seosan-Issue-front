@@ -1,14 +1,15 @@
 /* InfoSection - 스크린샷 참고한 텍스트 중심 깔끔한 디자인 */
 
 .info-section {
-  background: #FAFFFE;
+  background: #E9F5F4;
   padding: 80px 0 100px;
   position: relative;
   min-height: auto;
   transition: all var(--transition-smooth);
-  overflow: hidden;
+  overflow: visible;
   z-index: 1;
 }
+
 
 /* 에러 상태 */
 .info-section.error-state {
