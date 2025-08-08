@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from './Header/Header';
 import Mainpage from './Mainpage/Mainpage';
 import AiSearch from "./AiSearch/AiSearch";
+import Weather from "./Weather/Weather"; 
 
 function App() {
   return (

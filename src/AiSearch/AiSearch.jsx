@@ -9,7 +9,10 @@ import HealthIcon from "../assets/Health2.png";
 import LightbulbIcon from "../assets/Lightbulb.png";
 import History from "../assets/History.png";
 import SearchBalloon from "../assets/searchBalloon.png";
-import SparkleIcon from "../assets/sparkle.png";
+import SparkleIcon from "../assets/sparkle.png";import sadLogo from "../assets/sadLogo.png";
+import happyLogo from "../assets/HappyLogo.png";
+import answerBubble from "../assets/Answer.png";
+import denyBubble from "../assets/deny.png";
 
 const recentSearchPool = [
   ["문화혜택", "서산 맛집 추천", "복지 혜택 신청"],
@@ -19,9 +22,7 @@ const recentSearchPool = [
   ["가족 여행지", "아이와 갈만한 곳", "주차장 위치"]
 ];
 
-// ✅ 이 부분만 정확하게 바꿔주면 됩니다!
 function getRandomList(prevList) {
-  // 현재와 내용이 '완전히 같은 배열'은 제외한 후보만
   const candidates = recentSearchPool.filter(
     arr => arr.join("|") !== prevList.join("|")
   );
@@ -33,17 +34,39 @@ function getRandomList(prevList) {
 export default function AiSearch() {
   const [inputValue, setInputValue] = useState("");
   const [recentSearches, setRecentSearches] = useState(recentSearchPool[0]);
+  const [searchResult, setSearchResult] = useState(null);
 
+  // 검색 시 호출
   const handleAiSearch = () => {
     if (!inputValue.trim()) return;
-    alert(`AI 검색: ${inputValue}`);
+
+    // 예시: 결과 없는 경우
+    // setSearchResult(false);
+
+    // 예시: 결과 있는 경우
+    setSearchResult({
+      sources: [
+        {
+          title: "충청남도 서산시_재가노인 복지시설",
+          link: "#",
+          provider: "충청남도 데이터포털 올담",
+        },
+        {
+          title: "충청남도 서산시_노인의료복지시설",
+          link: "#",
+          provider: "충청남도 데이터포털 올담",
+        }
+      ]
+    });
+
     setInputValue("");
   };
 
-  // 새로고침 시 항상 다른 목록 나오게!
+  // 최근 검색 새로고침
   const handleRefresh = () => {
     setRecentSearches(prevList => getRandomList(prevList));
   };
+
 
   return (
     <div className={styles.bg}>
@@ -97,7 +120,37 @@ export default function AiSearch() {
         </div>
         <img src={QuestionLogo} alt="logo" className={styles.questionLogo} draggable="false" />
       </div>
-
+  {/* --- AI 검색 결과 영역 --- */}
+      {searchResult && (
+        <div className={styles.aiResultWrap}>
+          <div className={styles.resultRow}>
+            <img src={happyLogo} alt="캐릭터" className={styles.resultLogo} />
+            <div className={styles.resultBubbleWrap}>
+              <img src={answerBubble} alt="답변 말풍선" className={styles.resultBubbleImg} />
+              <span className={styles.resultBubbleText}>
+                {searchResult.answer}
+              </span>
+            </div>
+          </div>
+          <div className={styles.resultCardList}>
+            {searchResult.sources.map((item, idx) => (
+              <div className={styles.resultCard} key={idx}>
+                <div className={styles.resultCardTitle}>{item.title}</div>
+                <div className={styles.resultCardProvider}>{item.provider}</div>
+                <a
+                  className={styles.resultCardLink}
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  바로가기
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {/* --- END --- */}
       {/* 중앙 내용 */}
       <div className={styles.contentsWrap}>
         {/* 인기질문 */}

@@ -1,0 +1,105 @@
+/* --------- 날씨 부분 --------- */
+.card.weather-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  padding: 32px 40px 32px 36px;
+  max-width: 370px;
+  min-width: 300px;
+  max-height: 241px;
+  font-family: 'Pretendard', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  top: 205px;
+}
+
+.weather-card {
+  position: relative;
+  width: 260px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(32, 56, 85, 0.06);
+  padding: 18px 18px 25px 18px;
+  min-height: 135px;
+  overflow: visible;
+}
+.weather-title {
+    position: relative;
+  font-size: 20px;
+  font-weight: 600;
+  color: #23272a;
+  margin-bottom: 0px;
+  bottom: 70px;
+}
+.weather-content {
+  display: flex;
+  position: relative;
+}
+.weather-texts {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  z-index: 1;
+}
+.weather-temp {
+    position: relative;
+  font-size: 40px;
+  font-weight: 700;
+  color: #23272a;
+  margin-bottom: 0px;
+  bottom: 50px;
+}
+.weather-detail {
+    position: relative;
+  font-size: 14px;
+  color: #6b6b6b;
+  margin-bottom: 0px;
+  bottom: 50px;
+}
+.divider {
+  margin: 0 6px;
+  color: #b0b0b0;
+}
+.weather-status {
+    position: relative;
+  font-size: 16px;
+  font-weight: 700;
+  color: #23272a;
+  margin-bottom: 4px;
+  bottom: 40px;
+}
+.weather-index {
+    position: relative;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  bottom: 20px;
+}
+.weather-index > div {
+  display: flex;
+  justify-content: space-between;
+  width: 120px;
+}
+.weather-index-value {
+  color: #1976d2;
+  font-weight: 500;
+  margin-left: 10px;
+}
+.weather-index-value.good {
+  color: #23ad38;
+}
+
+.weather-sun {
+  position: absolute;
+  left: 110px;
+  top: 71px;
+  bottom: -7px;
+  width: 230px;
+  height: 125px;
+  z-index: 0;
+  pointer-events: none;
+}

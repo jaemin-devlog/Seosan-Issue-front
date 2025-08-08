@@ -1,6 +1,6 @@
 .bg {
   min-height: 100%;
-  background: #eaf5f5;
+  background: #e6f3f3;
   width: 100%;
 }
 
@@ -324,4 +324,60 @@
 }
 .pillBtn:active {
   background: #f3f3f3;
+}
+.aiResultWrap {
+  margin: 0 auto 36px auto;
+  max-width: 900px;
+}
+.resultRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+.resultLogo {
+  width: 56px;
+  height: 56px;
+  margin-top: 8px;
+}
+.resultBubbleWrap {
+  position: relative;
+}
+.resultBubbleImg {
+  width: 260px;
+  display: block;
+}
+.resultBubbleText {
+  position: absolute;
+  top: 18px; left: 32px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2rem;
+  white-space: pre-line;
+}
+.resultCardList {
+  margin-top: 20px;
+}
+.resultCard {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(160,160,160,0.09);
+  padding: 14px 20px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.resultCardTitle {
+  font-weight: 700;
+}
+.resultCardProvider {
+  color: #6d7075;
+  font-size: 0.97em;
+}
+.resultCardLink {
+  margin-top: 4px;
+  color: #0096ff;
+  font-size: 0.99em;
+  text-decoration: underline;
 }
