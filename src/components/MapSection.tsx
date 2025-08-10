@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './MapSection.css';
+import './PremiumMinimalMap.css';
 import { MapPin, Calendar, Users, Mountain, Waves, TreePalm, Sparkles, Trees, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Festival {
@@ -11,6 +13,20 @@ interface Festival {
     readonly text: string;
   }>;
   readonly location: {
+    readonly x: string;
+    readonly y: string;
+  };
+}
+
+interface Region {
+  readonly id: string;
+  readonly name: string;
+  readonly description?: string;
+  readonly position: {
+    readonly x: string;
+    readonly y: string;
+  };
+  readonly labelPosition?: {
     readonly x: string;
     readonly y: string;
   };
@@ -54,7 +70,7 @@ const FESTIVALS: ReadonlyArray<Festival> = [
       { icon: MapPin, text: '서산시 해미읍성 일원' },
       { icon: Users, text: '전통 무예 시연, 역사 체험, 먹거리 장터' }
     ],
-    location: { x: '68%', y: '52%' }
+    location: { x: '63%', y: '70%' }  // 해미면 위치와 가깝게 조정
   },
   {
     month: '10월',
@@ -93,7 +109,35 @@ const EXPERIENCES: ReadonlyArray<Experience> = [
   }
 ] as const;
 
+const REGIONS: ReadonlyArray<Region> = [
+  // 북부 지역
+  { id: 'daesan', name: '대산읍', description: '석유화학단지', position: { x: '42%', y: '16%' } },
+  { id: 'jigok', name: '지곡면', description: '농촌체험마을', position: { x: '45%', y: '36%' } },
+  
+  // 서부 지역
+  { id: 'palbong', name: '팔봉면', description: '팔봉산 관광지', position: { x: '32%', y: '48%' } },
+  
+  // 중앙 지역
+  { id: 'seongyeon', name: '성연면', description: '전통시장', position: { x: '48%', y: '47%' } },
+  { id: 'buchun', name: '부춘동', description: '행정중심', position: { x: '42%', y: '52%' } },  // 위로 이동 후 왼쪽
+  { id: 'dongmun1', name: '동문1동', description: '구도심', position: { x: '49%', y: '52%' } }, // 위로 이동 후 왼쪽
+  { id: 'dongmun2', name: '동문2동', description: '상업지구', position: { x: '44%', y: '57%' } }, // 위로 이동 후 살짝 왼쪽
+  { id: 'suseok', name: '수석동', description: '주거지역', position: { x: '52%', y: '58%' } },   // 위로
+  { id: 'seoknam', name: '석남동', description: '신도시', position: { x: '48%', y: '66%' } },
+  
+  // 동부 지역
+  { id: 'eumam', name: '음암면', description: '온천관광', position: { x: '60%', y: '50%' } },
+  { id: 'unsan', name: '운산면', description: '역사문화', position: { x: '68%', y: '58%' } },  // 원래 위치로 복원
+  
+  // 남부 지역
+  { id: 'inji', name: '인지면', description: '자연생태', position: { x: '42%', y: '66%' } },
+  { id: 'buseok', name: '부석면', description: '사찰문화', position: { x: '35%', y: '80%' } },
+  { id: 'gobuk', name: '고북면', description: '농업지대', position: { x: '55%', y: '86%' } },
+  { id: 'haemi', name: '해미면', description: '해미읍성', position: { x: '63%', y: '72%' } }
+] as const;
+
 const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'festival' | 'experience'>('festival');
   const [currentFestivalIndex, setCurrentFestivalIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -105,6 +149,9 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
   const [retryCount, setRetryCount] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
   const loadingTimeoutRef = useRef<NodeJS.Timeout>();
+  const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Memoized computations
   const currentFestival = useMemo(() => FESTIVALS[currentFestivalIndex], [currentFestivalIndex]);
@@ -219,6 +266,34 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
 
   const handleMarkerBlur = useCallback(() => {
     setFocusedMarkerId(null);
+  }, []);
+
+  // 지역 클릭 핸들러
+  const handleRegionClick = useCallback((regionId: string, regionName: string) => {
+    if (isMobile) {
+      // 모바일에서는 첫 탭에서 정보 표시, 두 번째 탭에서 이동
+      if (selectedRegion === regionId) {
+        navigate(`/explore?region=${encodeURIComponent(regionName)}`, {
+          state: { scrollToTop: true }
+        });
+      } else {
+        setSelectedRegion(regionId);
+      }
+    } else {
+      // 데스크톱에서는 바로 이동
+      navigate(`/explore?region=${encodeURIComponent(regionName)}`, {
+        state: { scrollToTop: true }
+      });
+    }
+  }, [navigate, isMobile, selectedRegion]);
+
+  // 지역 호버 핸들러
+  const handleRegionMouseEnter = useCallback((regionId: string) => {
+    setHoveredRegion(regionId);
+  }, []);
+
+  const handleRegionMouseLeave = useCallback(() => {
+    setHoveredRegion(null);
   }, []);
 
   // Intersection Observer for fade-in animation
@@ -395,6 +470,33 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isVisible, activeTab, handlePrevFestival, handleNextFestival, handleTabChange, handleFestivalDotClick]);
+
+  // 모바일 감지
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // 외부 클릭시 선택 해제
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.region-marker') && selectedRegion) {
+        setSelectedRegion(null);
+      }
+    };
+
+    if (isMobile) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [isMobile, selectedRegion]);
 
   // Component initialization with advanced loading
   useEffect(() => {
@@ -672,6 +774,36 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                   );
                 })}
 
+                {/* Region Clickable Areas */}
+                {REGIONS.map((region, index) => {
+                  const isHovered = hoveredRegion === region.id;
+                  const isSelected = selectedRegion === region.id;
+                  const isActive = isMobile && isSelected;
+                  
+                  return (
+                    <button
+                      key={region.id}
+                      className={`region-marker ${isHovered ? 'hovered' : ''} ${isSelected ? 'selected' : ''} ${isActive ? 'mobile-active' : ''}`}
+                      style={{
+                        left: region.position.x,
+                        top: region.position.y,
+                        '--index': index
+                      } as React.CSSProperties}
+                      onClick={() => handleRegionClick(region.id, region.name)}
+                      onMouseEnter={() => handleRegionMouseEnter(region.id)}
+                      onMouseLeave={handleRegionMouseLeave}
+                      aria-label={`${region.name} 지역`}
+                      aria-pressed={isSelected}
+                    >
+                      <span className="dot-indicator" />
+                      <span className="ripple" />
+                      <div className="info-card">
+                        <h3 className="region-title">{region.name}</h3>
+                      </div>
+                    </button>
+                  );
+                })}
+                
                 {/* Experience Markers */}
                 {activeTab === 'experience' && EXPERIENCES.map((exp, index) => {
                   const Icon = exp.icon;

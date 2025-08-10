@@ -1,0 +1,330 @@
+/* 🎯 프리미엄 미니멀 맵 - 최고급 엔터프라이즈 UI */
+
+/* 메인 마커 - 투명 히트박스 */
+.region-marker {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+  isolation: isolate;
+}
+
+/* 기존 요소들 제거 */
+.marker-pulse,
+.marker-core,
+.gradient-highlight,
+.gradient-ring,
+.gradient-core,
+.region-marker::before,
+.region-marker::after {
+  display: none !important;
+}
+
+/* 중심점 - 프리미엄 디자인 */
+.region-marker .dot-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: #00D4B5; /* 서산 브랜드 민트색 */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 0 0 0 rgba(0, 212, 181, 0),
+    0 1px 3px rgba(0, 0, 0, 0.12);
+  position: relative;
+}
+
+/* 내부 하이라이트 - 입체감 */
+.region-marker .dot-indicator::before {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 40%;
+  height: 40%;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  filter: blur(1px);
+}
+
+/* 호버 효과 - 우아한 확장 */
+.region-marker:hover {
+  z-index: 1000;
+}
+
+.region-marker:hover .dot-indicator {
+  width: 10px;
+  height: 10px;
+  background: #00D4B5;
+  box-shadow: 
+    0 0 0 8px rgba(0, 212, 181, 0.1),
+    0 0 0 16px rgba(0, 212, 181, 0.05),
+    0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 지역명 툴팁 - 미니멀 디자인 */
+.region-marker .info-card {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 툴팁 화살표 */
+.region-marker .info-card::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid rgba(0, 0, 0, 0.85);
+}
+
+/* 호버시 툴팁 표시 */
+.region-marker:hover .info-card {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* 지역명 스타일 */
+.info-card .region-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  text-align: center;
+}
+
+/* 펄스 애니메이션 - 은은한 효과 */
+@keyframes softPulse {
+  0% {
+    box-shadow: 
+      0 0 0 0 rgba(0, 212, 181, 0.4),
+      0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+  70% {
+    box-shadow: 
+      0 0 0 10px rgba(0, 212, 181, 0),
+      0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+  100% {
+    box-shadow: 
+      0 0 0 0 rgba(0, 212, 181, 0),
+      0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* 선택된 지역 - 강조 효과 */
+.region-marker.selected .dot-indicator {
+  background: #00D4B5;
+  width: 12px;
+  height: 12px;
+  animation: softPulse 2s infinite;
+}
+
+/* 포커스 스타일 - 접근성 */
+.region-marker:focus {
+  outline: none;
+}
+
+.region-marker:focus-visible .dot-indicator {
+  box-shadow: 
+    0 0 0 3px rgba(0, 212, 181, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 클릭 피드백 */
+.region-marker:active .dot-indicator {
+  transform: translate(-50%, -50%) scale(0.85);
+}
+
+/* 리플 효과 제거 (심플하게) */
+.region-marker .ripple {
+  display: none;
+}
+
+/* 반짝임 효과 - 품질감 추가 */
+@keyframes shimmer {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.region-marker .dot-indicator::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 3px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  animation: shimmer 3s ease-in-out infinite;
+  animation-delay: calc(var(--index) * 0.1s);
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+  .region-marker {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .region-marker .dot-indicator {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .region-marker:hover .dot-indicator {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .info-card {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  
+  /* 모바일 탭 상태 */
+  .region-marker.mobile-active .info-card {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .region-marker.mobile-active .dot-indicator {
+    width: 12px;
+    height: 12px;
+    box-shadow: 
+      0 0 0 8px rgba(0, 212, 181, 0.1),
+      0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* 고해상도 디스플레이 */
+@media (min-resolution: 2dppx) {
+  .region-marker .dot-indicator {
+    transform: translate(-50%, -50%) translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  .info-card {
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .region-marker .dot-indicator {
+    background: #00F5CC;
+    box-shadow: 
+      0 0 0 0 rgba(0, 245, 204, 0),
+      0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .region-marker:hover .dot-indicator {
+    box-shadow: 
+      0 0 0 8px rgba(0, 245, 204, 0.15),
+      0 0 0 16px rgba(0, 245, 204, 0.08),
+      0 2px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .info-card {
+    background: rgba(20, 20, 20, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .info-card::after {
+    border-top-color: rgba(20, 20, 20, 0.95);
+  }
+}
+
+/* 성능 최적화 */
+.region-marker {
+  will-change: transform;
+  contain: layout style;
+}
+
+.region-marker .dot-indicator {
+  will-change: width, height, box-shadow;
+  contain: layout style paint;
+}
+
+.info-card {
+  will-change: opacity, transform;
+  contain: layout style paint;
+}
+
+/* 애니메이션 감소 선호 */
+@media (prefers-reduced-motion: reduce) {
+  .region-marker,
+  .region-marker .dot-indicator,
+  .info-card {
+    transition-duration: 0.01ms !important;
+  }
+  
+  .region-marker .dot-indicator::after {
+    animation: none !important;
+  }
+  
+  .region-marker.selected .dot-indicator {
+    animation: none !important;
+  }
+}
+
+/* 로딩 상태 */
+.region-marker.loading .dot-indicator {
+  opacity: 0.5;
+  animation: softPulse 1s ease-in-out infinite;
+}
+
+/* 비활성 상태 */
+.region-marker:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* 지도 전체 품질 향상 */
+.final-map-container {
+  position: relative;
+}

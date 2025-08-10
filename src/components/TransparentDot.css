@@ -1,0 +1,155 @@
+/* 🔵 아주 작은 점 스타일 - 미니멀 인터페이스 */
+
+/* 메인 마커 - 아주 작은 점 */
+.region-marker {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  padding: 0;
+  border: none;
+  background: rgba(0, 212, 181, 0.8);
+  border-radius: 50%;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  transition: all 0.2s ease;
+  overflow: visible;
+}
+
+/* 기존 요소들 제거 */
+.marker-pulse,
+.marker-core,
+.gradient-highlight,
+.gradient-ring,
+.gradient-core {
+  display: none !important;
+}
+
+/* 가상 요소들 제거 */
+.region-marker::before,
+.region-marker::after {
+  display: none !important;
+}
+
+/* 호버 효과 - 살짝 크고 진해지기 */
+.region-marker:hover {
+  width: 6px;
+  height: 6px;
+  background: rgba(0, 212, 181, 1);
+  z-index: 100;
+  box-shadow: 0 0 8px rgba(0, 212, 181, 0.6);
+}
+
+/* 색상 시스템 - 4색 */
+.region-marker:nth-child(4n+1) {
+  background: rgba(0, 212, 181, 0.8); /* 민트 */
+}
+
+.region-marker:nth-child(4n+1):hover {
+  background: rgba(0, 212, 181, 1);
+  box-shadow: 0 0 8px rgba(0, 212, 181, 0.6);
+}
+
+.region-marker:nth-child(4n+2) {
+  background: rgba(79, 172, 254, 0.8); /* 스카이블루 */
+}
+
+.region-marker:nth-child(4n+2):hover {
+  background: rgba(79, 172, 254, 1);
+  box-shadow: 0 0 8px rgba(79, 172, 254, 0.6);
+}
+
+.region-marker:nth-child(4n+3) {
+  background: rgba(139, 92, 246, 0.8); /* 라벤더 */
+}
+
+.region-marker:nth-child(4n+3):hover {
+  background: rgba(139, 92, 246, 1);
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+}
+
+.region-marker:nth-child(4n) {
+  background: rgba(251, 113, 133, 0.8); /* 로즈 */
+}
+
+.region-marker:nth-child(4n):hover {
+  background: rgba(251, 113, 133, 1);
+  box-shadow: 0 0 8px rgba(251, 113, 133, 0.6);
+}
+
+/* 지역 이름 툴팁 - 호버시만 표시 */
+.region-marker .region-name {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 4px;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.region-marker:hover .region-name {
+  opacity: 1;
+}
+
+/* 포커스 스타일 */
+.region-marker:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 212, 181, 0.5);
+}
+
+/* 클릭 피드백 */
+.region-marker:active {
+  transform: translate(-50%, -50%) scale(0.9);
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+  .region-marker {
+    width: 3px;
+    height: 3px;
+  }
+  
+  .region-marker:hover {
+    width: 5px;
+    height: 5px;
+  }
+  
+  .region-marker .region-name {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+}
+
+/* 성능 최적화 */
+.region-marker {
+  will-change: transform, background-color;
+  contain: layout style;
+}
+
+/* 접근성 - 모션 감소 */
+@media (prefers-reduced-motion: reduce) {
+  .region-marker {
+    transition-duration: 0.1s;
+  }
+}
+
+/* 다크모드 대응 */
+@media (prefers-color-scheme: dark) {
+  .region-marker {
+    mix-blend-mode: screen;
+  }
+  
+  .region-marker .region-name {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+  }
+}

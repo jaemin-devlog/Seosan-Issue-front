@@ -1,0 +1,317 @@
+/* 🌟 실리콘밸리 스타일 지도 - 엔터프라이즈급 UI */
+
+/* 메인 마커 - 투명한 히트박스 */
+.region-marker {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 기존 요소들 제거 */
+.marker-pulse,
+.marker-core,
+.gradient-highlight,
+.gradient-ring,
+.gradient-core,
+.region-marker::before,
+.region-marker::after {
+  display: none !important;
+}
+
+/* 중심점 표시 - 평상시 */
+.region-marker .dot-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: #4A5568;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 색상 시스템 - 모던한 팔레트 */
+.region-marker:nth-child(4n+1) .dot-indicator {
+  background: #10B981; /* Emerald */
+}
+
+.region-marker:nth-child(4n+2) .dot-indicator {
+  background: #3B82F6; /* Blue */
+}
+
+.region-marker:nth-child(4n+3) .dot-indicator {
+  background: #8B5CF6; /* Violet */
+}
+
+.region-marker:nth-child(4n) .dot-indicator {
+  background: #EC4899; /* Pink */
+}
+
+/* 호버 효과 - 확대 및 강조 */
+.region-marker:hover {
+  z-index: 1000;
+}
+
+.region-marker:hover .dot-indicator {
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 정보 카드 - 호버시 표시 */
+.region-marker .info-card {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  min-width: 160px;
+  background: white;
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  
+  /* 글래스모피즘 효과 */
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* 카드 화살표 */
+.region-marker .info-card::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+}
+
+/* 호버시 카드 표시 */
+.region-marker:hover .info-card {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* 카드 내용 */
+.info-card .region-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1A202C;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
+}
+
+.info-card .region-subtitle {
+  font-size: 12px;
+  color: #718096;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.info-card .region-subtitle::before {
+  content: '📍';
+  font-size: 10px;
+}
+
+/* 포커스 스타일 - 접근성 */
+.region-marker:focus {
+  outline: none;
+}
+
+.region-marker:focus-visible .dot-indicator {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.region-marker:focus-visible .info-card {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* 클릭 피드백 */
+.region-marker:active .dot-indicator {
+  transform: translate(-50%, -50%) scale(0.9);
+}
+
+/* 리플 효과 */
+@keyframes ripple {
+  0% {
+    width: 8px;
+    height: 8px;
+    opacity: 0.4;
+  }
+  100% {
+    width: 40px;
+    height: 40px;
+    opacity: 0;
+  }
+}
+
+.region-marker .ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: currentColor;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.region-marker:active .ripple {
+  animation: ripple 0.6s ease-out;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+  .region-marker {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .region-marker .dot-indicator {
+    width: 10px;
+    height: 10px;
+  }
+  
+  /* 모바일에서는 탭으로 토글 */
+  .region-marker.mobile-active .info-card {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .info-card {
+    min-width: 140px;
+    padding: 10px 14px;
+  }
+  
+  .info-card .region-title {
+    font-size: 13px;
+  }
+  
+  .info-card .region-subtitle {
+    font-size: 11px;
+  }
+}
+
+/* 태블릿 최적화 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .info-card {
+    min-width: 150px;
+  }
+}
+
+/* 고해상도 디스플레이 */
+@media (min-resolution: 2dppx) {
+  .region-marker .dot-indicator {
+    image-rendering: -webkit-optimize-contrast;
+    transform: translate(-50%, -50%) translateZ(0);
+  }
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .info-card {
+    background: rgba(26, 32, 44, 0.95);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: white;
+  }
+  
+  .info-card::after {
+    border-top-color: #1A202C;
+  }
+  
+  .info-card .region-title {
+    color: #F7FAFC;
+  }
+  
+  .info-card .region-subtitle {
+    color: #A0AEC0;
+  }
+  
+  .region-marker .dot-indicator {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* 성능 최적화 */
+.region-marker {
+  will-change: transform;
+  contain: layout style;
+}
+
+.info-card {
+  will-change: opacity, transform;
+}
+
+/* 애니메이션 감소 선호 */
+@media (prefers-reduced-motion: reduce) {
+  .region-marker,
+  .region-marker .dot-indicator,
+  .info-card {
+    transition-duration: 0.01ms !important;
+  }
+  
+  .region-marker .ripple {
+    animation: none !important;
+  }
+}
+
+/* 특별 효과 - 선택된 지역 */
+.region-marker.selected .dot-indicator {
+  background: #10B981;
+  width: 14px;
+  height: 14px;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+}
+
+/* 로딩 상태 */
+.region-marker.loading .dot-indicator {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* 비활성 상태 */
+.region-marker:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.region-marker:disabled .info-card {
+  display: none;
+}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search, ChevronDown, ChevronRight, Calendar, ExternalLink } from 'lucide-react';
 import './ExplorePage.css';
 
@@ -24,7 +25,10 @@ interface NewsItem {
 type MainCategory = '뉴스' | '복지' | '문화소식' | '서산시청' | '카페' | '블로그';
 
 const ExplorePage: React.FC = () => {
-  const [selectedRegion, setSelectedRegion] = useState<string>('대산읍');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const regionFromUrl = searchParams.get('region');
+  
+  const [selectedRegion, setSelectedRegion] = useState<string>(regionFromUrl || '대산읍');
   const [selectedCategory, setSelectedCategory] = useState<MainCategory>('뉴스');
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('교육');
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState<MainCategory | null>(null);
@@ -123,6 +127,16 @@ const ExplorePage: React.FC = () => {
       category: '교육'
     }
   ];
+
+  // URL 파라미터 변경 감지 및 스크롤 최상단 이동
+  useEffect(() => {
+    const regionFromUrl = searchParams.get('region');
+    if (regionFromUrl && regionFromUrl !== selectedRegion) {
+      setSelectedRegion(regionFromUrl);
+      // 페이지 상단으로 부드럽게 스크롤
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [searchParams, selectedRegion]);
 
   // 외부 클릭 감지하여 드롭다운 닫기
   useEffect(() => {
