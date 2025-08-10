@@ -49,7 +49,7 @@ body {
 
 .bgBox {
   width: 100%;
-  max-width: 930px;     /* 캡처처럼 카드+캐릭터 다 들어가는 너비 */
+  max-width: 930px;     /*카드+캐릭터 다 들어가는 너비 */
   margin: 0 auto;
   background:
     linear-gradient(rgba(60,197,182,0.2)),
@@ -142,7 +142,6 @@ body {
   margin-top: 0;
 }
 
-/* ========== 이하 기존 스타일 유지 ========== */
 
 .balloon-gradient {
   position: absolute;
@@ -417,7 +416,6 @@ body {
   font-family: 'Pretendard', sans-serif;
   font-weight: 400;
   color: #181818;
-  /* 아래 추가!! */
   position: relative;
 }
 
@@ -472,7 +470,6 @@ body {
 .news-label { color: #7a7a7a; font-size: 0.95rem; }
 .news-org { color: #bababa; font-size: 0.88rem; font-weight: 500; }
 .news-text { font-size: 1.01rem; color: #2b2b2b; font-weight: 500; flex: 1; margin-left: 2px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
-/* 반응형 등 추가는 필요시 요청! */
 .notice-item img{
     width: 33px;
     height: 30px;
