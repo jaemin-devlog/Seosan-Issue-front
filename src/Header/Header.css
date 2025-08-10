@@ -39,11 +39,6 @@
   transition: color 0.2s;
 }
 
-/* 글씨 bold 효과 제거! */
-/* .header-nav-link.active {
-  font-weight: bold;
-} */
-
 /* 컬러 라운드 밑줄 (active 메뉴에만) */
 .header-underline {
   width: 50px;         /* 메뉴 글자 길이에 맞게 조절 */
