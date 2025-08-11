@@ -6,6 +6,7 @@ import mascot from "../assets/물음표로고 .png";
 import healthIcon from "../assets/Health.png";
 import noticeIcon from "../assets/공지사항.png";
 import newsIcon from "../assets/뉴스.png";
+import news1Icon from "../assets/pin.png";
 import arrowIcon from "../assets/대각선오른쪽위.png";
 import SparkleIcon from "../assets/sparkle.png";
 import topicTab from "../assets/topicBG.png";
@@ -19,8 +20,7 @@ const trendingTopics = [
   { title: "해미읍성" },
   { title: "시외버스" },
   { title: "축제", isNew: true },
-  { title: "서산 카페" },
-  { title: "문화시설", isNew: true }
+  { title: "서산 카페", isNew: true }
 ];
 
 export default function Mainpage() {
@@ -95,7 +95,7 @@ export default function Mainpage() {
             <div className="balloon-cards">
               <div className="balloon-card">
                 <div className="balloon-icon-wrap">
-                  <img src={noticeIcon} alt="뉴스" />
+                  <img src={newsIcon} alt="뉴스" />
                 </div>
                 <div>
                   <div className="balloon-card-title">뉴스</div>
@@ -136,7 +136,7 @@ export default function Mainpage() {
               <span className="news-text">2025 서산시 혁신 아이디어 공모 국민 선호도 조사 실시 안내</span>
             </div>
             <div className="news-item">
-              <img src={newsIcon} alt="뉴스" />
+              <img src={news1Icon} alt="뉴스" />
               <div className="news-meta">
                 <span className="news-label">최근 서산뉴스</span>
                 <span className="news-org">서산신문</span>

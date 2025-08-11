@@ -93,7 +93,7 @@ export default function Weather() {
             </div>
           </div>
         </div>
-        <img src={icon} alt={label} className="weather-sun" />
+        <img src={icon} alt={label} className="weather-icon" />
       </div>
     </div>
   );
