@@ -1,0 +1,131 @@
+/* --------- 날씨 부분 --------- */
+.card.weather-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  padding: 32px 40px 32px 36px;
+  max-width: 370px;
+  min-width: 300px;
+  max-height: 241px;
+  font-family: 'Pretendard', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.weather-card {
+  position: relative;
+  width: 260px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(32, 56, 85, 0.06);
+  padding: 18px 18px 25px 18px;
+  min-height: 135px;
+  overflow: visible;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: slideInLeft 0.8s ease-out 0.2s backwards;
+  z-index: 100 !important;
+  margin-bottom: 20px;
+}
+.weather-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(32, 56, 85, 0.12);
+}
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.weather-title {
+    position: relative;
+  font-size: 20px;
+  font-weight: 600;
+  color: #23272a;
+  margin-bottom: 0px;
+  bottom: 70px;
+}
+.weather-content {
+  display: flex;
+  position: relative;
+}
+.weather-texts {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  z-index: 1;
+}
+.weather-temp {
+    position: relative;
+  font-size: 40px;
+  font-weight: 700;
+  color: #23272a;
+  margin-bottom: 0px;
+  bottom: 50px;
+  transition: all 0.3s ease;
+}
+.weather-card:hover .weather-temp {
+  color: #1976d2;
+}
+.weather-detail {
+    position: relative;
+  font-size: 14px;
+  color: #6b6b6b;
+  margin-bottom: 0px;
+  bottom: 50px;
+}
+.divider {
+  margin: 0 6px;
+  color: #b0b0b0;
+}
+.weather-status {
+    position: relative;
+  font-size: 16px;
+  font-weight: 700;
+  color: #23272a;
+  margin-bottom: 4px;
+  bottom: 40px;
+}
+.weather-index {
+    position: relative;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  bottom: 20px;
+}
+.weather-index > div {
+  display: flex;
+  justify-content: space-between;
+  width: 120px;
+}
+.weather-index-value {
+  color: #1976d2;
+  font-weight: 500;
+  margin-left: 10px;
+}
+.weather-index-value.good {
+  color: #23ad38;
+}
+
+.weather-icon{
+  position: absolute;
+  left: 130px;
+  top: 45px;
+  bottom: -7px;
+  width: 201.91px;
+  height: 141.18px;
+  z-index: 0;
+  pointer-events: none;
+  animation: floatWeather 3s ease-in-out infinite;
+}
+@keyframes floatWeather {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}

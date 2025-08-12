@@ -1,0 +1,24 @@
+/* Wrapper to isolate Mainpage styles from global styles */
+.mainpage-wrapper {
+  /* Reset any inherited styles */
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  line-height: 1.5;
+  color: #232323;
+  background: #e6f3f3;
+  
+  /* Compensate for parent padding */
+  margin: 0 -48px;
+  padding: 0;
+  
+  /* Ensure full width */
+  width: calc(100% + 96px);
+  position: relative;
+}
+
+/* Override any global font settings inside mainpage */
+.mainpage-wrapper * {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* Ensure proper font loading */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');

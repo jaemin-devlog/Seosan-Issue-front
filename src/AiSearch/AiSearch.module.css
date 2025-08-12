@@ -1,0 +1,448 @@
+.bg {
+  min-height: 100vh;
+  background: #e6f3f3;
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.topSection {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 20px 18px 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  position: relative;
+  animation: fadeInDown 0.8s ease-out;
+}
+.bgBox {
+  max-width: 1100px;    /* 원하는 가로 크기. 예: 1100px, 1200px, 1000px 등 조절 */
+  width: 100%;          /* 반응형 */
+  margin: 0 auto;       /* 항상 가운데 정렬! */
+  /* 아래 기존 코드들은 그대로 */
+  max-height: 330px;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  border-top-right-radius: 40px;
+  border-top-left-radius: 40px;
+  background:
+    linear-gradient(rgba(60,197,182,0.2)),
+    url('../assets/group.png') no-repeat 70% 90% / 800px 400px;
+  box-shadow: 0 2px 18px rgba(60,120,110,0.10);
+  padding: 36px 0 28px 40px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+
+.aiSearchBalloonBox,
+.speechBalloonBox {
+  position: relative;
+  width: 100%;
+  height: 83.94px;
+  margin-bottom: 20px;
+}
+
+.balloonBg {
+  width: 800px;
+  height: 83.94px;
+  position: absolute;
+  left: 120px; top: -70px;
+  z-index: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+.balloonContent {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  box-sizing: border-box;
+}
+
+/* 여기서부터 input을 위한 부분 (추가/수정 부분) */
+.balloonInput {
+  background: none;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 20px;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  width: 650%;             /* 말풍선 내부 너비 비율. 필요시 조절 */
+  padding: 0;
+  margin: 0;
+  position: relative;
+  top: -80px;
+  left: 100px;
+  
+}
+.balloonInput::placeholder {
+  color: #C1C1C1;
+  opacity: 1;
+  font-weight: light;
+}
+/* 기존 balloonText(텍스트 span)는 안쓰거나 input만 쓸 것 */
+
+.aiSearchRight {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  gap: 8px;
+  top: -55px;
+  left: 800px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.aiSearchBold {
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  font-family: 'Pretendard', sans-serif;
+  transition: all 0.3s ease;
+}
+.sparkleIcon {
+  width: 32px;
+  height: auto;
+  margin-left: 2px;
+  animation: sparkleRotate 3s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+/* -------------------------------------------------- */
+
+.buttonWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 5px;
+}
+.roundBtn {
+  background: #fff;
+  border-radius: 18px;
+  padding: 6px 22px;
+  font-size: 0.98rem;
+  color: #222;
+  border: none;
+  box-shadow: 0 2px 8px rgba(50,50,50,0.05);
+  margin-bottom: 0;
+  font-weight: 400;
+  outline: none;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.questionLogo {
+  width: 537px;
+  height: 264px;
+  position: absolute;
+  right: 0px;
+  bottom: 20px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.contentsWrap {
+  max-width: 1160px;
+  margin: 36px auto 0 auto;
+  display: flex;
+  gap: 42px;
+}
+@media (max-width: 1100px) {
+  .topSection, .contentsWrap { max-width: 98vw;}
+  .questionLogo { width: 180px;}
+  .aiSearchBalloonBox, .speechBalloonBox { width: 98vw; max-width: 500px;}
+}
+@media (max-width: 900px) {
+  .contentsWrap {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .topSection { flex-direction: column; }
+  .bgBox { min-height: 160px; padding: 20px 0 20px 16px;}
+  .aiSearchBalloonBox, .speechBalloonBox { width: 90vw; min-width: 0; }
+  .questionLogo { width: 140px; right: 10px;}
+}
+
+.section {
+  flex: 1 1 0;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  font-size: 1.01rem;
+  font-weight: 700;
+  margin-bottom: 13px;
+  gap: 6px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 14px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(65, 85, 90, 0.08);
+  border: 1.2px solid #f2f2f2;
+  padding: 12px 16px 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 56px;
+  justify-content: flex-start;
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.tag {
+  background: #222;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 12px;
+  padding: 2.5px 11px 2.5px 11px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.cardIcon {
+  width: 17px;
+  height: 17px;
+  margin-left: 3px;
+}
+
+.cardText {
+  font-size: 15px;
+  font-weight: 500;
+  color: #202020;
+  margin-top: 0;
+  line-height: 1.35;
+}
+
+/* 카테고리 영역 */
+.gridCat {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 18px;
+}
+
+.catCard {
+  background: #fff;
+  border: 1.5px solid #d7dadb;
+  border-radius: 17px;
+  padding: 22px 16px 17px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 148px;
+  position: relative;
+  box-shadow: 0 1.5px 10px rgba(65, 85, 90, 0.08);
+}
+
+.catTitle {
+  font-size: 1.07rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.catDesc {
+  font-size: 0.97rem;
+  color: #464646;
+  line-height: 1.35;
+}
+.catImg {
+  width: 52px;
+  height: 52px;
+  margin-top: 14px;
+}
+.arrowIcon {
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  width: 28px;
+  height: 28px;
+}
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+  top:-100px;
+  left:180px;
+  position:  relative;
+  
+}
+
+.searchHistoryTitle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #737373;
+  font-weight: 600;
+  font-size: 15px;
+  margin-left: 3px;
+  bottom: 400px;
+}
+
+.historyIcon {
+  width: 15.63px;
+  height: 15px;
+  opacity: 0.85;
+  margin-right: 1px;
+}
+
+.pillBtn {
+  background: #fff;
+  border-radius: 20px;
+  padding: 4.5px 20px;
+  font-size: 15px;
+  color: #222;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  margin: 0;
+  cursor: pointer;
+  transition: background 0.12s;
+  min-width: 0;
+  min-height: 0;
+  line-height: 1.24;
+}
+.pillBtn:not(:first-child) {
+  margin-top: 2px;
+}
+.pillBtn:active {
+  background: #f3f3f3;
+}
+.aiResultWrap {
+  margin: 0 auto 36px auto;
+  max-width: 900px;
+}
+.resultRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+.resultLogo {
+  width: 56px;
+  height: 56px;
+  margin-top: 8px;
+}
+.resultBubbleWrap {
+  position: relative;
+}
+.resultBubbleImg {
+  width: 260px;
+  display: block;
+}
+.resultBubbleText {
+  position: absolute;
+  top: 18px; left: 32px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2rem;
+  white-space: pre-line;
+}
+.resultCardList {
+  margin-top: 20px;
+}
+.resultCard {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(160,160,160,0.09);
+  padding: 14px 20px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.resultCardTitle {
+  font-weight: 700;
+}
+.resultCardProvider {
+  color: #6d7075;
+  font-size: 0.97em;
+}
+.resultCardLink {
+  margin-top: 4px;
+  color: #0096ff;
+  font-size: 0.99em;
+  text-decoration: underline;
+}
+
+/* ========== 애니메이션 정의 ========== */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sparkleRotate {
+  0%, 100% { 
+    transform: rotate(0deg) scale(1); 
+  }
+  50% { 
+    transform: rotate(180deg) scale(1.1); 
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== 호버 효과 추가 ========== */
+.aiSearchRight:hover {
+  transform: scale(1.05);
+}
+
+.aiSearchRight:hover .sparkleIcon {
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+}
+
+.roundBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(50,50,50,0.12);
+  background: #f8f8f8;
+}
+
+.tagCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+.resultCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(160,160,160,0.15);
+}

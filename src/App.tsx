@@ -3,12 +3,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { AppProvider } from './contexts/AppContext';
 import ErrorBoundary from './components/ErrorBoundary';
-import Header from './components/Header';
+// @ts-ignore
+import Header from './Header/Header.jsx';
 import { LoadingSpinner } from './components/LoadingStates';
 
 // Lazy loading으로 초기 번들 크기 감소
 const HomePage = lazy(() => import('./pages/HomePage'));
 const ExplorePage = lazy(() => import('./pages/ExplorePage'));
+const AiSearchPage = lazy(() => import('./pages/AiSearchPage'));
 const Footer = lazy(() => import('./components/Footer'));
 
 function App() {
@@ -22,6 +24,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/explore" element={<ExplorePage />} />
+                <Route path="/ai-search" element={<AiSearchPage />} />
               </Routes>
               <Footer />
             </Suspense>

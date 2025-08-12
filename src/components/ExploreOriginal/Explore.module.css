@@ -1,0 +1,260 @@
+:root{
+  --bg:#E6F3F1;
+  --pill:#FFFFFF;
+  --mint:#11A39A;
+  --text:#172626;
+  --muted:#6C8484;
+  --line:#DDEFEA;
+  --shadow:0 8px 28px rgba(41,53,72,.10);
+}
+
+.page{
+  max-height:100%;
+  background:var(--bg);
+  font-family:'Noto Sans KR','Apple SD Gothic Neo',Arial,sans-serif;
+  letter-spacing:-.2px;
+}
+
+/* ===== 레이아웃 ===== */
+.frame{
+  max-width:1200px;
+  width:95%;
+  margin:24px auto 56px;
+  display:grid;
+  grid-template-columns: 140px 1fr;
+  column-gap:48px;
+}
+
+/* ===== 사이드 ===== */
+.side{
+  position: relative;
+  background:#fff;
+  padding:18px 14px 22px 16px;
+  width:200px;
+  height:100%;
+  bottom:24px;
+  border-top-right-radius:100px;
+  border-top-left-radius:0;
+  border-bottom-right-radius:0;
+  border-bottom-left-radius:0;
+  box-shadow:none;
+  overflow: visible;
+  margin-left: calc((100vw - min(100vw, 1200px)) / -2);
+}
+
+/* 제목/리스트 */
+.sideTitle{
+  text-align:center;
+  font-size:12px;
+  font-weight:600;
+  color:#9aa3a7;
+  margin:18px 0 28px;
+}
+/* 리스트는 중앙 정렬 유지 */
+.sideList{
+  list-style:none; padding:0; margin:0;
+  display:flex; flex-direction:column; align-items:center;
+  gap:52px;
+}
+
+/* 기본 항목 */
+.sideItem{
+  font-weight:800;
+  font-size:20px;          /* 필요하면 18~20 조절 */
+  color:#181818;
+  line-height:1;
+  display:inline-block;    /* pill이 내용 너비만 차지 */
+  padding:0;               /* 기본은 배경/패딩 없음 */
+  border-radius:999px;     /* 활성화 시 pill 형태를 위해 미리 둠 */
+  cursor:pointer;
+  transition:
+    padding .18s ease,
+    background .18s ease,
+    color .18s ease,
+    box-shadow .18s ease;
+}
+
+/* 활성화(클릭) 된 항목: 작은 pill */
+.sideItemActive{
+  background: var(--mint);
+  color:#fff;
+  padding:12px 22px;       /* ← pill 두께/가로 여백 */
+  box-shadow: 0 10px 22px rgba(17,163,154,.22);
+}
+
+/* 이전에 사용하던 가짜 배경이 있으면 끄기 */
+.sideItemActive::before{ content:none !important; }
+
+/* (선택) 모바일에서 조금 작게 */
+@media (max-width:420px){
+  .sideItem{ font-size:18px; }
+  .sideItemActive{ padding:10px 18px; }
+}
+
+/* ===== 메인 ===== */
+.main{}
+
+/* 상단 탭 알약 */
+.tabPill{
+  background:var(--pill);
+  border-radius:28px;
+  padding:12px 22px;
+  box-shadow:var(--shadow);
+  display:flex; align-items:center; gap:40px;
+  width:calc(100% - 40px);
+  gap: 100px;
+  padding-left: 100px;
+}
+.tabBtn{
+  position:relative;
+  border:none; background:transparent;
+  font-weight:800; 
+  color:#7C8B8B;
+  padding:8px 4px 10px; 
+  cursor:pointer;
+  display:flex; 
+  align-items:center; 
+  gap:6px;
+}
+.caret{ font-size:12px; transform:translateY(1px); color:#7C8B8B; }
+.tabBtnActive{ color:var(--mint); }
+.tabBtnActive .caret{ color:var(--mint); }
+/* 결과 카운트 바 */
+.countBar{
+  margin-top:12px;
+  color:#737373;;
+  font-weight:700;
+  font-size: 20;
+  padding:10px 16px;
+  border-radius:10px;
+  display:inline-flex;          /* 아이콘 옆 텍스트 정렬 */
+  align-items:center;
+  gap:10px;
+}
+/* 이전 ::before 아이콘 제거(겹침 방지) */
+.countBar::before{ content:none !important; }
+
+/* 좌측 작은 아이콘 박스 */
+.countIconWrap{
+  width:22px; height:22px; border-radius:4px;
+  
+  display:grid; place-items:center;
+}
+.countIconWrap img{ width:26.73px;
+     height:26.73px; 
+     display:block; }
+
+/* 리스트 폭 */
+.list{ margin-top:16px; max-width:860px; }
+
+/* 카드 */
+.card{
+  background:#fff; border-radius:18px;
+  box-shadow:0 6px 20px rgba(41,53,72,.10);
+  padding:18px 22px 16px; margin-bottom:18px;
+}
+.cardTitle{ font-size:1.18rem; font-weight:900; color:var(--text); margin:4px 0 12px; }
+.divider{ height:1px; background:var(--line); margin:0 0 12px; }
+.cardBody{ color:#5c6f6f; line-height:1.75; margin:0 0 12px; max-width:760px; }
+.cardFooter{ display:flex; justify-content:flex-end; align-items:center; gap:8px; }
+
+/* '보기' + 아이콘 */
+.viewLink{ color:var(--mint); font-weight:800; text-decoration:none; }
+
+
+/* 원형 아이콘 안에 이미지 배치 */
+.circleIcon{
+  width:32px;              /* 원 크기 (필요하면 26~34로 조절) */
+  height:32px;
+  border-radius:50%;
+  background: var(--mint); /* 민트색 채움 */
+  border:none;             /* 테두리 제거 */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.circleIcon::before,
+.circleIcon::after{ content:none !important; }
+
+/* 아이콘: 흰색으로 보이게, 가운데 정렬 */
+.noticeIcon{
+  width:26.75px;              /* 아이콘 크기 */
+  height:26.75px;
+  display:block;
+  object-fit:contain;
+  
+  
+}
+
+/* 각 탭 래퍼는 그대로 */
+.tabItem { position: relative; }
+
+/* ▼ 드롭다운 패널 다듬기 */
+.ddMenu{
+  position:absolute;
+  top: calc(100% + 12px);   /* 탭 아래 살짝 띄우기 */
+  left:50%;
+  transform: translateX(-50%);
+  z-index:30;
+  width: 120px;             /* 폭 고정(너무 넓게 안 퍼지게) */
+  padding: 18px 22px;
+  background:#fff;
+  border:1px solid #E6F3F1; /* 은은한 테두리 */
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;      /* 사방 부드럽게 */
+  overflow:hidden;
+  animation: ddPop .18s ease-out;
+}
+
+/* 탭 아래 연결 느낌의 얇은 바 */
+.ddMenu::before{
+  content:"";
+  position:absolute;
+  top:-6px; left:50%; transform:translateX(-50%);
+  width: 54px; height: 4px;
+  background: var(--mint);
+  border-radius: 999px;
+  opacity:.9;
+}
+
+/* 목록 – 가운데 정렬, 간격 조정 */
+.ddList{
+  list-style:none; margin:0; padding:0;
+  display:flex; flex-direction:column; align-items:center;
+  gap: 12px;                             /* 항목 간 간격 */
+}
+
+/* 항목 – 크기/색/호버 */
+.ddItem{
+  font-size: 15px;
+  font-weight: 800;
+  color:#8f9797;
+  letter-spacing:-.2px;
+  padding:6px 10px;
+  border-radius:10px;
+  line-height:1.15;
+  cursor:pointer;
+  transition: background .15s ease, color .15s ease, transform .15s ease;
+}
+.ddItem:hover{
+  background:#F1FAF8;
+  color:#4d5a5a;
+  transform: translateY(-1px);
+}
+
+/* 화살표 회전 자연스럽게 */
+.caret{ transition: transform .18s ease; }
+.caretUp{ transform: rotate(180deg) translateY(-1px); }
+
+/* 살짝 뜨는 애니메이션 */
+@keyframes ddPop{
+  from{ opacity:0; transform: translate(-50%, -6px); }
+  to  { opacity:1; transform: translate(-50%, 0); }
+}
+
+/* 모바일에서 조금 더 작게 */
+@media (max-width: 640px){
+  .ddMenu{ width: 220px; padding:16px 18px; }
+  .ddItem{ font-size:14px; }
+}
