@@ -21,16 +21,26 @@
   gap: 30px;
 }
 .leftCol, .rightCol { min-width:0; }
-
+.rightCol .sectionTitle{
+  right: 60px;
+  font-size: 25px;
+  color: var(--text);
+}
+.leftCol .sectionTitle{
+  right: 220px;
+  font-size: 30px;
+  color: var(--text);
+}
 .sectionTitle{
   font-size:30px;
   font-weight:600;
   color:var(--text);
   margin:0 0 20px;
-  letter-spacing:-0.3px;
+  letter-spacing:-0.9px;
   position: relative;
-  right: 120px;
-  top: 10px;
+  right: 200px;
+  bottom: 60px;
+  gap: 70px;
 }
 .party img{
   position: relative;
@@ -50,6 +60,7 @@
   padding:20px 20px 20px;   /* ↑ 위아래 공간 확보 */
   width: 100%; /* 고정 폭 */
   right: 50px;
+  bottom: 80px;
 }
 .leftCol .panel{
   position:relative;
@@ -115,7 +126,7 @@
   font-weight:600;
   color:var(--text);
   opacity:.9;
-  top:62px;
+  top:50px;
   letter-spacing:-0.2px;
   transition: all 0.3s ease;
 }
@@ -129,7 +140,7 @@
   font-weight:400;
   letter-spacing:-0.5px;
   color:var(--text);
-  top:62px;
+  top:55px;
   position: relative;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -177,6 +188,7 @@
   box-shadow: 0 14px 36px rgba(31,104,98,.12);
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
+  flex-direction: nowrap;
 }
 .eventItem:hover {
   transform: translateY(-5px);

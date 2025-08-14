@@ -48,6 +48,10 @@ export default function Mainpage() {
   const toWeekly = () => setPeriod("weekly");
   const togglePeriod = () => setPeriod((p) => (p === "daily" ? "weekly" : "daily"));
 
+  // ★ ExplorePremium으로 이동할 URL 헬퍼
+  const exploreTo = (tab) =>
+    `/explore?view=list&tab=${encodeURIComponent(tab)}&page=1`;
+
   return (
     <div className="mainpage-bg">
       <div className="mainpage-container">
@@ -157,11 +161,17 @@ export default function Mainpage() {
                 <div>
                   <div className="balloon-card-title">뉴스</div>
                   <div className="balloon-card-desc">
-                    복잡한 서산시의 교통 노선,<br />
+                    서산의 최근 소식을 여기서,<br />
                     바로 알아보세요
                   </div>
                 </div>
-                <Link to="/traffic" className="balloon-card-arrow">
+                {/* ★ 뉴스 → Explore의 뉴스 탭으로 */}
+                <Link
+                  to={exploreTo("뉴스")}
+                  className="balloon-card-arrow"
+                  aria-label="탐색 - 뉴스로 이동"
+                  title="탐색: 뉴스"
+                >
                   <img src={arrowIcon} alt="바로가기" />
                 </Link>
               </div>
@@ -177,7 +187,13 @@ export default function Mainpage() {
                     통합 정보를 확인하세요
                   </div>
                 </div>
-                <Link to="/welfare" className="balloon-card-arrow">
+                {/* ★ 복지 → Explore의 복지 탭으로 */}
+                <Link
+                  to={exploreTo("복지")}
+                  className="balloon-card-arrow"
+                  aria-label="탐색 - 복지로 이동"
+                  title="탐색: 복지"
+                >
                   <img src={arrowIcon} alt="바로가기" />
                 </Link>
               </div>

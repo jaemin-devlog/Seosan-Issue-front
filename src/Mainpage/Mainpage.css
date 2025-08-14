@@ -142,15 +142,15 @@ body {
 }
 
 .aiSearchRight {
-  position: relative;
+  position: absolute;
   display: flex;
   align-items: center;
   gap: 7px;
   font-size: 22px;
   font-weight: bold;
   color: #fff;
-  right: 200px;
-  bottom: 80px;
+  right: 120px;
+  bottom: 100px;
 }
 .aiSearchBold {
   font-size: 22px;
@@ -315,9 +315,9 @@ body {
   box-shadow: 0 9px 38px rgba(45, 145, 130, 0.09);
   transition: box-shadow .15s;
   overflow: visible;
-  top: -50px;
+  top: -20px;
   max-width: 200px;
-  height:140px;
+  height:130px;
 }
 .balloon-card:hover {
   transform: translateY(-8px) scale(1.02);
@@ -335,8 +335,8 @@ body {
   z-index: 3;
 }
 .balloon-icon-wrap img {
-  width: 30px;
-  height: 30px;
+  width: 55.49px;
+  height: 51.58px;
   filter: none;
   display: block;
 }
@@ -344,18 +344,21 @@ body {
   font-weight: 900;
   font-size: 1.3rem;
   color: #232323;
-  margin-bottom: 8px;
-  margin-top: 5px;
+  margin-bottom: 35px;
+  margin-top: -6px;
   letter-spacing: -0.5px;
   line-height: 1.2;
+  
 }
 .balloon-card-desc {
-  font-size: 13px;
+  font-size: 12px;
   color: #333;
-  margin-top: 0px;
+  margin-top: -20px;
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: -0.5px;
+  top: 10px;
+  display: nowrap;
 }
 .balloon-card-arrow {
   position: absolute;
@@ -475,12 +478,16 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* ==== 여기부터 '일자 정렬' 수정 반영 ==== */
 .trending-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 3ch 1fr 40px; /* 숫자 | 제목 | new */
   align-items: center;
+  column-gap: 12px;
   border-bottom: 1px solid #e7eeec;
   font-size: 20px;
-  padding: 10px 0 11px 0;
+  padding: 10px 8px 11px 8px;   /* 좌우 여백 추가 */
   font-family: 'Pretendard', sans-serif;
   font-weight: 400;
   color: #181818;
@@ -490,36 +497,50 @@ body {
 }
 .trending-row:hover {
   background: linear-gradient(90deg, rgba(32,165,158,0.05) 0%, transparent 100%);
-  padding-left: 8px;
+  padding-left: 16px; /* hover시 살짝 밀림 효과 유지 */
 }
 .trending-row:hover .trending-num {
   color: #11a39a;
   transform: scale(1.1);
 }
+
 .trending-num {
   font-size: 22px;
   color: #20a59e;
   font-weight: 700;
-  margin-right: 16px;
-  width: 32px;
-  display: inline-block;
-  flex-shrink: 0;
+  /* 기존 margin-right/width 제거 */
+  margin-right: 0;
+  width: auto;
+  /* 숫자 세로줄 끝에 딱 맞추기 */
+  justify-self: end;
+  text-align: right;
   transition: all 0.3s ease;
+  /* 자간 균일(숫자 고정폭) */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
-.trending-text { flex: 1; min-width: 0; }
+
+.trending-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .trending-new {
   color: #20b2aa;
   font-size: 16px;
   padding: 3.2px 13px;
-  margin-left: 10px;
   font-weight: 500;
   letter-spacing: 0;
   vertical-align: middle;
-  margin-right: 0;
-  margin-left: auto;
-  flex-shrink: 0;
+  /* 오른쪽 끝으로 고정 */
+  justify-self: end;
+  margin: 0;                 /* 기존 auto 마진 제거 */
   animation: pulse 2s ease-in-out infinite;
 }
+/* ==== 일자 정렬 수정 끝 ==== */
+
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
@@ -555,6 +576,7 @@ body {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  bottom: 60px;
 }
 .news-item::before {
   content: '';
@@ -633,7 +655,7 @@ body {
   cursor: default;
 }
 
-/* ========== \ubc18\uc751\ud615 \ub514\uc790\uc778 ========== */
+/* ========== 반응형 디자인 ========== */
 @media (max-width: 1200px) {
   .mainpage-container {
     padding: 32px 20px;
@@ -782,7 +804,7 @@ body {
   }
   .trending-row {
     font-size: 16px;
-    padding: 8px 0;
+    padding: 8px 8px;
   }
   .trending-num {
     font-size: 18px;
