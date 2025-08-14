@@ -86,11 +86,14 @@ body {
 }
 
 .aiSearchBalloonBox {
-  width: 100%;
-  min-height: 84px;
+  --bubble-h: 84px;
+  --bubble-bg: #1d1a17;   /* 말풍선 내부 색 (검은색) */
+  --bubble-radius: 42px;
   position: relative;
-  margin-top: 0;
+  min-height: var(--bubble-h);
 }
+
+
 
 .balloonBg {
   width: 700px;
@@ -98,9 +101,9 @@ body {
   position: absolute;
   left: 0;
   top: -70px;
-  z-index: 1;
+  z-index: 0;
   user-select: none;
-  pointer-events: none;
+  pointer-events: none; 
 }
 
 .balloonContent {
@@ -131,10 +134,17 @@ body {
   margin: 0;
   top:-80px;
   transition: all 0.3s ease;
+  
 }
 .balloonInput:focus {
-  transform: scale(1.02);
+  transform: scale(1.00);
 }
+.balloonInput:active {
+  transform: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;}
 .balloonInput::placeholder {
   color: #bbbbbb;
   opacity: 1;

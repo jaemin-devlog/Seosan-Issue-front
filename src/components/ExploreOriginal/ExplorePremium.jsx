@@ -15,8 +15,12 @@ import chainIcon from "../../assets/chain.png";
 import rightHere from "../../assets/RightHere.png";
 import noteIcon from "../../assets/Note.png";
 import listMagnifier from "../../assets/ListMagnifyingGlass.png";
-// 필요하면 사용하세요.
-// import sparkle from "../../assets/sparkle.png";
+
+/* 추가 아이콘(요청 리소스) */
+import chevronUp from "../../assets/위.png";
+import chevronDown from "../../assets/아래.png";
+import calIcon from "../../assets/calendar.png";
+import sparkleIcon from "../../assets/sparkle.png";
 
 /* ===== 상수 ===== */
 const REGIONS = [
@@ -55,8 +59,7 @@ const DROPDOWN = {
 /* ===== 데모 데이터 ===== */
 const MOCK = Array.from({ length: 15 }).map((_, i) => ({
   id: i + 1,
-  title:
-    i % 3 === 1 ? "제목" : "아동 청소년을 위한 청소년 수련관 운영",
+  title: i % 3 === 1 ? "제목" : "아동 청소년을 위한 청소년 수련관 운영",
   body:
     i % 3 === 1
       ? "2줄"
@@ -82,28 +85,32 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
 
   return (
     <div className={styles.detailPageOnly}>
-      {/* 상단: 카테고리 텍스트 */}
+      {/* 상단 카테고리 */}
       <div className={styles.breadcrumb}>{categoryLabel}</div>
 
       {/* 제목 */}
       <h1 className={styles.detailTitle}>{item?.title || "제목 없음"}</h1>
 
-      {/* 날짜 라인(좌측 점 + 날짜) */}
+      {/* 날짜 라인: 달력 아이콘 + 날짜 */}
       <div className={styles.detailMeta}>
-        <span className={styles.dot} />
+        <img src={calIcon} alt="" className={styles.metaCal} />
         <span>{today}</span>
       </div>
 
-      {/* 검은 배지 + 마스코트 + 표 패널 */}
+      {/* 마스코트 + 검은 배너 + 표 */}
       <section className={styles.noticeWrap}>
-        <div className={styles.badgeDark}>
-          <span className={styles.badgeStar}>★</span>
-          <span className={styles.badgeText}>AI 요약 완료</span>
-        </div>
-
         <div className={styles.infoPanel}>
-          {/* 마스코트(좌상단) */}
+          {/* 마스코트: 표 좌상단에 걸치도록 */}
           <img className={styles.panelMascot} src={newslogo} alt="" />
+
+          {/* 가로로 긴 검은 배너(스파클 아이콘 포함) */}
+          <div className={styles.panelBanner}>
+            <img src={sparkleIcon} alt="" className={styles.bannerSparkle} />
+            <span className={styles.bannerText}>
+              산후조리원 내 호흡기세포융합바이러스(RSV) 집단발생 증가에 따라 감염병
+              예방수칙을 배포하오니 업무에 참고하시기 바랍니다.
+            </span>
+          </div>
 
           {/* 표 */}
           <div className={styles.tableWrap}>
@@ -144,22 +151,20 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
         <img className={styles.rightBird} src={rightHere} alt="" />
       </div>
 
-      {/* 이전/다음 글 */}
+      {/* 이전/다음 글 : 위/아래 아이콘 사용 */}
       <nav className={styles.pnWrap}>
-        <button
-          type="button"
-          className={styles.pnItem}
-          onClick={onPrev}
-        >
-          <span className={styles.pnLabel}>이전 글</span>
+        <button type="button" className={styles.pnItem} onClick={onPrev}>
+          <span className={styles.pnLeft}>
+            <img src={chevronUp} alt="" className={styles.pnIcon} />
+            <span className={styles.pnLabel}>이전 글</span>
+          </span>
           <span className={styles.pnTitle}>청소년상담복지센터운영</span>
         </button>
-        <button
-          type="button"
-          className={styles.pnItem}
-          onClick={onNext}
-        >
-          <span className={styles.pnLabel}>다음 글</span>
+        <button type="button" className={styles.pnItem} onClick={onNext}>
+          <span className={styles.pnLeft}>
+            <img src={chevronDown} alt="" className={styles.pnIcon} />
+            <span className={styles.pnLabel}>다음 글</span>
+          </span>
           <span className={styles.pnTitle}>
             서산시의회 한서혁 의원, 지역 최초 시의원 후원회 출범
           </span>
@@ -183,30 +188,20 @@ export default function ExplorePremium() {
 
   // 상태
   const [activeRegion, setActiveRegion] = useState(
-    regionFromUrl && REGIONS.includes(regionFromUrl)
-      ? regionFromUrl
-      : "대산읍"
+    regionFromUrl && REGIONS.includes(regionFromUrl) ? regionFromUrl : "대산읍"
   );
   const [activeTab, setActiveTab] = useState(
-    tabFromUrl && TABS.some((t) => t.label === tabFromUrl)
-      ? tabFromUrl
-      : "뉴스"
+    tabFromUrl && TABS.some((t) => t.label === tabFromUrl) ? tabFromUrl : "뉴스"
   );
-  const [activeSub, setActiveSub] = useState(
-    subFromUrl || "" // 드롭다운에서 선택된 소분류
-  );
+  const [activeSub, setActiveSub] = useState(subFromUrl || "");
   const [openMenu, setOpenMenu] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const [mode, setMode] = useState(
-    viewFromUrl === "detail" ? "detail" : "list"
-  );
+  const [mode, setMode] = useState(viewFromUrl === "detail" ? "detail" : "list");
   const [selectedId, setSelectedId] = useState(idFromUrl || null);
 
   /* 페이징 상태 */
-  const [page, setPage] = useState(
-    !isNaN(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1
-  );
+  const [page, setPage] = useState(!isNaN(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1);
   const totalPages = Math.max(1, Math.ceil(MOCK.length / PAGE_SIZE));
   const pagedItems = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
@@ -226,10 +221,8 @@ export default function ExplorePremium() {
 
   // URL 변경 시 상태 동기화(뒤로가기 등)
   useEffect(() => {
-    if (regionFromUrl && REGIONS.includes(regionFromUrl))
-      setActiveRegion(regionFromUrl);
-    if (tabFromUrl && TABS.some((t) => t.label === tabFromUrl))
-      setActiveTab(tabFromUrl);
+    if (regionFromUrl && REGIONS.includes(regionFromUrl)) setActiveRegion(regionFromUrl);
+    if (tabFromUrl && TABS.some((t) => t.label === tabFromUrl)) setActiveTab(tabFromUrl);
     setActiveSub(subFromUrl || "");
     setMode(viewFromUrl === "detail" ? "detail" : "list");
     if (idFromUrl) setSelectedId(idFromUrl);
@@ -253,8 +246,7 @@ export default function ExplorePremium() {
   /* 바깥 클릭 시 드롭다운 닫기 */
   useEffect(() => {
     const close = (e) => {
-      if (tabBarRef.current && !tabBarRef.current.contains(e.target))
-        setOpenMenu(null);
+      if (tabBarRef.current && !tabBarRef.current.contains(e.target)) setOpenMenu(null);
     };
     document.addEventListener("click", close);
     return () => document.removeEventListener("click", close);
@@ -290,7 +282,7 @@ export default function ExplorePremium() {
       const nextActive = tab.label;
       setActiveTab(nextActive);
       setPage(1);
-      // 소분류 초기화(탭 바꿀 때)
+      // 소분류 초기화
       const next = new URLSearchParams(searchParams);
       next.set("view", "list");
       next.set("page", "1");
@@ -382,11 +374,10 @@ export default function ExplorePremium() {
     [selectedId]
   );
 
-  const countText = useMemo(() => {
-    // 실제 연동 시 activeRegion/activeTab/activeSub로 필터링하여 total count 계산
-    // 지금은 데모 데이터 길이 사용
-    return `글 전체 결과 ${MOCK.length.toLocaleString()}개`;
-  }, []);
+  const countText = useMemo(
+    () => `글 전체 결과 ${MOCK.length.toLocaleString()}개`,
+    []
+  );
 
   return (
     <div className={styles.page}>
@@ -469,10 +460,7 @@ export default function ExplorePremium() {
               </span>
               {countText}
               {activeSub ? (
-                <span className={styles.countSub}>
-                  {" "}
-                  · 필터: {activeTab} &gt; {activeSub}
-                </span>
+                <span className={styles.countSub}> · 필터: {activeTab} &gt; {activeSub}</span>
               ) : null}
             </div>
 
