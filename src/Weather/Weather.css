@@ -17,6 +17,7 @@
 .weather-card {
   position: relative;
   width: 260px;
+  top: 160px;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 4px 16px rgba(32, 56, 85, 0.06);

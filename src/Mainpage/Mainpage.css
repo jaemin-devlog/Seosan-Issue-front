@@ -149,7 +149,7 @@ body {
   font-size: 22px;
   font-weight: bold;
   color: #fff;
-  right: 210px;
+  right: 200px;
   bottom: 80px;
 }
 .aiSearchBold {
@@ -158,6 +158,7 @@ body {
   color: #fff;
   font-family: 'Pretendard', sans-serif;
   transition: all 0.3s ease;
+  
 }
 .aiSearchRight:hover .aiSearchBold {
   text-shadow: 0 2px 8px rgba(255,255,255,0.3);
@@ -170,15 +171,15 @@ body {
   transition: all 0.3s ease;
   animation: sparkle 3s ease-in-out infinite;
 }
-@keyframes sparkle {
+/* @keyframes sparkle {
   0%, 100% { transform: rotate(0deg) scale(1); }
   50% { transform: rotate(180deg) scale(1.1); }
-}
+} */
 .aiSearchRight:hover .sparkleIcon {
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
 }
 
-/* ========== 이하 기존 스타일 유지 ========== */
+
 
 .balloon-gradient {
   position: absolute;
@@ -297,24 +298,26 @@ body {
   min-height: 200px;
 }
 .balloon-card {
-  position: relative;
+    position: relative;
   background: linear-gradient(
     120deg,
-    rgba(255,255,255,0.75) 60%,
-    rgba(251, 238, 243, 0.68) 100%
+    rgba(255,255,255,0.65) 60%,
+    rgba(251, 238, 243, 0.58) 100%
   );
-  border-radius: 30px;
-  flex: 0 0 260px;
+  border-top-right-radius: 45px;
+  border-top-left-radius: 45px;
+  flex: 0 0 315px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 28px 24px;
+  padding: 35px 34px 33px 35px;
   z-index: 2;
   box-shadow: 0 9px 38px rgba(45, 145, 130, 0.09);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: box-shadow .15s;
   overflow: visible;
-  min-height: 120px;
-  cursor: pointer;
+  top: -50px;
+  max-width: 200px;
+  height:140px;
 }
 .balloon-card:hover {
   transform: translateY(-8px) scale(1.02);
@@ -322,16 +325,13 @@ body {
 }
 .balloon-icon-wrap {
   position: absolute;
-  width: 50px;
+  width: 60px;
   height: 50px;
   top: -25px;
   right: 20px;
-  background: white;
-  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
   z-index: 3;
 }
 .balloon-icon-wrap img {
@@ -350,7 +350,7 @@ body {
   line-height: 1.2;
 }
 .balloon-card-desc {
-  font-size: 14px;
+  font-size: 13px;
   color: #333;
   margin-top: 0px;
   font-weight: 500;
@@ -359,22 +359,24 @@ body {
 }
 .balloon-card-arrow {
   position: absolute;
-  right: 10px; bottom: 10px;
-  width: 33px; height: 33px;
+  right: 10px; 
+  bottom: 10px;
+  width: 33px; 
+  height: 33px;
   background: #fff;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 2px 8px rgba(70,120,120,0.07);
-  transition: all 0.3s ease;
+  /* transition: all 0.3s ease; */
 }
-.balloon-card:hover .balloon-card-arrow {
+/* .balloon-card:hover .balloon-card-arrow {
   background: #20a59e;
   transform: translateX(3px);
   box-shadow: 0 4px 12px rgba(32, 165, 158, 0.3);
-}
+} */
 .balloon-card-arrow img {
   width: 18px; height: 18px; opacity: 0.7;
-  transition: all 0.3s ease;
+ 
 }
 .balloon-card:hover .balloon-card-arrow img {
   opacity: 1;
@@ -406,17 +408,17 @@ body {
   height: auto;
   min-height: 370px;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  animation: slideInLeft 0.8s ease-out;
+  /* animation: slideInLeft 0.8s ease-out; */
   z-index: 100 !important;
   isolation: isolate;
-  margin-top: 20px;
+  top: 170px;
   overflow: visible;
 }
-.trending-card:hover {
+/* .trending-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px rgba(20,40,40,0.15);
-}
-@keyframes slideInLeft {
+} */
+/* @keyframes slideInLeft {
   from {
     opacity: 0;
     transform: translateX(-30px);
@@ -425,11 +427,11 @@ body {
     opacity: 1;
     transform: translateX(0);
   }
-}
+} */
 .trending-tab-wrap { position: relative; margin-top: 20px; }
 .trending-tab {
   position: absolute;
-  top: -45px;
+  top: -95px;
   left: 32px;
   background: #22201c;
   color: #cfcfcf;
@@ -446,7 +448,7 @@ body {
 .trending-tab-img {
   position: absolute;
   left: 32px;
-  top: -30px;
+  top: 120px;
   width: 157px;
   height: 50px;
   z-index: 10;

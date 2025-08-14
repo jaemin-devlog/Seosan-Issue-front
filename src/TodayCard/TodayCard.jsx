@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./TodayCard.module.css";
-
+import Event from "../assets/event.png";
 import ClockIcon from "../assets/clock.png";
 import TrendUpIcon from "../assets/trending-up.png";
 import CardBG from "../assets/TodayCardBG.png";
@@ -11,7 +11,7 @@ export default function TodayCard({
   totalDelta = 12,
   todayDelta = 7,
   events = [
-    { date: "8월 7일", time: "17 : 00", title: "일자리창출지원사업 참여자 모집" },
+    { date: "9월26일(금) ~ 28(일) ", time: "19 : 00", title: "서산해미읍성축제" },
     { date: "8월 7일", time: "17 : 00", title: "일자리창출지원사업 참여자 모집" },
     { date: "8월 7일", time: "17 : 00", title: "일자리창출지원사업 참여자 모집" },
   ],
@@ -60,7 +60,7 @@ export default function TodayCard({
       {/* 오른쪽: 다가오는 이벤트 */}
       <div className={styles.rightCol}>
         <h2 className={styles.sectionTitle}>
-          다가오는 이벤트 <span className={styles.party}>🎉</span>
+          다가오는 이벤트 <span className={styles.party}><img src={Event} alt =""/></span>
         </h2>
 
         <div className={styles.panel}>

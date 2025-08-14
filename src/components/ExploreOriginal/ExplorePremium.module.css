@@ -17,35 +17,33 @@
   animation: fadeIn 0.6s ease-out;
 }
 
-/* ===== 레이아웃 ===== */
+/* ===== 목록 레이아웃 ===== */
 .frame{
   max-width:1200px;
   width:95%;
-  margin:32px auto 64px;  /* 더 균형잡힌 상하 여백 */
+  margin:32px auto 64px;
   display:grid;
-  grid-template-columns: 200px 1fr;  /* 사이드바 너비 조정 */
-  column-gap:56px;  /* 열 간격 증가 */
+  grid-template-columns: 200px 1fr;
+  column-gap:56px;
 }
 
 /* ===== 사이드 ===== */
 .side{
   position: relative;
   background:#fff;
-  padding:28px 20px 32px 20px;  /* 더 균형잡힌 패딩 */
-  width:220px;  /* 약간 더 넓게 */
-  height:fit-content;  /* 높이 자동 조정 */
+  padding:28px 20px 32px 20px;
+  width:220px;
+  height:fit-content;
   min-height:600px;
   border-top-right-radius:100px;
   border-top-left-radius:0;
   border-bottom-right-radius:0;
   border-bottom-left-radius:0;
-  box-shadow:0 4px 24px rgba(0,0,0,0.06);  /* 은은한 그림자 */
+  box-shadow:0 4px 24px rgba(0,0,0,0.06);
   overflow: visible;
   margin-left: calc((100vw - min(100vw, 1200px)) / -2);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* 제목/리스트 */
 .sideTitle{
   text-align:center;
   font-size:12px;
@@ -53,37 +51,30 @@
   color:#9aa3a7;
   margin:18px 0 28px;
 }
-/* 리스트는 중앙 정렬 유지 */
 .sideList{
   list-style:none; padding:0; margin:0;
   display:flex; flex-direction:column; align-items:center;
-  gap:8px;  /* 간격 줄여서 더 컴팩트하게 */
+  gap:8px;
 }
-
-/* 기본 항목 */
 .sideItem{
   font-weight:700;
-  font-size:16px;          /* 조금 작게 조정 */
+  font-size:16px;
   color:#4a5959;
   line-height:1.4;
-  display:inline-block;    /* pill이 내용 너비만 차지 */
-  padding:10px 20px;       /* 기본 패딩 추가 */
+  display:inline-block;
+  padding:10px 20px;
   margin:4px 0;
-  border-radius:999px;     /* 활성화 시 pill 형태를 위해 미리 둠 */
+  border-radius:999px;
   cursor:pointer;
   position:relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: fadeInLeft 0.6s ease backwards;
 }
-
-/* 호버 효과 */
 .sideItem:hover{
   background: rgba(17, 163, 154, 0.08);
   color:#11A39A;
   transform: translateX(4px);
 }
-
-/* 활성화(클릭) 된 항목: 작은 pill */
 .sideItemActive{
   background: var(--mint);
   color:#fff;
@@ -91,23 +82,19 @@
   transform: scale(1.05) translateX(0);
   box-shadow: 0 8px 24px rgba(17,163,154,.25);
 }
-
 .sideItemActive:hover{
   transform: scale(1.05) translateX(0);
   background: var(--mint);
   color:#fff;
 }
-
-/* 이전에 사용하던 가짜 배경이 있으면 끄기 */
 .sideItemActive::before{ content:none !important; }
 
-/* (선택) 모바일에서 조금 작게 */
 @media (max-width:420px){
   .sideItem{ font-size:18px; }
   .sideItemActive{ padding:10px 18px; }
 }
 
-/* ===== 메인 ===== */
+/* ===== 목록 메인 ===== */
 .main{}
 
 /* 상단 탭 알약 */
@@ -116,27 +103,26 @@
   border-radius:32px;
   padding:16px 32px;
   box-shadow:0 4px 20px rgba(0,0,0,0.08);
-  display:flex; 
-  align-items:center; 
+  display:flex;
+  align-items:center;
   gap:48px;
   width:100%;
   transition: all 0.3s ease;
 }
 .tabBtn{
   position:relative;
-  border:none; 
+  border:none;
   background:transparent;
-  font-weight:700; 
+  font-weight:700;
   color:#7C8B8B;
-  padding:10px 16px; 
+  padding:10px 16px;
   cursor:pointer;
-  display:flex; 
-  align-items:center; 
+  display:flex;
+  align-items:center;
   gap:8px;
   border-radius:20px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .tabBtn:hover{
   background: rgba(17, 163, 154, 0.08);
   color:#11A39A;
@@ -145,40 +131,33 @@
 .caret{ font-size:12px; transform:translateY(1px); color:#7C8B8B; }
 .tabBtnActive{ color:var(--mint); }
 .tabBtnActive .caret{ color:var(--mint); }
+
 /* 결과 카운트 바 */
 .countBar{
   margin-top:12px;
-  color:#737373;;
+  color:#737373;
   font-weight:700;
-  font-size: 20;
+  font-size: 20px; /* fix */
   padding:10px 16px;
   border-radius:10px;
-  display:inline-flex;          /* 아이콘 옆 텍스트 정렬 */
+  display:inline-flex;
   align-items:center;
   gap:10px;
 }
-/* 이전 ::before 아이콘 제거(겹침 방지) */
 .countBar::before{ content:none !important; }
-
-/* 좌측 작은 아이콘 박스 */
 .countIconWrap{
   width:22px; height:22px; border-radius:4px;
-  
   display:grid; place-items:center;
 }
-.countIconWrap img{ width:26.73px;
-     height:26.73px; 
-     display:block; }
+.countIconWrap img{ width:26.73px; height:26.73px; display:block; }
 
-/* 리스트 폭 */
+/* 리스트 */
 .list{ margin-top:16px; max-width:860px; }
-
-/* 카드 */
 .card{
-  background:#fff; 
+  background:#fff;
   border-radius:20px;
   box-shadow:0 2px 12px rgba(0,0,0,0.06);
-  padding:24px 28px 20px; 
+  padding:24px 28px 20px;
   margin-bottom:20px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: fadeInUp 0.6s ease backwards;
@@ -186,295 +165,168 @@
   position: relative;
   overflow: hidden;
 }
-
 .card:hover{
   transform: translateY(-4px);
   box-shadow:0 8px 28px rgba(0,0,0,0.12);
 }
-
-.card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 3px;
-  height: 0;
-  background: var(--mint);
-  transition: height 0.3s ease;
+.card::before{
+  content:'';
+  position:absolute;
+  left:0; top:0;
+  width:3px; height:0;
+  background:var(--mint);
+  transition:height .3s ease;
 }
-
-.card:hover::before {
-  height: 100%;
-}
+.card:hover::before{ height:100%; }
 .cardTitle{ font-size:1.18rem; font-weight:900; color:var(--text); margin:4px 0 12px; }
 .divider{ height:1px; background:var(--line); margin:0 0 12px; }
 .cardBody{ color:#5c6f6f; line-height:1.75; margin:0 0 12px; max-width:760px; }
 .cardFooter{ display:flex; justify-content:flex-end; align-items:center; gap:8px; }
 
 /* '보기' + 아이콘 */
-.viewLink{ color:var(--mint); font-weight:800; text-decoration:none; }
+.viewLink{
+  color:var(--mint);
+  font-weight:800;
+  text-decoration:none;
+  background:none; border:none; padding:0; cursor:pointer;
+  position: relative; transition:.3s;
+}
+.viewLink::after{ content:'→'; margin-left:5px; display:inline-block; transition:transform .3s; }
+.viewLink:hover::after{ transform:translateX(3px); }
 
-
-/* 원형 아이콘 안에 이미지 배치 */
 .circleIcon{
-  width:32px;              /* 원 크기 (필요하면 26~34로 조절) */
-  height:32px;
-  border-radius:50%;
-  background: var(--mint); /* 민트색 채움 */
-  border:none;             /* 테두리 제거 */
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:32px; height:32px; border-radius:50%;
+  background: var(--mint); border:none;
+  display:flex; align-items:center; justify-content:center;
+  transition:.3s cubic-bezier(0.4,0,0.2,1);
 }
+.card:hover .circleIcon{ transform: rotate(360deg) scale(1.1); box-shadow:0 4px 12px rgba(17,163,154,.3); }
+.noticeIcon{ width:26.75px; height:26.75px; display:block; object-fit:contain; }
 
-.circleIcon::before,
-.circleIcon::after{ content:none !important; }
-
-/* 아이콘: 흰색으로 보이게, 가운데 정렬 */
-.noticeIcon{
-  width:26.75px;              /* 아이콘 크기 */
-  height:26.75px;
-  display:block;
-  object-fit:contain;
-  
-  
-}
-
-/* 각 탭 래퍼는 그대로 */
-.tabItem { position: relative; }
-
-/* ▼ 드롭다운 패널 다듬기 */
+/* ▼ 드롭다운 */
+.tabItem{ position:relative; }
 .ddMenu{
-  position:absolute;
-  top: calc(100% + 8px);
-  left:50%;
-  transform: translateX(-50%);
-  z-index:30;
-  width: 160px;
-  padding: 12px;
-  background:#fff;
-  border:1px solid rgba(0,0,0,0.06);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  overflow:hidden;
-  animation: dropIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position:absolute; top:calc(100% + 8px); left:50%; transform:translateX(-50%);
+  z-index:30; width:160px; padding:12px; background:#fff;
+  border:1px solid rgba(0,0,0,0.06); border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.12);
+  overflow:hidden; animation: dropIn .3s cubic-bezier(0.4,0,0.2,1);
 }
-
-/* 탭 아래 연결 느낌의 얇은 바 */
 .ddMenu::before{
-  content:"";
-  position:absolute;
-  top:-6px; left:50%; transform:translateX(-50%);
-  width: 54px; height: 4px;
-  background: var(--mint);
-  border-radius: 999px;
-  opacity:.9;
+  content:""; position:absolute; top:-6px; left:50%; transform:translateX(-50%);
+  width:54px; height:4px; background:var(--mint); border-radius:999px; opacity:.9;
 }
-
-/* 목록 – 가운데 정렬, 간격 조정 */
-.ddList{
-  list-style:none; margin:0; padding:0;
-  display:flex; flex-direction:column; align-items:stretch;
-  gap: 4px;
-}
-
-/* 항목 – 크기/색/호버 */
+.ddList{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
 .ddItem{
-  font-size: 14px;
-  font-weight: 600;
-  color:#6C8484;
-  letter-spacing:-0.2px;
-  padding:10px 16px;
-  border-radius:12px;
-  line-height:1.4;
-  cursor:pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: slideInItem 0.3s ease backwards;
+  font-size:14px; font-weight:600; color:#6C8484; letter-spacing:-.2px;
+  padding:10px 16px; border-radius:12px; line-height:1.4; cursor:pointer;
+  transition: all .2s cubic-bezier(0.4,0,0.2,1); animation: slideInItem .3s ease backwards;
 }
-.ddItem:hover{
-  background:#E6F3F1;
-  color:#11A39A;
-  transform: translateX(4px);
-}
-
-/* 화살표 회전 자연스럽게 */
+.ddItem:hover{ background:#E6F3F1; color:#11A39A; transform:translateX(4px); }
 .caret{ transition: transform .18s ease; }
 .caretUp{ transform: rotate(180deg) translateY(-1px); }
 
-/* === 애니메이션 정의 === */
-@keyframes fadeInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+/* 애니메이션 */
+@keyframes fadeInLeft{ from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
+@keyframes fadeInUp{ from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes dropIn{ from{opacity:0;transform:translate(-50%,-10px)} to{opacity:1;transform:translate(-50%,0)} }
+@keyframes slideInItem{ from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
+.transitioning{ opacity:.6; pointer-events:none; }
+@keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+
+.countBar{ animation: slideInRight .8s ease-out; }
+@keyframes slideInRight{ from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+
+.tabBtn::after{
+  content:''; position:absolute; bottom:-2px; left:50%; width:0; height:2px;
+  background:var(--mint); transition: all .3s ease; transform:translateX(-50%);
+}
+.tabBtnActive::after{ width:80%; }
+
+.sideItem{ backdrop-filter: blur(10px); }
+.sideItem::before{
+  content:''; position:absolute; inset:0; border-radius:999px; padding:1px;
+  background:linear-gradient(45deg,transparent,var(--mint),transparent);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; opacity:0; transition:opacity .3s;
+}
+.sideItem:hover::before{ opacity:.5; }
+.ddMenu{ backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+
+/* 모바일(목록) */
+@media (max-width:768px){
+  .frame{ grid-template-columns:1fr; gap:24px; }
+  .side{ width:100%; margin-left:0; border-radius:20px; min-height:auto; }
+  .sideList{ flex-direction:row; flex-wrap:wrap; justify-content:center; }
+  .ddMenu{ width:180px; padding:12px; }
+  .ddItem{ font-size:13px; }
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ===================== 상세 화면 (스샷 동일 레이아웃) ===================== */
+.detailPageOnly{
+  max-width:1040px;   /* 스샷처럼 넉넉한 폭 */
+  width:95%;
+  margin:24px auto 56px;
 }
+.detailWrap{ text-align:left; }  /* 가운데 정렬 방지 */
 
-@keyframes dropIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -10px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
+/* 상단 */
+.detailHead{ padding:4px 0 16px; }
+.breadcrumb{ font-size:14px; color:#6a8b8a; margin-bottom:6px; }
+.detailTitle{ margin:6px 0 8px; font-size:22px; font-weight:800; color:#142f2f; }
+.detailMeta{ display:flex; align-items:center; gap:8px; color:#7a9a99; font-size:13px; }
+.dot{ width:6px; height:6px; background:#a6cfc9; border-radius:50%; display:inline-block; }
+
+/* AI 요약 줄 */
+.aiRow{ display:flex; align-items:center; gap:10px; margin:10px 0 12px; }
+.aiMascot{ width:44px; height:44px; }
+.aiBadge{
+  display:inline-flex; align-items:center; gap:8px;
+  background:#1E2B2B;   /* 스샷: 어두운 배지 */
+  color:#fff;
+  padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;
+  box-shadow:0 6px 16px rgba(0,0,0,.12);
 }
+.sparkle{ width:18px; height:18px; filter:opacity(.9); }
 
-@keyframes slideInItem {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+/* 요약 카드 */
+.aiCard{
+  background:#fff; border-radius:18px; padding:24px 26px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06); color:#193636;
 }
+.aiIntro{ margin:0 0 16px; color:#6b8080; font-size:13px; text-align:left; }
+.bulletList{ margin:0; padding-left:18px; }
+.bulletList li{ margin:10px 0; line-height:1.7; text-align:left; }
+.bulletList strong{ font-weight:800; }
 
-/* 트랜지션 중 효과 */
-.transitioning {
-  opacity: 0.6;
-  pointer-events: none;
+/* 링크 안내 바 */
+.linkBar{
+  margin:18px 0 10px; background:#fff; border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  display:flex; align-items:center; justify-content:space-between; padding:12px 16px;
 }
+.linkBtn{ display:flex; align-items:center; gap:10px; color:#1f6a66; font-weight:700; }
+.linkBtn img{ width:20px; height:20px; }
+.rightBird{ height:64px; width:auto; }
 
-/* ========== 추가 애니메이션 ========== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* 이전/다음 바(좌측 접기 화살표 느낌) */
+.pnWrap{ margin-top:12px; display:flex; flex-direction:column; gap:12px; }
+.pnItem{
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  background:#fff; border:none; text-align:left; border-radius:14px; padding:14px 16px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06); cursor:pointer;
 }
-
-/* 카운트 바 애니메이션 */
-.countBar {
-  animation: slideInRight 0.8s ease-out;
+.pnItem::before{
+  content:'⌄'; font-size:18px; color:#8aa7a5; margin-right:8px;
+  transform:rotate(180deg); /* ▼ 아이콘 좌측 */
 }
+.pnItem:hover{ transform:translateY(-1px); }
+.pnLabel{ font-size:13px; color:#6b8c8b; }
+.pnTitle{ font-size:14px; font-weight:700; color:#1a3838; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* 탭 전환 효과 개선 */
-.tabItem {
-  position: relative;
-}
-
-.tabBtn::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: var(--mint);
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
-}
-
-.tabBtnActive::after {
-  width: 80%;
-}
-
-/* 사이드 아이템 애니메이션 개선 */
-.sideItem {
-  backdrop-filter: blur(10px);
-}
-
-.sideItem::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  padding: 1px;
-  background: linear-gradient(45deg, transparent, var(--mint), transparent);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.sideItem:hover::before {
-  opacity: 0.5;
-}
-
-/* 드롭다운 개선 */
-.ddMenu {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-/* 보기 링크 호버 효과 */
-.viewLink {
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.viewLink::after {
-  content: '→';
-  margin-left: 5px;
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
-
-.viewLink:hover::after {
-  transform: translateX(3px);
-}
-
-/* 원형 아이콘 호버 효과 */
-.circleIcon {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card:hover .circleIcon {
-  transform: rotate(360deg) scale(1.1);
-  box-shadow: 0 4px 12px rgba(17, 163, 154, 0.3);
-}
-
-/* 모바일에서 조금 더 작게 */
-@media (max-width: 768px){
-  .frame {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  
-  .side {
-    width: 100%;
-    margin-left: 0;
-    border-radius: 20px;
-    min-height: auto;
-  }
-  
-  .sideList {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .ddMenu { width: 180px; padding:12px; }
-  .ddItem { font-size:13px; }
+/* 모바일(상세) */
+@media (max-width:768px){
+  .detailPageOnly{ width:94%; margin:16px auto 40px; }
+  .detailTitle{ font-size:20px; }
+  .aiMascot{ width:40px; height:40px; }
+  .rightBird{ height:56px; }
 }

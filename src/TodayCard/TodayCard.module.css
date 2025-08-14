@@ -13,27 +13,31 @@
 .wrap{
   width:95%;
   max-width:1200px;
-  margin:24px auto 56px;
+  margin:120px 0px 0px 30px;
   display:grid;
-  grid-template-columns: 2fr 1fr;
-  gap:36px;
-  position:relative; z-index:0;        /* 겹침 기준 */
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);  
+  position:static; z-index:0;  
+  right: 45px;      /* 겹침 기준 */
+  gap: 30px;
 }
 .leftCol, .rightCol { min-width:0; }
 
 .sectionTitle{
-  font-size:32px;
-  font-weight:800;
+  font-size:30px;
+  font-weight:600;
   color:var(--text);
-  margin:0 0 18px;
+  margin:0 0 20px;
   letter-spacing:-0.3px;
+  position: relative;
+  right: 120px;
+  top: 10px;
 }
-.party{
+.party img{
   position: relative;
   width: 30px;
-  height: 20px;
-  top: 10px;
-  right: 9px;
+  height: 30px;
+  top: 8px;
+  right: 5px;
 
  }
 
@@ -41,9 +45,11 @@
 /* 1) 패널: 패딩 키우고, 오버플로우로 내부만 보이게 */
 .panel{
   background:var(--panel);
-  border-radius:35px;
+  border-radius:40px;
   box-shadow:var(--shadow-outer);
   padding:20px 20px 20px;   /* ↑ 위아래 공간 확보 */
+  width: 100%; /* 고정 폭 */
+  right: 50px;
 }
 .leftCol .panel{
   position:relative;
@@ -61,9 +67,9 @@
   background:linear-gradient(rgba(65, 216, 199, 0.1)),
     url('../assets/TodayCardBG.png') no-repeat;
   overflow:hidden;
-  border-radius:22px;
+  border-radius:30px;
   min-height:320px;
-  max-width: 235px;
+  max-width: 400px;
   background-repeat:no-repeat;
   background-size:150% 150%;     /* 번짐 약화 */
   background-position:30% 42%;   /*  위로 붙던 하이라이트 내려줌 */
@@ -73,13 +79,17 @@
   justify-content:center;
   padding:40px 24px 40px;        /*  상단 여유 ↑ */
   isolation:isolate;
+  width: 245px;
+
 }
 
 /* 3) 그리드: 카드 간격은 살짝 컴팩트 */
 .statsGrid{
   display:grid;
-  grid-template-columns:repeat(2, minmax(300px, 1fr));
-  gap:8x;
+  grid-template-columns: repeat(2, 1fr);
+  gap:5px;
+  align-items: stretch;    /* 세로로도 꽉 */
+  grid-auto-rows: 1fr;     
 }
 
 /* 4) 원 크기는 그대로(정원 유지) */
@@ -97,6 +107,7 @@
   position:relative;
   bottom: 30px;
 }
+
 
 .metricLabel{
   position: relative;
@@ -152,11 +163,15 @@
 
 /* ===== 우측 이벤트 리스트 ===== */
 .eventList{
-  list-style:none; padding:0; margin:0;
-  display:flex; flex-direction:column; gap:14px;
+  list-style:none; 
+  padding:0; 
+  margin:0;
+  display:flex; 
+  flex-direction:column; 
+  gap:14px;
 }
 .eventItem{
-  background:#FFFFFF;
+  background:#E9F5F4;
   border-radius:16px;
   padding:16px 18px 14px;
   box-shadow: 0 14px 36px rgba(31,104,98,.12);

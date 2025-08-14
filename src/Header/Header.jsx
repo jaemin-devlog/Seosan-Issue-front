@@ -1,7 +1,5 @@
 import "./Header.css";
-import Bell from '../assets/bell.png';
-import Search from '../assets/search.png';
-import User from '../assets/user-round.png';
+
 import Logo from '../assets/logo.png';
 import { Link, useLocation } from "react-router-dom";
 
@@ -33,12 +31,6 @@ export default function Header() {
           </div>
         ))}
       </nav>
-
-      <div className="header-icons">
-        <img src={Bell} alt="알림" className="header-icon" />
-        <img src={Search} alt="검색" className="header-icon" />
-        <img src={User} alt="유저" className="header-icon" />
-      </div>
     </header>
   );
 }
