@@ -13,7 +13,7 @@ import topicTab from "../assets/topicBG.png";
 import SearchBalloon from "../assets/search (2).png";
 import Weather from "../Weather/Weather";
 import TodayCard from "../TodayCard/TodayCard";
-
+import History from "../assets/History.png";
 /** 트렌딩 토픽 데이터: 일간 / 주간 */
 const trendingDaily = [
   { title: "서산 맛집" },
@@ -144,7 +144,9 @@ export default function Mainpage() {
             </div>
 
             <div className="balloon-keywords">
-              <span className="balloon-popular">인기 검색어</span>
+              <img src={History} alr="" className="History-Icon"/>
+              <span className ="History-Bar">|</span>
+              <span className="balloon-popular">최근 검색</span>
               <div className="balloon-tags">
                 <span>#맛집</span>
                 <span>#노인복지</span>
@@ -165,7 +167,6 @@ export default function Mainpage() {
                     바로 알아보세요
                   </div>
                 </div>
-                {/* ★ 뉴스 → Explore의 뉴스 탭으로 */}
                 <Link
                   to={exploreTo("뉴스")}
                   className="balloon-card-arrow"

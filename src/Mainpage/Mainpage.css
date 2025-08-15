@@ -140,11 +140,12 @@ body {
   transform: scale(1.00);
 }
 .balloonInput:active {
-  transform: none !important;
-  border: 0 !important;
-  outline: 0 !important;
-  box-shadow: none !important;
-  background: transparent !important;}
+  transform: none;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  background: transparent;
+}
 .balloonInput::placeholder {
   color: #bbbbbb;
   opacity: 1;
@@ -159,7 +160,7 @@ body {
   font-size: 22px;
   font-weight: bold;
   color: #fff;
-  right: 120px;
+  right: 240px;
   bottom: 100px;
 }
 .aiSearchBold {
@@ -181,15 +182,13 @@ body {
   transition: all 0.3s ease;
   animation: sparkle 3s ease-in-out infinite;
 }
-/* @keyframes sparkle {
+@keyframes sparkle {
   0%, 100% { transform: rotate(0deg) scale(1); }
   50% { transform: rotate(180deg) scale(1.1); }
-} */
+}
 .aiSearchRight:hover .sparkleIcon {
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
 }
-
-
 
 .balloon-gradient {
   position: absolute;
@@ -245,12 +244,28 @@ body {
 .balloon-keywords {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 80px;
   margin-top: 10px;
   margin-bottom: 20px;
   padding-left: 40px;
   position: relative;
-  top: -60px;
+  top: -100px;
+  left: 100px;
+}
+.History-Bar {
+  position: absolute;
+  left: 20px;
+  top: 2px;
+  font-size: 20px;
+  color: #C1C1C1;
+  font-weight: bolder;
+}
+.History-Icon {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: -10px;
+  top: 8px;
 }
 .balloon-popular {
   color: #a7b7bb;

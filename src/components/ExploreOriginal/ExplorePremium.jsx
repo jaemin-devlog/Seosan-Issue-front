@@ -15,6 +15,8 @@ import chainIcon from "../../assets/chain.png";
 import rightHere from "../../assets/RightHere.png";
 import noteIcon from "../../assets/Note.png";
 import listMagnifier from "../../assets/ListMagnifyingGlass.png";
+/* 추가: 달력 아이콘 */
+import calendarIcon from "../../assets/calendar.png";
 
 /* 추가 아이콘 */
 import chevronUp from "../../assets/위.png";
@@ -81,6 +83,18 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
+  // 뉴스 탭일 때만 카드형 뉴스 레이아웃
+  const isNews = /^뉴스/.test(categoryLabel || "");
+
+  const newsBullets = useMemo(
+    () =>
+      String(item?.body || "-")
+        .split(/\n+/)
+        .map((s) => s.trim())
+        .filter(Boolean),
+    [item?.body]
+  );
+
   return (
     <>
       {/* 상단 카테고리(좌정렬) */}
@@ -89,88 +103,114 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
       {/* 제목(좌정렬, 크게) */}
       <h1 className={styles.detailTitle}>{item?.title || "제목 없음"}</h1>
 
-      {/* 날짜 라인: • + yyyy.mm.dd */}
+      {/* 날짜: 달력 아이콘 + yyyy.mm.dd */}
       <div className={styles.detailMeta}>
-        <span className={styles.metaDot} aria-hidden="true" />
-        <span>{dateToShow}</span>
+        <img src={calendarIcon} alt="" className={styles.calIcon} />
+        <time dateTime={dateToShow.replace(/\./g, "-")} className={styles.calDate}>
+          {dateToShow}
+        </time>
       </div>
 
-      {/* 마스코트 + 검은 배너 + 표 */}
-      <section className={styles.noticeWrap}>
-        <div className={styles.infoPanel}>
-          {/* 검은 배너(표 위) */}
-          <div className={styles.panelBanner}>
-            <img src={sparkleIcon} alt="" className={styles.bannerSparkle} />
-            <span className={styles.bannerText}>
-              산후조리원 내 호흡기세포융합바이러스(RSV) 집단발생 증가에 따라 감염병
-              예방수칙을 배포하오니 업무에 참고하시기 바랍니다.
-            </span>
-          </div>
+      {/* ===== 본문 레이아웃 ===== */}
+      {isNews ? (
+        /* ------------ 뉴스:큰 마스코트 + 흰 요약카드 위로 배지 겹치기 ------------ */
+        <section className={styles.newsWrap}>
+          {/* 좌측 큰 마스코트 */}
+          <img src={newslogo} alt="" aria-hidden="true" className={styles.newsMascot} />
 
-          {/* ✅ 마스코트를 표 컨테이너 안으로 이동(박스 안에서 겹치게) */}
+          {/* 요약 카드(배지 오버레이) */}
           <div
-            className={styles.tableWrap}
-            style={{
-              position: "relative",
-              zIndex: 1,          // 테이블이 마스코트보다 위
-              overflow: "visible" // 머리 부분이 위로 나올 수 있도록
-            }}
+            className={styles.newsSummary}
+            style={{ position: "relative" }}
           >
-            {/*  캐릭터: 몸통은 테이블에 가려지고, 눈/머리만 위로 노출 */}
-            <img
-              className={styles.panelMascot}
-              src={newslogo}
-              alt=""
-              aria-hidden="true"
+            {/* 검은 배지: 카드에 살짝 겹치도록 고정 */}
+            <div
+              className={styles.newsBadge}
               style={{
                 position: "absolute",
-                left: 100,   // 필요시 48~88 사이에서 미세조정
-                top: -50,   // 음수로 살짝 밖으로
-                width: 92,  // 눈 비율이 자연스럽게 보이는 크기
-                height: "auto",
-                zIndex: 1,  // 테이블보다 아래
-                pointerEvents: "none",
-                filter: "drop-shadow(0 6px 12px rgba(0,0,0,.08))"
+                left: "-14px",
+                top: "-22px",
               }}
-            />
+            >
+              <img src={sparkleIcon} alt="" />
+              <span>AI 요약 완료</span>
+            </div>
 
-            <table className={styles.detailTable}>
-              <tbody>
-                <tr>
-                  <th className={styles.thCol}>카테고리</th>
-                  <td className={styles.tdCol}>
-                    {item?.categoryPath || categoryLabel}
-                  </td>
-                </tr>
-                <tr>
-                  <th className={styles.thCol}>등록일</th>
-                  <td className={styles.tdCol}>{dateToShow}</td>
-                </tr>
-                <tr>
-                  <th className={styles.thCol}>제목</th>
-                  <td className={styles.tdCol}>{item?.title || "-"}</td>
-                </tr>
-                <tr>
-                  <th className={styles.thCol}>내용</th>
-                  <td className={styles.tdCol}>
-                    {String(item?.body || "-")
-                      .split("\n")
-                      .map((line, i) => (
-                        <p key={i} style={{ margin: i ? "6px 0 0" : 0 }}>
-                          {line}
-                        </p>
-                      ))}
-                  </td>
-                </tr>
-                <tr>
-                  <th className={styles.thCol}>파일</th>
-                  <td className={styles.tdCol}>-</td>
-                </tr>
-              </tbody>
-            </table>
+            <p className={styles.newsLead}>
+              {(item?.title || "해당 뉴스") + "에 대한 주요 내용은 다음과 같아요."}
+            </p>
+            <ul className={styles.newsList}>
+              {newsBullets.map((line, i) => (
+                <li key={i}>{line}</li>
+              ))}
+            </ul>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        /* ------------ 뉴스 외: 기존 표 ------------ */
+        <section className={styles.noticeWrap}>
+          <div className={styles.infoPanel}>
+            <div className={styles.panelBanner}>
+              <img src={sparkleIcon} alt="" className={styles.bannerSparkle} />
+              <span className={styles.bannerText}>
+                산후조리원 내 호흡기세포융합바이러스(RSV) 집단발생 증가에 따라 감염병
+                예방수칙을 배포하오니 업무에 참고하시기 바랍니다.
+              </span>
+            </div>
+
+            <div className={styles.tableWrap} style={{ position: "relative", zIndex: 1, overflow: "visible" }}>
+              <img
+                className={styles.panelMascot}
+                src={newslogo}
+                alt=""
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: 70,
+                  top: -50,
+                  width: 92,
+                  height: "auto",
+                  zIndex: 1,
+                  pointerEvents: "none",
+                  filter: "drop-shadow(0 6px 12px rgba(0,0,0,.08))",
+                }}
+              />
+              <table className={styles.detailTable}>
+                <tbody>
+                  <tr>
+                    <th className={styles.thCol}>카테고리</th>
+                    <td className={styles.tdCol}>{item?.categoryPath || categoryLabel}</td>
+                  </tr>
+                  <tr>
+                    <th className={styles.thCol}>등록일</th>
+                    <td className={styles.tdCol}>{dateToShow}</td>
+                  </tr>
+                  <tr>
+                    <th className={styles.thCol}>제목</th>
+                    <td className={styles.tdCol}>{item?.title || "-"}</td>
+                  </tr>
+                  <tr>
+                    <th className={styles.thCol}>내용</th>
+                    <td className={styles.tdCol}>
+                      {String(item?.body || "-")
+                        .split("\n")
+                        .map((line, i) => (
+                          <p key={i} style={{ margin: i ? "6px 0 0" : 0 }}>
+                            {line}
+                          </p>
+                        ))}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th className={styles.thCol}>파일</th>
+                    <td className={styles.tdCol}>-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 링크 안내 바 + 우측 새 */}
       <div className={styles.linkBar}>
@@ -185,15 +225,15 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
       <nav className={styles.pnWrap}>
         <button type="button" className={styles.pnItem} onClick={onPrev}>
           <span className={styles.pnLeft}>
-            <img src={chevronUp} alt="" className={styles.pnIcon} />
+            <img src={chevronUp} alt="" className={styles.pnIconUP} />
             <span className={styles.pnLabel}>이전 글</span>
           </span>
           <span className={styles.pnTitle}>청소년상담복지센터운영</span>
         </button>
         <button type="button" className={styles.pnItem} onClick={onNext}>
           <span className={styles.pnLeft}>
-            <img src={chevronDown} alt="" className={styles.pnIcon} />
             <span className={styles.pnLabel}>다음 글</span>
+            <img src={chevronDown} alt="" className={styles.pnIconDown} />
           </span>
           <span className={styles.pnTitle}>
             서산시의회 한서혁 의원, 지역 최초 시의원 후원회 출범

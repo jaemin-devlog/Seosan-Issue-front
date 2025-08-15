@@ -62,9 +62,9 @@
 .tabPill{
   max-width:1200px; 
   width:80%;
-  margin:24px 180px 14px;
+  margin:24px 210px 14px;
   background:var(--pill);
-  border-radius:32px; 
+  border-radius:25px; 
   padding:16px 32px;
   box-shadow:0 4px 20px rgba(0,0,0,.08);
   display:flex; 
@@ -143,30 +143,95 @@
 .breadcrumb{ text-align:left; font-size:14px; color:#6a8b8a; margin:6px 0; }
 .detailTitle{
   text-align:left;
-  margin:10px 0 70px;
+  margin:10px 0 12px;
   font-size:30px;
   font-weight:900;
   color:#142f2f;
   letter-spacing:-.4px;
 }
+
+/* === 날짜 라인 (달력 아이콘 + yyyy.mm.dd) === */
 .detailMeta{
-  display:flex; align-items:center; justify-content:flex-start;
-  gap:10px; color:#7a9a99; font-size:13px; margin-bottom:12px;
+  display:flex; align-items:center; gap:8px;
+  color:#8EA6A6;
+  font-size:15px; font-weight:500;
+  margin-bottom:12px;
 }
-.metaDot{ width:7px; height:7px; background:#a6cfc9; border-radius:50%; display:inline-block; }
+.metaDot{ display:none; }
+.calIcon,
+.detailMeta > img{
+  width:18px; height:18px; object-fit:contain;
+  opacity:.45; transform:translateY(-1px);
+}
+.calDate,
+.detailMeta time{
+  font-size:15px; font-weight:500; color:#8EA6A6;
+}
 
-/* 표/배너/마스코트 */
-.noticeWrap{ margin-top:8px; position:relative; }
+/* ========== 뉴스 카테고리 전용 레이아웃 (스샷 동일) ========== */
+.newsWrap{
+  max-width:1040px; width:95%;
+  margin:6px 0 0;
+  display:grid;
+  grid-template-columns:240px 1fr;
+  column-gap:28px;
+  align-items:start;
+}
+.newsMascot{
+  grid-column:1; grid-row:1 / span 2;
+  width:240px; height:auto;
+  filter:drop-shadow(0 6px 12px rgba(0,0,0,.08));
+}
+.newsBadge{
+  grid-column:2; grid-row:1;
+  justify-self:start;
+  transform:translateY(-10px);
+  display:inline-flex; align-items:center; gap:8px;
+  background:#172626; color:#fff;
+  border-radius:999px; padding:10px 14px;
+  font-size:14px; font-weight:800;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+}
+.newsBadge img{ width:18px; height:auto; opacity:.95; }
+
+/* 요약 카드 */
+.newsSummary{
+  max-width: 1300px;
+right: 10px;
+  grid-column:2;
+   grid-row:2;
+  background:#fff;
+   border-radius:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  padding:28px 36px;
+  color:#1a2f2f; 
+  line-height:1.9;
+  text-align:left;                 /* ▼ 카드 전체는 좌측 정렬로 수정 */
+}
+.newsLead{
+  color:#8EA6A6; font-size:14px;
+  margin:0 0 16px;
+  text-align:center;               /* ▼ 안내 문구만 중앙 정렬 */
+}
+/* 목록은 좌측 정렬 + 표준 들여쓰기 */
+.newsList{
+  list-style:disc;
+  margin:0;
+  padding-left:18px;
+}
+.newsList li{ margin:10px 0; }
+
+/* --------- 뉴스 외 카테고리 (기존 표 레이아웃) --------- */
+.noticeWrap{ 
+  position:relative;
+  margin-top:8px;
+   position:relative; }
 .infoPanel{ position:relative; }
-
 
 .panelMascot{
   position:absolute;
-  left:72px;       /* 필요시 60~90 사이로 미세조정 */
-  top:-54px;       /* 음수로 머리만 살짝 밖으로 */
-  width:96px;
-  height:auto;
-  z-index:1;       /* 가장 아래 */
+  left:72px; top:-54px;
+  width:96px; height:auto; z-index:1;
   pointer-events:none;
   filter:drop-shadow(0 6px 12px rgba(0,0,0,.08));
 }
@@ -174,55 +239,36 @@
 /* 검은 배너(최상위) */
 .panelBanner{
   position:absolute;
-  left:160px;
-  right:24px;
-  top:-89px;
+  left:160px; 
+  right:24px; 
+  top:-80px;
   height:54px;
-  display:flex; 
-  align-items:center; 
-  gap:10px;
+  display:flex; align-items:center; gap:10px;
   padding:12px 22px;
   background:#172626; color:#fff;
   border-radius:28px;
   box-shadow:0 10px 26px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.05);
   z-index:4;
 }
-.bannerSparkle
-{ 
-  width:22px; 
-  height:auto;
-  opacity:.95;
- }
-.bannerText
-{ 
-  font-size:14px; 
-  font-weight:900; 
-  letter-spacing:-.3px; 
-  line-height:1; 
-  transform:translateY(1px); 
-}
+.bannerSparkle{ width:22px; height:auto; opacity:.95; }
+.bannerText{ font-size:14px; font-weight:900; letter-spacing:-.3px; line-height:1; transform:translateY(1px); }
 
-/* 표 컨테이너: 머리가 밖으로 나와도 보이게 + 표가 마스코트 위 */
+/* 표 컨테이너 */
 .tableWrap{
-   position:relative;
+  position:relative;
   background:#fff;
   border-radius:18px;
   box-shadow:0 8px 24px rgba(0,0,0,.06);
   overflow:visible;
-  margin-top:14px;                /* 표가 마스코트 위를 덮음 */
+  margin-top:90px;
 }
 .tableWrap::after{
   content:"";
-  position:absolute;
-  inset:0;
-  background:#fff;
-  border-radius:18px;
-  z-index:2;       /* 마스코트(1) 위, 테이블(3) 아래 */
+  position:absolute; inset:0;
+  background:#fff; border-radius:18px;
+  z-index:2;
 }
-.detailTable{
-  position:relative;
-  z-index:3;
-}
+.detailTable{ position:relative; z-index:3; }
 .detailTable caption,
 .detailTable thead{ display:none; }
 
@@ -233,19 +279,15 @@
   font-weight:800;
   padding:14px 16px; 
   text-align:left;
-   border-right:1px solid #E5EEEB;
+  border-right:1px solid #E5EEEB;
 }
-.tdCol
-{ 
-  padding:14px 18px; 
-  color:#183534; 
-}
+.tdCol{ padding:14px 18px; color:#183534; }
 .detailTable tr + tr .thCol, .detailTable tr + tr .tdCol{ border-top:1px solid #E5EEEB; }
 
 /* 링크 안내 바 */
 .linkBar{
   max-width:1040px; width:95%;
-  margin:18px auto 10px; background:#fff; border-radius:16px;
+  margin:18px auto 10px; 
   box-shadow:0 8px 24px rgba(0,0,0,.06);
   display:flex; align-items:center; justify-content:space-between; padding:12px 16px;
 }
@@ -260,22 +302,65 @@
 }
 .pnItem{
   display:flex; align-items:center; justify-content:space-between; gap:14px;
-  background:#fff; border:none; text-align:left; border-radius:14px; padding:14px 16px;
-  box-shadow:0 8px 24px rgba(0,0,0,.06); cursor:pointer;
+  background:#fff; 
+  border:none; 
+  text-align:left;
+  border-radius:14px; 
+  padding:14px 16px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06); 
+  cursor:pointer;
   transition:transform .08s ease, box-shadow .2s ease, background .2s ease;
 }
-.pnItem:hover{ transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.10); background:#fbfefe; }
-.pnLeft{ display:flex; align-items:center; gap:10px; }
-.pnIcon{ width:18px; height:18px; opacity:.65; }
-.pnLabel{ font-size:13px; color:#6b8c8b; font-weight:800; }
-.pnTitle{ font-size:14px; font-weight:700; color:#1a3838; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:70%; text-align:right; }
+.pnItem:hover{ 
+  transform:translateY(-2px); 
+  box-shadow:0 14px 32px rgba(0,0,0,.10); 
+  background:#fbfefe; 
+}
+.pnLeft{ 
+  display:flex; 
+  align-items:center;
+  gap:10px;
+}
+.pnIcon{ 
+  width:19px;
+  height:10px; 
+  opacity:.65; 
+}
+.pnLabel{ 
+  font-size:13px; 
+  color:#6b8c8b; 
+  font-weight:800; 
+}
+.pnTitle{ 
+  font-size:14px; 
+  font-weight:700;
+  color:#1a3838; 
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:70%;
+  text-align:right; 
+}
 
 /* 숫자 페이징 */
-.paginationWrap{ display:flex; justify-content:center; align-items:center; gap:8px; margin:16px 0 8px; }
+.paginationWrap{ 
+  display:flex; 
+  justify-content:center; 
+  align-items:center;
+  gap:8px; 
+  margin:16px 0 8px; 
+}
 .pageArrow,.pageBtn{
-  min-width:36px; height:36px; padding:0 10px; border-radius:12px; border:1px solid var(--line);
-  background:#fff; color:var(--text); font-weight:700; box-shadow:var(--shadow);
-  transition:transform .06s ease, background .2s ease, color .2s ease, border-color .2s ease;
+  min-width:36px; 
+  height:36px; 
+  padding:0 10px; 
+  border-radius:12px; 
+  border:1px solid var(--line);
+  background:#fff; 
+  font-weight:700; 
+  box-shadow:var(--shadow);
+  transition:transform .06s ease, 
+  background .2s ease, color .2s ease, border-color .2s ease;
 }
 .pageBtnActive{ background:var(--mint); color:#fff; border-color:transparent; }
 .pageArrow[disabled],.pageBtn[disabled]{ opacity:.45; cursor:not-allowed; }
@@ -292,6 +377,21 @@
   .detailPageOnly{ width:94%; margin:16px auto 40px; }
   .detailTitle{ font-size:28px; }
 
+  /* 뉴스 전용 */
+  .newsWrap{
+    grid-template-columns:1fr;
+    row-gap:10px;
+  }
+  .newsMascot{
+    grid-column:1; grid-row:auto;
+    width:140px; justify-self:start;
+    margin-left:4px;
+  }
+  .newsBadge{
+    grid-column:1; transform:none;
+  }
+  .newsSummary{ grid-column:1; }
+
   .panelMascot{ left:28px; top:-36px; width:90px; }
   .panelBanner{
     left:120px; right:14px; top:-26px; height:46px; padding:8px 12px; border-radius:22px;
@@ -303,7 +403,6 @@
   .tdCol{ padding:14px 16px; }
 
   .rightBird{ height:56px; }
-
   .pnItem{ padding:14px 14px; }
 }
 
