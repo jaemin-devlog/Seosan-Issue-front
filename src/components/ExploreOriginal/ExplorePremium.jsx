@@ -16,36 +16,22 @@ import rightHere from "../../assets/RightHere.png";
 import noteIcon from "../../assets/Note.png";
 import listMagnifier from "../../assets/ListMagnifyingGlass.png";
 
-/* 추가 아이콘(요청 리소스) */
+/* 추가 아이콘 */
 import chevronUp from "../../assets/위.png";
 import chevronDown from "../../assets/아래.png";
-import calIcon from "../../assets/calendar.png";
 import sparkleIcon from "../../assets/sparkle.png";
 
 /* ===== 상수 ===== */
 const REGIONS = [
-  "대산읍",
-  "지곡면",
-  "팔봉면",
-  "성연면",
-  "음암면",
-  "운산면",
-  "부춘동",
-  "동문1동",
-  "동문2동",
-  "수석동",
-  "인지면",
-  "석남동",
-  "부석면",
-  "고북면",
-  "해미면",
+  "대산읍","지곡면","팔봉면","성연면","음암면","운산면","부춘동",
+  "동문1동","동문2동","수석동","인지면","석남동","부석면","고북면","해미면",
 ];
 
 const TABS = [
   { label: "뉴스", dropdown: true },
   { label: "복지", dropdown: true },
-  { label: "문화소식", dropdown: true },
-  { label: "서산시청", dropdown: false },
+  { label: "문화관광", dropdown: true },
+  { label: "서산시청", dropdown: true },
   { label: "카페", dropdown: false },
   { label: "블로그", dropdown: false },
 ];
@@ -53,57 +39,66 @@ const TABS = [
 const DROPDOWN = {
   뉴스: ["읍면동 소식", "정치 / 지방자치", "교육", "사회", "민원안내", "행정서비스"],
   복지: ["어르신", "장애인", "여성 / 가족", "아동 / 청소년", "청년"],
-  문화소식: ["관광 / 안내", "시티투어", "체험", "축제", "문화소식"],
+  문화관광: ["문화소식", "시티투어", "관광 / 안내"],
+  서산시청: [ "보건/건강", "공지사항", "보도자료" ],
 };
 
 /* ===== 데모 데이터 ===== */
-const MOCK = Array.from({ length: 15 }).map((_, i) => ({
-  id: i + 1,
-  title: i % 3 === 1 ? "제목" : "아동 청소년을 위한 청소년 수련관 운영",
-  body:
-    i % 3 === 1
+const MOCK = Array.from({ length: 15 }).map((_, i) => {
+  const isRSV = i === 0;
+  return {
+    id: i + 1,
+    title: isRSV
+      ? "호흡기세포융합바이러스(RSV) 감염증 예방수칙(산후조리원용) 배포"
+      : i % 3 === 1
+      ? "제목"
+      : "아동 청소년을 위한 청소년 수련관 운영",
+    body: isRSV
+      ? "급성호흡기감염병 유행과 관련하여 호흡기세포융합바이러스(RSV) 감염증 산후조리원의 집단발생이 증가함에 따라, 해당 감염병의 예방수칙을 배포하오니 업무에 참고하시기 바랍니다.\n\n붙임 1. 호흡기감염병 5대 예방수칙 1부.\n2. 호흡기세포융합바이러스 감염증 예방수칙_산후조리원용 포스터 1부. 끝."
+      : i % 3 === 1
       ? "2줄"
       : "청소년활동진흥법의 규정에 따라 청소년활동을 적극적으로 진흥하기 위해 다양한 수련거리를 실시할 수 있도록 청소년수련관을 운영하고자 ○○에 위치한 …",
-}));
+    date: isRSV ? "2025.07.31" : "2025.08.15",
+    categoryPath: isRSV
+      ? "서산 안내> 서산의자랑> 농특산물 품질인증마크"
+      : undefined,
+  };
+});
 
 /* 한 페이지에 보여줄 카드 개수 */
 const PAGE_SIZE = 5;
 
 /* ===== 상세 화면 ===== */
 function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
-  const today = useMemo(() => {
+  const todayStr = useMemo(() => {
     const d = new Date();
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
-    return `${y}. ${m}. ${day}`;
+    return `${y}.${m}.${day}`;
   }, []);
+  const dateToShow = item?.date || todayStr;
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
-    <div className={styles.detailPageOnly}>
-      {/* 상단 카테고리 */}
+    <>
+      {/* 상단 카테고리(좌정렬) */}
       <div className={styles.breadcrumb}>{categoryLabel}</div>
 
-      {/* 제목 */}
+      {/* 제목(좌정렬, 크게) */}
       <h1 className={styles.detailTitle}>{item?.title || "제목 없음"}</h1>
 
-      {/* 날짜 라인: 달력 아이콘 + 날짜 */}
+      {/* 날짜 라인: • + yyyy.mm.dd */}
       <div className={styles.detailMeta}>
-        <img src={calIcon} alt="" className={styles.metaCal} />
-        <span>{today}</span>
+        <span className={styles.metaDot} aria-hidden="true" />
+        <span>{dateToShow}</span>
       </div>
 
       {/* 마스코트 + 검은 배너 + 표 */}
       <section className={styles.noticeWrap}>
         <div className={styles.infoPanel}>
-          {/* 마스코트: 표 좌상단에 걸치도록 */}
-          <img className={styles.panelMascot} src={newslogo} alt="" />
-
-          {/* 가로로 긴 검은 배너(스파클 아이콘 포함) */}
+          {/* 검은 배너(표 위) */}
           <div className={styles.panelBanner}>
             <img src={sparkleIcon} alt="" className={styles.bannerSparkle} />
             <span className={styles.bannerText}>
@@ -112,17 +107,44 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
             </span>
           </div>
 
-          {/* 표 */}
-          <div className={styles.tableWrap}>
+          {/* ✅ 마스코트를 표 컨테이너 안으로 이동(박스 안에서 겹치게) */}
+          <div
+            className={styles.tableWrap}
+            style={{
+              position: "relative",
+              zIndex: 1,          // 테이블이 마스코트보다 위
+              overflow: "visible" // 머리 부분이 위로 나올 수 있도록
+            }}
+          >
+            {/*  캐릭터: 몸통은 테이블에 가려지고, 눈/머리만 위로 노출 */}
+            <img
+              className={styles.panelMascot}
+              src={newslogo}
+              alt=""
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                left: 100,   // 필요시 48~88 사이에서 미세조정
+                top: -50,   // 음수로 살짝 밖으로
+                width: 92,  // 눈 비율이 자연스럽게 보이는 크기
+                height: "auto",
+                zIndex: 1,  // 테이블보다 아래
+                pointerEvents: "none",
+                filter: "drop-shadow(0 6px 12px rgba(0,0,0,.08))"
+              }}
+            />
+
             <table className={styles.detailTable}>
               <tbody>
                 <tr>
                   <th className={styles.thCol}>카테고리</th>
-                  <td className={styles.tdCol}>{categoryLabel}</td>
+                  <td className={styles.tdCol}>
+                    {item?.categoryPath || categoryLabel}
+                  </td>
                 </tr>
                 <tr>
                   <th className={styles.thCol}>등록일</th>
-                  <td className={styles.tdCol}>{today.replaceAll(" ", "")}</td>
+                  <td className={styles.tdCol}>{dateToShow}</td>
                 </tr>
                 <tr>
                   <th className={styles.thCol}>제목</th>
@@ -130,7 +152,15 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
                 </tr>
                 <tr>
                   <th className={styles.thCol}>내용</th>
-                  <td className={styles.tdCol}>{item?.body || "-"}</td>
+                  <td className={styles.tdCol}>
+                    {String(item?.body || "-")
+                      .split("\n")
+                      .map((line, i) => (
+                        <p key={i} style={{ margin: i ? "6px 0 0" : 0 }}>
+                          {line}
+                        </p>
+                      ))}
+                  </td>
                 </tr>
                 <tr>
                   <th className={styles.thCol}>파일</th>
@@ -151,7 +181,7 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
         <img className={styles.rightBird} src={rightHere} alt="" />
       </div>
 
-      {/* 이전/다음 글 : 위/아래 아이콘 사용 */}
+      {/* 이전/다음 글 */}
       <nav className={styles.pnWrap}>
         <button type="button" className={styles.pnItem} onClick={onPrev}>
           <span className={styles.pnLeft}>
@@ -170,7 +200,7 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
           </span>
         </button>
       </nav>
-    </div>
+    </>
   );
 }
 
@@ -219,7 +249,7 @@ export default function ExplorePremium() {
 
   const tabBarRef = useRef(null);
 
-  // URL 변경 시 상태 동기화(뒤로가기 등)
+  // URL 변경 시 상태 동기화
   useEffect(() => {
     if (regionFromUrl && REGIONS.includes(regionFromUrl)) setActiveRegion(regionFromUrl);
     if (tabFromUrl && TABS.some((t) => t.label === tabFromUrl)) setActiveTab(tabFromUrl);
@@ -239,9 +269,7 @@ export default function ExplorePremium() {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   /* 바깥 클릭 시 드롭다운 닫기 */
   useEffect(() => {
@@ -282,7 +310,7 @@ export default function ExplorePremium() {
       const nextActive = tab.label;
       setActiveTab(nextActive);
       setPage(1);
-      // 소분류 초기화
+
       const next = new URLSearchParams(searchParams);
       next.set("view", "list");
       next.set("page", "1");
@@ -356,7 +384,7 @@ export default function ExplorePremium() {
     [activeRegion, activeTab, activeSub, page, searchParams, setSearchParams]
   );
 
-  /* 이전/다음 (모든 MOCK 내에서 순환) */
+  /* 이전/다음 */
   const goPrev = useCallback(() => {
     const idx = MOCK.findIndex((m) => m.id === selectedId);
     const prev = MOCK[(idx - 1 + MOCK.length) % MOCK.length];
@@ -381,6 +409,47 @@ export default function ExplorePremium() {
 
   return (
     <div className={styles.page}>
+      {/* ==== 탭 + 드롭다운 : 리스트/디테일 공통 노출 ==== */}
+      <div className={styles.tabPill} ref={tabBarRef}>
+        {TABS.map((t) => {
+          const active = t.label === activeTab;
+          const opened = openMenu === t.label;
+          return (
+            <div key={t.label} className={styles.tabItem}>
+              <button
+                type="button"
+                className={`${styles.tabBtn} ${active ? styles.tabBtnActive : ""}`}
+                onClick={() => handleTabClick(t)}
+              >
+                <span>{t.label}</span>
+                {t.dropdown && (
+                  <span className={`${styles.caret} ${opened ? styles.caretUp : ""}`}>▾</span>
+                )}
+              </button>
+
+              {t.dropdown && opened && (
+                <div className={styles.ddMenu}>
+                  <ul className={styles.ddList}>
+                    {DROPDOWN[t.label].map((opt, idx) => (
+                      <li
+                        key={opt}
+                        className={`${styles.ddItem} ${
+                          activeSub === opt ? styles.ddItemActive : ""
+                        }`}
+                        style={{ animationDelay: `${idx * 50}ms` }}
+                        onClick={() => handleSubSelect(opt)}
+                      >
+                        {opt}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
       {mode === "list" && (
         <div className={styles.frame}>
           {/* 왼쪽 사이드바 */}
@@ -404,55 +473,6 @@ export default function ExplorePremium() {
 
           {/* 오른쪽: 목록 */}
           <main className={styles.main}>
-            {/* 탭 + 드롭다운 */}
-            <div className={styles.tabPill} ref={tabBarRef}>
-              {TABS.map((t) => {
-                const active = t.label === activeTab;
-                const opened = openMenu === t.label;
-                return (
-                  <div key={t.label} className={styles.tabItem}>
-                    <button
-                      type="button"
-                      className={`${styles.tabBtn} ${
-                        active ? styles.tabBtnActive : ""
-                      }`}
-                      onClick={() => handleTabClick(t)}
-                    >
-                      <span>{t.label}</span>
-                      {t.dropdown && (
-                        <span
-                          className={`${styles.caret} ${
-                            opened ? styles.caretUp : ""
-                          }`}
-                        >
-                          ▾
-                        </span>
-                      )}
-                    </button>
-
-                    {t.dropdown && opened && (
-                      <div className={styles.ddMenu}>
-                        <ul className={styles.ddList}>
-                          {DROPDOWN[t.label].map((opt, idx) => (
-                            <li
-                              key={opt}
-                              className={`${styles.ddItem} ${
-                                activeSub === opt ? styles.ddItemActive : ""
-                              }`}
-                              style={{ animationDelay: `${idx * 50}ms` }}
-                              onClick={() => handleSubSelect(opt)}
-                            >
-                              {opt}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
             {/* 결과 카운트 바 */}
             <div className={styles.countBar}>
               <span className={styles.countIconWrap}>
@@ -466,9 +486,7 @@ export default function ExplorePremium() {
 
             {/* 카드 리스트 */}
             <section
-              className={`${styles.list} ${
-                isTransitioning ? styles.transitioning : ""
-              }`}
+              className={`${styles.list} ${isTransitioning ? styles.transitioning : ""}`}
             >
               {pagedItems.map((item, index) => (
                 <article
@@ -527,9 +545,7 @@ export default function ExplorePremium() {
                 <button
                   key={n}
                   type="button"
-                  className={`${styles.pageBtn} ${
-                    n === page ? styles.pageBtnActive : ""
-                  }`}
+                  className={`${styles.pageBtn} ${n === page ? styles.pageBtnActive : ""}`}
                   onClick={() => goToPage(n)}
                   aria-current={n === page ? "page" : undefined}
                 >
@@ -563,12 +579,36 @@ export default function ExplorePremium() {
       )}
 
       {mode === "detail" && (
-        <DetailView
-          item={selectedItem}
-          categoryLabel={activeTab}
-          onPrev={goPrev}
-          onNext={goNext}
-        />
+        <div className={styles.frame}>
+          {/* 왼쪽 사이드바(디테일에도 표시) */}
+          <aside className={styles.side}>
+            <div className={styles.sideTitle}>지역</div>
+            <ul className={styles.sideList}>
+              {REGIONS.map((r, i) => (
+                <li
+                  key={r}
+                  className={`${styles.sideItem} ${
+                    r === activeRegion ? styles.sideItemActive : ""
+                  }`}
+                  onClick={() => handleRegionClick(r)}
+                  style={{ animationDelay: `${i * 30}ms` }}
+                >
+                  {r}
+                </li>
+              ))}
+            </ul>
+          </aside>
+
+          {/* 오른쪽: 디테일 본문 */}
+          <main className={styles.main}>
+            <DetailView
+              item={selectedItem}
+              categoryLabel={activeTab}
+              onPrev={goPrev}
+              onNext={goNext}
+            />
+          </main>
+        </div>
       )}
     </div>
   );
