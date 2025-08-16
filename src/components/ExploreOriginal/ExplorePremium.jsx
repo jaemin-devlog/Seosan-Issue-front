@@ -98,6 +98,17 @@ function DetailView({
     [item?.body]
   );
 
+  /* ✅ 배너 문구 동적 생성 */
+  const bannerText = useMemo(() => {
+    const title = (item?.title || "").replace(/\s+/g, " ").trim();
+    const firstLine = (item?.body || "")
+      .split(/\n+/)[0]
+      .replace(/\s+/g, " ")
+      .trim();
+    const src = title || firstLine || "상세 내용을 확인하세요.";
+    return src.length > 160 ? src.slice(0, 160) + "…" : src;
+  }, [item?.title, item?.body]);
+
   return (
     <>
       <div className={styles.breadcrumb}>{categoryLabel}</div>
@@ -112,17 +123,12 @@ function DetailView({
 
       {isNews ? (
         <section className={styles.newsWrap}>
-          {/* ▶ 마스코트: 카드 바깥에 배치해서 겹침 방지 */}
           <img src={newslogo} alt="" aria-hidden="true" className={styles.newsMascot} />
-
-          {/* 요약 카드 */}
           <div className={styles.newsSummary}>
-            {/* 배지: 항상 맨 위로 */}
             <div className={styles.newsBadge}>
               <img src={sparkleIcon} alt="" />
               <span>AI 요약 완료</span>
             </div>
-
             <p className={styles.newsLead}>
               {(item?.title || "해당 뉴스") + "에 대한 주요 내용은 다음과 같아요."}
             </p>
@@ -136,12 +142,10 @@ function DetailView({
       ) : (
         <section className={styles.noticeWrap}>
           <div className={styles.infoPanel}>
+            {/* ✅ 배너 문구가 선택된 글에 따라 바뀜 */}
             <div className={styles.panelBanner}>
               <img src={sparkleIcon} alt="" className={styles.bannerSparkle} />
-              <span className={styles.bannerText}>
-                산후조리원 내 호흡기세포융합바이러스(RSV) 집단발생 증가에 따라 감염병
-                예방수칙을 배포하오니 업무에 참고하시기 바랍니다.
-              </span>
+              <span className={styles.bannerText}>{bannerText}</span>
             </div>
 
             <div className={styles.tableWrap} style={{ position: "relative", zIndex: 1, overflow: "visible" }}>
@@ -200,14 +204,14 @@ function DetailView({
 
       <div className={styles.linkBar}>
         <div className={styles.linkBtn}>
-          <img src={chainIcon} alt="" />
+          <img src={chainIcon} alt="" className="chain-img"/>
           <span>자세한 사항 및 파일첨부 등은 링크에서 확인하세요!</span>
         </div>
         <img className={styles.rightBird} src={rightHere} alt="" />
         <div className={styles.underbar} aria-hidden="true" />
       </div>
 
-      {/* 이전/다음 글 (제목/비활성화 처리) */}
+      {/* 이전/다음 글 */}
       <nav className={styles.pnWrap}>
         <button
           type="button"
@@ -413,12 +417,10 @@ export default function ExplorePremium() {
   );
 
   /* ====== 이전/다음 계산 & 이동 ====== */
-  // 현재 선택된 아이템
   const selectedItem = useMemo(
     () => MOCK.find((m) => m.id === selectedId) || MOCK[0],
     [selectedId]
   );
-  // 현재 인덱스
   const currentIndex = useMemo(
     () => MOCK.findIndex((m) => m.id === selectedItem.id),
     [selectedItem]
@@ -434,10 +436,7 @@ export default function ExplorePremium() {
     if (currentIndex < MOCK.length - 1) openDetail(MOCK[currentIndex + 1].id);
   }, [currentIndex, openDetail]);
 
-  const countText = useMemo(
-    () => `글 전체 결과 ${MOCK.length.toLocaleString()}개`,
-    []
-  );
+  const countText = useMemo(() => `결과 ${MOCK.length.toLocaleString()}개`, []);
 
   return (
     <div className={styles.page}>
@@ -501,14 +500,21 @@ export default function ExplorePremium() {
           </aside>
 
           <main className={styles.main}>
+            {/* 브레드크럼 */}
+            {activeSub ? (
+              <div className={styles.filterCrumb}>
+                <span>{activeTab}</span>
+                <span className={styles.crumbSep}>›</span>
+                <span>{activeSub}</span>
+              </div>
+            ) : null}
+
+            {/* 결과 바 */}
             <div className={styles.countBar}>
               <span className={styles.countIconWrap}>
                 <img src={listMagnifier} alt="" />
               </span>
-              {countText}
-              {activeSub ? (
-                <span className={styles.countSub}> · 필터: {activeTab} &gt; {activeSub}</span>
-              ) : null}
+              <span>{countText}</span>
             </div>
 
             <section className={`${styles.list} ${isTransitioning ? styles.transitioning : ""}`}>

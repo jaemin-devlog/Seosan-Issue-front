@@ -13,6 +13,7 @@ import SearchBalloon from "../assets/searchBalloon.png";
 import SparkleIcon from "../assets/sparkle.png";
 import sadLogo from "../assets/sadLogo.png";
 import happyLogo from "../assets/HappyLogo.png";
+import NewsIcon from "../assets/뉴스.png";
 
 
 /* ===== 최근 검색 목업 ===== */
@@ -216,13 +217,13 @@ export default function AiSearch() {
             <div className={styles.gridCat}>
               <div className={styles.catCard}>
                 <div>
-                  <div className={styles.catTitle}>교통</div>
+                  <div className={styles.catTitle}>뉴스</div>
                   <div className={styles.catDesc}>
-                    복잡한 서산시의 교통 노선,<br />
-                    바로 알아보세요
+                   서산의 최근소식을 여기서,<br />
+                   바로 알아보세요
                   </div>
                 </div>
-                <img src={BusIcon} alt="교통" className={styles.catImg} />
+                <img src={NewsIcon} alt="뉴스" className={styles.catImg} />
                 <img src={BlackCircle} alt="arrow" className={styles.arrowIcon} />
               </div>
               <div className={styles.catCard}>

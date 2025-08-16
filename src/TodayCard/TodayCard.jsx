@@ -4,6 +4,7 @@ import Event from "../assets/event.png";
 import ClockIcon from "../assets/clock.png";
 import TrendUpIcon from "../assets/trending-up.png";
 import CardBG from "../assets/TodayCardBG.png";
+import ChainIcon from "../assets/chain.png"; // 링크 아이콘
 
 export default function TodayCard({
   totalCount = 1432,
@@ -12,10 +13,19 @@ export default function TodayCard({
   todayDelta = 7,
   events = [
     { date: "9월26일(금)", time: "19 : 00", title: "서산해미읍성축제" },
-    { date: "8월 7일", time: "17 : 00", title: "일자리창출지원사업 참여자 모집" },
-    { date: "8월 7일", time: "17 : 00", title: "일자리창출지원사업 참여자 모집" },
+    { date: "10월 중",      time: "미정",     title: "서산어리굴젓 축제" },
+    { date: "11월 중",      time: "미정",     title: "서산국화축제" },
+    { date: "11월 중",      time: "미정",     title: "뻘낙지먹물축제" },
   ],
 }) {
+  // 제목 → 공식 페이지 링크 매핑
+  const linkByTitle = {
+    "서산해미읍성축제": "https://www.seosan.go.kr/tour/contents.do?key=6105",
+    "서산어리굴젓 축제": "https://www.seosan.go.kr/tour/contents.do?key=6141",
+    "서산국화축제":"https://www.seosan.go.kr/tour/contents.do?key=6138",
+    "뻘낙지먹물축제": "https://www.seosan.go.kr/tour/contents.do?key=6144",
+  };
+
   return (
     <section className={styles.wrap}>
       {/* 왼쪽: 오늘의 서산 */}
@@ -60,22 +70,50 @@ export default function TodayCard({
       {/* 오른쪽: 다가오는 이벤트 */}
       <div className={styles.rightCol}>
         <h2 className={styles.sectionTitle}>
-          다가오는 이벤트 <span className={styles.party}><img src={Event} alt =""/></span>
+          다가오는 이벤트 <span className={styles.party}><img src={Event} alt=""/></span>
         </h2>
 
         <div className={styles.panel}>
           <ul className={styles.eventList}>
-            {events.map((e, idx) => (
-              <li key={idx} className={styles.eventItem}>
-                <div className={styles.eventTop}>
-                  <img src={ClockIcon} alt="" className={styles.clock} />
-                  <strong className={styles.eventDate}>{e.date}</strong>
-                  <span className={styles.eventTime}>{e.time}</span>
-                </div>
-                <div className={styles.eventDivider} />
-                <div className={styles.eventTitle}>{e.title}</div>
-              </li>
-            ))}
+            {events.map((e, idx) => {
+              // 1순위 e.url, 2순위 제목 매핑, 3순위 네이버 검색
+              const fallbackSearch = `https://search.naver.com/search.naver?query=${encodeURIComponent(e.title)}`;
+              const link = e.url ?? linkByTitle[e.title] ?? fallbackSearch;
+
+              return (
+                <li key={idx} className={styles.eventItem}>
+                  <div className={styles.eventTop}>
+                    <img src={ClockIcon} alt="" className={styles.clock} />
+                    <strong className={styles.eventDate}>{e.date}</strong>
+                    <span className={styles.eventTime}>{e.time}</span>
+                  </div>
+
+                  <div className={styles.eventDivider} />
+
+                  {/* 제목 + 아이콘 */}
+                  <div className={styles.eventTitleRow}>
+                    <a
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.eventTitle}
+                      aria-label={`${e.title} 링크 열기`}
+                    >
+                      {e.title}
+                    </a>
+                    <a
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.eventLink}
+                      aria-label={`${e.title} 링크 열기`}
+                    >
+                      <img src={ChainIcon} alt="" />
+                    </a>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
