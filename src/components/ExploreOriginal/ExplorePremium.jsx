@@ -9,16 +9,13 @@ import React, {
 import { useSearchParams } from "react-router-dom";
 import styles from "./ExplorePremium.module.css";
 
-/* ===== 이미지(무조건 import로 사용) ===== */
+/* ===== 이미지 ===== */
 import newslogo from "../../assets/newslogo.png";
 import chainIcon from "../../assets/chain.png";
 import rightHere from "../../assets/RightHere.png";
 import noteIcon from "../../assets/Note.png";
 import listMagnifier from "../../assets/ListMagnifyingGlass.png";
-/* 추가: 달력 아이콘 */
 import calendarIcon from "../../assets/calendar.png";
-
-/* 추가 아이콘 */
 import chevronUp from "../../assets/위.png";
 import chevronDown from "../../assets/아래.png";
 import sparkleIcon from "../../assets/sparkle.png";
@@ -67,11 +64,19 @@ const MOCK = Array.from({ length: 15 }).map((_, i) => {
   };
 });
 
-/* 한 페이지에 보여줄 카드 개수 */
 const PAGE_SIZE = 5;
 
 /* ===== 상세 화면 ===== */
-function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
+function DetailView({
+  item,
+  categoryLabel = "뉴스",
+  onPrev,
+  onNext,
+  prevTitle,
+  nextTitle,
+  hasPrev = true,
+  hasNext = true,
+}) {
   const todayStr = useMemo(() => {
     const d = new Date();
     const y = d.getFullYear();
@@ -83,9 +88,7 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  // 뉴스 탭일 때만 카드형 뉴스 레이아웃
   const isNews = /^뉴스/.test(categoryLabel || "");
-
   const newsBullets = useMemo(
     () =>
       String(item?.body || "-")
@@ -97,13 +100,9 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
 
   return (
     <>
-      {/* 상단 카테고리(좌정렬) */}
       <div className={styles.breadcrumb}>{categoryLabel}</div>
-
-      {/* 제목(좌정렬, 크게) */}
       <h1 className={styles.detailTitle}>{item?.title || "제목 없음"}</h1>
 
-      {/* 날짜: 달력 아이콘 + yyyy.mm.dd */}
       <div className={styles.detailMeta}>
         <img src={calendarIcon} alt="" className={styles.calIcon} />
         <time dateTime={dateToShow.replace(/\./g, "-")} className={styles.calDate}>
@@ -111,27 +110,15 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
         </time>
       </div>
 
-      {/* ===== 본문 레이아웃 ===== */}
       {isNews ? (
-        /* ------------ 뉴스:큰 마스코트 + 흰 요약카드 위로 배지 겹치기 ------------ */
         <section className={styles.newsWrap}>
-          {/* 좌측 큰 마스코트 */}
+          {/* ▶ 마스코트: 카드 바깥에 배치해서 겹침 방지 */}
           <img src={newslogo} alt="" aria-hidden="true" className={styles.newsMascot} />
 
-          {/* 요약 카드(배지 오버레이) */}
-          <div
-            className={styles.newsSummary}
-            style={{ position: "relative" }}
-          >
-            {/* 검은 배지: 카드에 살짝 겹치도록 고정 */}
-            <div
-              className={styles.newsBadge}
-              style={{
-                position: "absolute",
-                left: "-14px",
-                top: "-22px",
-              }}
-            >
+          {/* 요약 카드 */}
+          <div className={styles.newsSummary}>
+            {/* 배지: 항상 맨 위로 */}
+            <div className={styles.newsBadge}>
               <img src={sparkleIcon} alt="" />
               <span>AI 요약 완료</span>
             </div>
@@ -147,7 +134,6 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
           </div>
         </section>
       ) : (
-        /* ------------ 뉴스 외: 기존 표 ------------ */
         <section className={styles.noticeWrap}>
           <div className={styles.infoPanel}>
             <div className={styles.panelBanner}>
@@ -212,31 +198,46 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
         </section>
       )}
 
-      {/* 링크 안내 바 + 우측 새 */}
       <div className={styles.linkBar}>
         <div className={styles.linkBtn}>
           <img src={chainIcon} alt="" />
           <span>자세한 사항 및 파일첨부 등은 링크에서 확인하세요!</span>
         </div>
         <img className={styles.rightBird} src={rightHere} alt="" />
+        <div className={styles.underbar} aria-hidden="true" />
       </div>
 
-      {/* 이전/다음 글 */}
+      {/* 이전/다음 글 (제목/비활성화 처리) */}
       <nav className={styles.pnWrap}>
-        <button type="button" className={styles.pnItem} onClick={onPrev}>
+        <button
+          type="button"
+          className={styles.pnItem}
+          onClick={hasPrev ? onPrev : undefined}
+          disabled={!hasPrev}
+          aria-disabled={!hasPrev}
+        >
           <span className={styles.pnLeft}>
-            <img src={chevronUp} alt="" className={styles.pnIconUP} />
+            <img src={chevronUp} alt="" className={styles.pnIcon} />
             <span className={styles.pnLabel}>이전 글</span>
           </span>
-          <span className={styles.pnTitle}>청소년상담복지센터운영</span>
+          <span className={styles.pnTitle}>
+            {prevTitle || "이전 글이 없습니다"}
+          </span>
         </button>
-        <button type="button" className={styles.pnItem} onClick={onNext}>
+
+        <button
+          type="button"
+          className={styles.pnItem}
+          onClick={hasNext ? onNext : undefined}
+          disabled={!hasNext}
+          aria-disabled={!hasNext}
+        >
           <span className={styles.pnLeft}>
             <span className={styles.pnLabel}>다음 글</span>
-            <img src={chevronDown} alt="" className={styles.pnIconDown} />
+            <img src={chevronDown} alt="" className={styles.pnIcon} />
           </span>
           <span className={styles.pnTitle}>
-            서산시의회 한서혁 의원, 지역 최초 시의원 후원회 출범
+            {nextTitle || "다음 글이 없습니다"}
           </span>
         </button>
       </nav>
@@ -248,7 +249,6 @@ function DetailView({ item, categoryLabel = "뉴스", onPrev, onNext }) {
 export default function ExplorePremium() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // URL 파라미터 복원
   const regionFromUrl = searchParams.get("region");
   const viewFromUrl = searchParams.get("view");
   const idFromUrl = Number(searchParams.get("id"));
@@ -256,7 +256,6 @@ export default function ExplorePremium() {
   const tabFromUrl = searchParams.get("tab");
   const subFromUrl = searchParams.get("sub");
 
-  // 상태
   const [activeRegion, setActiveRegion] = useState(
     regionFromUrl && REGIONS.includes(regionFromUrl) ? regionFromUrl : "대산읍"
   );
@@ -270,7 +269,6 @@ export default function ExplorePremium() {
   const [mode, setMode] = useState(viewFromUrl === "detail" ? "detail" : "list");
   const [selectedId, setSelectedId] = useState(idFromUrl || null);
 
-  /* 페이징 상태 */
   const [page, setPage] = useState(!isNaN(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1);
   const totalPages = Math.max(1, Math.ceil(MOCK.length / PAGE_SIZE));
   const pagedItems = useMemo(() => {
@@ -278,7 +276,6 @@ export default function ExplorePremium() {
     return MOCK.slice(start, start + PAGE_SIZE);
   }, [page]);
 
-  /* 현재 페이지 주변 번호(최대 5개) */
   const pageNumbers = useMemo(() => {
     const win = 5;
     let start = Math.max(1, page - Math.floor(win / 2));
@@ -289,7 +286,6 @@ export default function ExplorePremium() {
 
   const tabBarRef = useRef(null);
 
-  // URL 변경 시 상태 동기화
   useEffect(() => {
     if (regionFromUrl && REGIONS.includes(regionFromUrl)) setActiveRegion(regionFromUrl);
     if (tabFromUrl && TABS.some((t) => t.label === tabFromUrl)) setActiveTab(tabFromUrl);
@@ -298,20 +294,17 @@ export default function ExplorePremium() {
     if (idFromUrl) setSelectedId(idFromUrl);
   }, [regionFromUrl, tabFromUrl, subFromUrl, viewFromUrl, idFromUrl]);
 
-  /* URL의 page 동기화 */
   useEffect(() => {
     const p = Number(searchParams.get("page") || "1");
     if (!isNaN(p) && p > 0) setPage(p);
   }, [searchParams]);
 
-  /* 페이지 수 보정 */
   useEffect(() => {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  /* 바깥 클릭 시 드롭다운 닫기 */
   useEffect(() => {
     const close = (e) => {
       if (tabBarRef.current && !tabBarRef.current.contains(e.target)) setOpenMenu(null);
@@ -320,7 +313,6 @@ export default function ExplorePremium() {
     return () => document.removeEventListener("click", close);
   }, []);
 
-  /* 지역 변경 */
   const handleRegionClick = useCallback(
     (region) => {
       if (region !== activeRegion) {
@@ -344,7 +336,6 @@ export default function ExplorePremium() {
     [activeRegion, activeTab, activeSub, searchParams, setSearchParams]
   );
 
-  /* 탭 클릭 */
   const handleTabClick = useCallback(
     (tab) => {
       const nextActive = tab.label;
@@ -367,7 +358,6 @@ export default function ExplorePremium() {
     [activeRegion, searchParams, setSearchParams]
   );
 
-  /* 드롭다운 옵션 선택 */
   const handleSubSelect = useCallback(
     (opt) => {
       setActiveSub(opt);
@@ -385,7 +375,6 @@ export default function ExplorePremium() {
     [activeRegion, activeTab, searchParams, setSearchParams]
   );
 
-  /* 페이징 이동 */
   const goToPage = useCallback(
     (p) => {
       const n = Math.min(Math.max(1, p), totalPages);
@@ -404,7 +393,6 @@ export default function ExplorePremium() {
     [totalPages, searchParams, setSearchParams, activeRegion, activeTab, activeSub]
   );
 
-  /* 상세 열기 */
   const openDetail = useCallback(
     (id) => {
       setSelectedId(id);
@@ -417,30 +405,34 @@ export default function ExplorePremium() {
       else next.delete("sub");
       next.set("view", "detail");
       next.set("id", String(id));
-      next.set("page", String(page)); // 현재 페이지 유지
+      next.set("page", String(page));
       setSearchParams(next);
       window.scrollTo(0, 0);
     },
     [activeRegion, activeTab, activeSub, page, searchParams, setSearchParams]
   );
 
-  /* 이전/다음 */
-  const goPrev = useCallback(() => {
-    const idx = MOCK.findIndex((m) => m.id === selectedId);
-    const prev = MOCK[(idx - 1 + MOCK.length) % MOCK.length];
-    openDetail(prev.id);
-  }, [selectedId, openDetail]);
-
-  const goNext = useCallback(() => {
-    const idx = MOCK.findIndex((m) => m.id === selectedId);
-    const next = MOCK[(idx + 1) % MOCK.length];
-    openDetail(next.id);
-  }, [selectedId, openDetail]);
-
+  /* ====== 이전/다음 계산 & 이동 ====== */
+  // 현재 선택된 아이템
   const selectedItem = useMemo(
     () => MOCK.find((m) => m.id === selectedId) || MOCK[0],
     [selectedId]
   );
+  // 현재 인덱스
+  const currentIndex = useMemo(
+    () => MOCK.findIndex((m) => m.id === selectedItem.id),
+    [selectedItem]
+  );
+  const prevItem = currentIndex > 0 ? MOCK[currentIndex - 1] : null;
+  const nextItem = currentIndex < MOCK.length - 1 ? MOCK[currentIndex + 1] : null;
+
+  const goPrev = useCallback(() => {
+    if (currentIndex > 0) openDetail(MOCK[currentIndex - 1].id);
+  }, [currentIndex, openDetail]);
+
+  const goNext = useCallback(() => {
+    if (currentIndex < MOCK.length - 1) openDetail(MOCK[currentIndex + 1].id);
+  }, [currentIndex, openDetail]);
 
   const countText = useMemo(
     () => `글 전체 결과 ${MOCK.length.toLocaleString()}개`,
@@ -449,7 +441,6 @@ export default function ExplorePremium() {
 
   return (
     <div className={styles.page}>
-      {/* ==== 탭 + 드롭다운 : 리스트/디테일 공통 노출 ==== */}
       <div className={styles.tabPill} ref={tabBarRef}>
         {TABS.map((t) => {
           const active = t.label === activeTab;
@@ -490,18 +481,16 @@ export default function ExplorePremium() {
         })}
       </div>
 
+      {/* 목록 */}
       {mode === "list" && (
         <div className={styles.frame}>
-          {/* 왼쪽 사이드바 */}
           <aside className={styles.side}>
             <div className={styles.sideTitle}>지역</div>
             <ul className={styles.sideList}>
               {REGIONS.map((r, i) => (
                 <li
                   key={r}
-                  className={`${styles.sideItem} ${
-                    r === activeRegion ? styles.sideItemActive : ""
-                  }`}
+                  className={`${styles.sideItem} ${r === activeRegion ? styles.sideItemActive : ""}`}
                   onClick={() => handleRegionClick(r)}
                   style={{ animationDelay: `${i * 30}ms` }}
                 >
@@ -511,9 +500,7 @@ export default function ExplorePremium() {
             </ul>
           </aside>
 
-          {/* 오른쪽: 목록 */}
           <main className={styles.main}>
-            {/* 결과 카운트 바 */}
             <div className={styles.countBar}>
               <span className={styles.countIconWrap}>
                 <img src={listMagnifier} alt="" />
@@ -524,33 +511,17 @@ export default function ExplorePremium() {
               ) : null}
             </div>
 
-            {/* 카드 리스트 */}
-            <section
-              className={`${styles.list} ${isTransitioning ? styles.transitioning : ""}`}
-            >
+            <section className={`${styles.list} ${isTransitioning ? styles.transitioning : ""}`}>
               {pagedItems.map((item, index) => (
-                <article
-                  key={item.id}
-                  className={styles.card}
-                  style={{ animationDelay: `${index * 80}ms` }}
-                >
+                <article key={item.id} className={styles.card} style={{ animationDelay: `${index * 80}ms` }}>
                   <h3 className={styles.cardTitle}>{item.title}</h3>
                   <div className={styles.divider} />
                   <p className={styles.cardBody}>{item.body}</p>
                   <div className={styles.cardFooter}>
-                    <button
-                      type="button"
-                      className={styles.viewLink}
-                      onClick={() => openDetail(item.id)}
-                    >
+                    <button type="button" className={styles.viewLink} onClick={() => openDetail(item.id)}>
                       보기
                     </button>
-                    <button
-                      type="button"
-                      className={styles.circleIcon}
-                      aria-label="상세 보기"
-                      onClick={() => openDetail(item.id)}
-                    >
+                    <button type="button" className={styles.circleIcon} aria-label="상세 보기" onClick={() => openDetail(item.id)}>
                       <img className={styles.noticeIcon} src={noteIcon} alt="" />
                     </button>
                   </div>
@@ -558,78 +529,31 @@ export default function ExplorePremium() {
               ))}
             </section>
 
-            {/* 숫자 페이징 */}
             <nav className={styles.paginationWrap} aria-label="페이지네이션">
-              <button
-                type="button"
-                className={styles.pageArrow}
-                disabled={page === 1}
-                onClick={() => goToPage(1)}
-                aria-label="첫 페이지"
-                title="첫 페이지"
-              >
-                «
-              </button>
-              <button
-                type="button"
-                className={styles.pageArrow}
-                disabled={page === 1}
-                onClick={() => goToPage(page - 1)}
-                aria-label="이전 페이지"
-                title="이전 페이지"
-              >
-                ‹
-              </button>
-
+              <button type="button" className={styles.pageArrow} disabled={page === 1} onClick={() => goToPage(1)} aria-label="첫 페이지">«</button>
+              <button type="button" className={styles.pageArrow} disabled={page === 1} onClick={() => goToPage(page - 1)} aria-label="이전 페이지">‹</button>
               {pageNumbers.map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  className={`${styles.pageBtn} ${n === page ? styles.pageBtnActive : ""}`}
-                  onClick={() => goToPage(n)}
-                  aria-current={n === page ? "page" : undefined}
-                >
+                <button key={n} type="button" className={`${styles.pageBtn} ${n === page ? styles.pageBtnActive : ""}`} onClick={() => goToPage(n)} aria-current={n === page ? "page" : undefined}>
                   {n}
                 </button>
               ))}
-
-              <button
-                type="button"
-                className={styles.pageArrow}
-                disabled={page === totalPages}
-                onClick={() => goToPage(page + 1)}
-                aria-label="다음 페이지"
-                title="다음 페이지"
-              >
-                ›
-              </button>
-              <button
-                type="button"
-                className={styles.pageArrow}
-                disabled={page === totalPages}
-                onClick={() => goToPage(totalPages)}
-                aria-label="마지막 페이지"
-                title="마지막 페이지"
-              >
-                »
-              </button>
+              <button type="button" className={styles.pageArrow} disabled={page === totalPages} onClick={() => goToPage(page + 1)} aria-label="다음 페이지">›</button>
+              <button type="button" className={styles.pageArrow} disabled={page === totalPages} onClick={() => goToPage(totalPages)} aria-label="마지막 페이지">»</button>
             </nav>
           </main>
         </div>
       )}
 
+      {/* 상세 */}
       {mode === "detail" && (
         <div className={styles.frame}>
-          {/* 왼쪽 사이드바(디테일에도 표시) */}
           <aside className={styles.side}>
             <div className={styles.sideTitle}>지역</div>
             <ul className={styles.sideList}>
               {REGIONS.map((r, i) => (
                 <li
                   key={r}
-                  className={`${styles.sideItem} ${
-                    r === activeRegion ? styles.sideItemActive : ""
-                  }`}
+                  className={`${styles.sideItem} ${r === activeRegion ? styles.sideItemActive : ""}`}
                   onClick={() => handleRegionClick(r)}
                   style={{ animationDelay: `${i * 30}ms` }}
                 >
@@ -639,13 +563,16 @@ export default function ExplorePremium() {
             </ul>
           </aside>
 
-          {/* 오른쪽: 디테일 본문 */}
           <main className={styles.main}>
             <DetailView
               item={selectedItem}
               categoryLabel={activeTab}
               onPrev={goPrev}
               onNext={goNext}
+              prevTitle={prevItem?.title}
+              nextTitle={nextItem?.title}
+              hasPrev={!!prevItem}
+              hasNext={!!nextItem}
             />
           </main>
         </div>

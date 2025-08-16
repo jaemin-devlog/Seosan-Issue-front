@@ -105,7 +105,7 @@
   font-family: 'Pretendard', sans-serif;
  }
  .aiSearchBold .aiSearchBtn{
- background: transparent !important;  /* 배경 제거 */
+ background: transparent ;  /* 배경 제거 */
   border: 0;
   box-shadow: none;
   appearance: none;
