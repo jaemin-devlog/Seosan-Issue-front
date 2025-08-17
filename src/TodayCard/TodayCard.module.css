@@ -63,7 +63,8 @@
 .leftCol .panel{
   position:relative;
   z-index:1;
-  overflow:hidden;          /* 패널 밖으로 못 나가게 */
+  overflow:hidden;  
+  height: 500px;
 }
 .rightCol .panel{
   position:relative;
@@ -81,7 +82,8 @@
   border-radius:30px;
   /* 변경 핵심 */
   width:100%;
-  max-width:none;              /* 고정폭 제거 */
+  max-width:none; 
+  height: 460px;             /* 고정폭 제거 */
   aspect-ratio: 10 / 11;       /* ← 카드 비율 고정 (오른쪽 샷 기준) */
   min-height:320px;
   background-repeat:no-repeat;
@@ -116,6 +118,7 @@
   display:grid;
   place-items:center;
   gap:10px;
+  top: 60px;
 
   background:radial-gradient(ellipse at center,
     rgba(255,255,255,.96) 0%, rgba(255,255,255,.92) 58%, rgba(255,255,255,.70) 100%);
@@ -156,9 +159,12 @@
 
 /* 하단 영역: 퍼센트 기준으로 위치 고정 */
 .metricFooter{
-  position:absolute; left:0; right:0; bottom:6%;
+  position:absolute; 
+  left:0; 
+  right:0; 
+  bottom:16%;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:8px; text-align:center;
+  gap:30px; text-align:center;
 }
 .metricSub{ 
   position: relative;
