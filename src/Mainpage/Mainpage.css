@@ -102,24 +102,27 @@ body {
   --bubble-radius: 42px;
   position: relative;
   min-height: var(--bubble-h);
+    --balloon-w: clamp(560px, 62vw, 700px);   /* 최소~최대 너비 */
+  --balloon-h: calc(var(--balloon-w) * (84 / 700)); /* 84:700 비율 */
 }
 
 .balloonBg {
-  width: 700px;
-  height: 84px;
+   width: var(--balloon-w);
+  height: var(--balloon-h);
   position: absolute;
   left: 0;
   top: -70px;
   z-index: 0;
   user-select: none;
   pointer-events: none; 
+  transform: none;
 }
 
 .balloonContent {
   position: absolute;
   left: 0; top: 0;
-  width: 100%;
-  height: 84px;
+  width: var(--balloon-w);
+  height: var(--balloon-h);
   z-index: 2;
   display: flex;
   align-items: center;
@@ -162,7 +165,7 @@ body {
   font-size: 22px;
   font-weight: bold;
   color: #fff;
-  right: 240px;
+  right: 32px;
   bottom: 100px;
 }
 .aiSearchBold {
