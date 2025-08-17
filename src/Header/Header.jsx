@@ -14,7 +14,9 @@ export default function Header() {
 
   return (
     <header className="custom-header">
-      <img src={Logo} alt="서산에 뭐 issue?" className="header-logo" />
+      <Link to="/" className="header-logo-link">
+        <img src={Logo} alt="서산에 뭐 issue?" className="header-logo" />
+      </Link>
 
       <nav className="header-nav">
         {menuList.map(menu => (

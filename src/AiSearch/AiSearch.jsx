@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import styles from "./AiSearch.module.css";
-
-import BusIcon from "../assets/Bus2.png";
 import LightningIcon from "../assets/Lightning.png";
 import QuestionLogo from "../assets/물음표로고 .png";
 import ChatCircleDots from "../assets/ChatCircleDots.png";
@@ -14,7 +12,6 @@ import SparkleIcon from "../assets/sparkle.png";
 import sadLogo from "../assets/sadLogo.png";
 import happyLogo from "../assets/HappyLogo.png";
 import NewsIcon from "../assets/뉴스.png";
-
 
 /* ===== 최근 검색 목업 ===== */
 const recentSearchPool = [
@@ -92,16 +89,31 @@ export default function AiSearch() {
             </div>
           </div>
 
-          <div className={styles.buttonGroup}>
-            <div className={styles.searchHistoryTitle}>
+          <div
+            className={styles.buttonGroup}
+          >
+            {/* ★ 변경: 타이틀 전체를 버튼처럼 동작하게(마우스/키보드) */}
+            <div
+              className={styles.searchHistoryTitle}
+              role="button"
+              tabIndex={0}
+              title="최근 검색 새로고침"
+              onClick={handleRefresh}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") handleRefresh();
+              }}
+              style={{ cursor: "pointer" }}
+            >
               <img
                 src={History}
                 alt="새로고침"
                 className={styles.historyIcon}
-                onClick={handleRefresh}
+                draggable="false"
+                style={{ cursor: "pointer" }}
               />
               최근 검색
             </div>
+
             {recentSearches.map((item, idx) => (
               <button key={item + idx} className={styles.pillBtn}>
                 {item}
@@ -219,8 +231,8 @@ export default function AiSearch() {
                 <div>
                   <div className={styles.catTitle}>뉴스</div>
                   <div className={styles.catDesc}>
-                   서산의 최근소식을 여기서,<br />
-                   바로 알아보세요
+                    서산의 최근소식을 여기서,<br />
+                    바로 알아보세요
                   </div>
                 </div>
                 <img src={NewsIcon} alt="뉴스" className={styles.catImg} />

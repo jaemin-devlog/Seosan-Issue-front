@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Mainpage.css";
 import logo1 from "../assets/로고1.png";
 import mascot from "../assets/물음표로고 .png";
@@ -14,6 +14,7 @@ import SearchBalloon from "../assets/search (2).png";
 import Weather from "../Weather/Weather";
 import TodayCard from "../TodayCard/TodayCard";
 import History from "../assets/History.png";
+
 /** 트렌딩 토픽 데이터: 일간 / 주간 */
 const trendingDaily = [
   { title: "서산 맛집" },
@@ -33,24 +34,91 @@ const trendingWeekly = [
   { title: "서산 맛집" },
 ];
 
+// 환경변수 기반 API 베이스 URL (없으면 로컬 기본값)
+const API_BASE =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:8083/api/v1";
+
+// ✅ 결과가 비었는지 유연하게 판별
+const hasResults = (data) => {
+  if (!data) return false;
+  if (Array.isArray(data)) return data.length > 0;
+  if (typeof data === "object") {
+    if (typeof data.total === "number") return data.total > 0;
+    if (typeof data.count === "number") return data.count > 0;
+    for (const k of ["items", "results", "data", "list"]) {
+      if (Array.isArray(data[k])) return data[k].length > 0;
+    }
+  }
+  // 구조를 모르면 '있다'로 간주(오탐 경고 방지)
+  return true;
+};
+
 export default function Mainpage() {
   const [inputValue, setInputValue] = useState("");
   const [period, setPeriod] = useState("daily"); // "daily" | "weekly"
+  const [aiLoading, setAiLoading] = useState(false);
+  const navigate = useNavigate();
+
   const topics = period === "daily" ? trendingDaily : trendingWeekly;
 
-  const handleAiSearch = () => {
-    if (!inputValue.trim()) return;
-    alert(`AI 검색: ${inputValue}`);
-    setInputValue("");
+  // ★ ExplorePremium으로 이동할 URL 헬퍼
+  const exploreTo = (tab) =>
+    `/explore?view=list&tab=${encodeURIComponent(tab)}&page=1`;
+
+  // ★ AI 검색 → 백엔드 연동 + 빈 결과 알람 + 결과 페이지 이동
+  const handleAiSearch = async () => {
+    const query = inputValue.trim();
+    if (!query || aiLoading) return;
+
+    setAiLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/ai/search`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      });
+
+      if (!res.ok) throw new Error(`AI search HTTP ${res.status}`);
+      const data = await res.json();
+
+      const empty = !hasResults(data);
+      if (empty) {
+        alert("검색 결과가 없습니다.");
+      }
+
+      // 성공/빈결과 모두 Explore로 이동(빈결과 플래그 전달)
+      navigate(
+        `/explore?view=list&tab=${encodeURIComponent("뉴스")}&q=${encodeURIComponent(
+          query
+        )}&page=1`,
+        {
+          state: {
+            aiSearch: {
+              query,
+              response: data,
+              empty, // Explore에서 필요시 사용
+            },
+          },
+        }
+      );
+    } catch (err) {
+      console.error(err);
+      alert("검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      // 오류 시에도 최소한 검색 페이지로 이동
+      navigate(
+        `/explore?view=list&tab=${encodeURIComponent("뉴스")}&q=${encodeURIComponent(
+          query
+        )}&page=1`
+      );
+    } finally {
+      setAiLoading(false);
+      setInputValue("");
+    }
   };
 
   const toDaily = () => setPeriod("daily");
   const toWeekly = () => setPeriod("weekly");
   const togglePeriod = () => setPeriod((p) => (p === "daily" ? "weekly" : "daily"));
-
-  // ★ ExplorePremium으로 이동할 URL 헬퍼
-  const exploreTo = (tab) =>
-    `/explore?view=list&tab=${encodeURIComponent(tab)}&page=1`;
 
   return (
     <div className="mainpage-bg">
@@ -127,25 +195,29 @@ export default function Mainpage() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleAiSearch();
                   }}
+                  aria-busy={aiLoading ? "true" : "false"}
                 />
                 <span
                   className="aiSearchRight"
                   onClick={handleAiSearch}
                   tabIndex={0}
-                  style={{ cursor: "pointer" }}
+                  role="button"
+                  aria-label="AI 검색 실행"
+                  aria-disabled={aiLoading ? "true" : "false"}
+                  style={{ cursor: aiLoading ? "not-allowed" : "pointer", opacity: aiLoading ? 0.7 : 1 }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleAiSearch();
                   }}
                 >
-                  <span className="aiSearchBold">AI 검색</span>
-                  <img src={SparkleIcon} alt="AI 스파클" className="sparkleIcon" />
+                  <span className="aiSearchBold">{aiLoading ? "검색 중..." : "AI 검색"}</span>
+                  <img src={SparkleIcon} alt="" className="sparkleIcon" aria-hidden="true" />
                 </span>
               </div>
             </div>
 
             <div className="balloon-keywords">
-              <img src={History} alr="" className="History-Icon"/>
-              <span className ="History-Bar">|</span>
+              <img src={History} alr="" className="History-Icon" />
+              <span className="History-Bar">|</span>
               <span className="balloon-popular">최근 검색</span>
               <div className="balloon-tags">
                 <span>#맛집</span>
