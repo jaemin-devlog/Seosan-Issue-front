@@ -132,7 +132,7 @@
   gap:10px;
 }
 /* 이전 ::before 아이콘 제거(겹침 방지) */
-.countBar::before{ content:none !important; }
+.countBar::before{ content:none; }
 
 /* 좌측 작은 아이콘 박스 */
 .countIconWrap{
@@ -175,7 +175,7 @@
 }
 
 .circleIcon::before,
-.circleIcon::after{ content:none !important; }
+.circleIcon::after{ content:none; }
 
 /* 아이콘: 흰색으로 보이게, 가운데 정렬 */
 .noticeIcon{

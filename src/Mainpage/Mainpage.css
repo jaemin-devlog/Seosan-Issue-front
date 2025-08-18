@@ -5,7 +5,7 @@
 }
 
 body {
-  background: #e6f3f3 !important; /* 원하는 배경색 */
+  background: #e6f3f3; /* 원하는 배경색 */
   min-height: 100%;
   margin: 0;
   padding: 0;
@@ -51,7 +51,7 @@ body {
   margin-left: 20px;
   margin-top: 50px;
   position: relative;
-  z-index: 100 !important;
+  z-index: 100 ;
 }
 .mainpage-right {
   /* ✅ 여기만 수정 */
@@ -69,7 +69,7 @@ body {
   box-shadow: 0 4px 16px rgba(0,0,0,0.001);
   padding: 28px 32px;
   position: relative;
-  z-index: 100 !important;
+  z-index: 100;
 }
 
 .bgBox {
@@ -595,7 +595,7 @@ body {
 .trending-chev:hover:not(.is-disabled) { background: #20a59e; color: #fff; border-color: #20a59e; transform: scale(1.1); }
 .trending-chev.is-disabled{ opacity: .35; cursor: default; }
 
-/* 🔷 초광폭에서 오른쪽 히어로를 '정가운데' 배치(중요 변경) */
+/* 초광폭에서 오른쪽 히어로를 '정가운데' 배치(중요 변경) */
 @media (min-width: 1400px){
   .mainpage-container{
         display: grid;
@@ -636,8 +636,8 @@ body {
   .bgBox {
     max-width: 100%;
     padding: 36px 20px 40px;
-    background-position: right 20px bottom 14px !important;
-    background-size: clamp(480px, 62vw, 800px) auto !important;
+    background-position: right 20px bottom 14px;
+    background-size: clamp(480px, 62vw, 800px) auto ;
   }
   .balloonBg { width: 80%; height: 72px; left: 50%; transform: translateX(-50%); top: -50px; }
   .balloonContent { padding: 0 20px; height: 72px; }
@@ -653,8 +653,8 @@ body {
   .mainpage-container { padding: 28px 16px 80px 16px; } /* 기존처럼 */
   .mainpage-container { gap: 20px; }
   .bgBox {
-    background-position: right 16px bottom 12px !important;
-    background-size: clamp(440px, 66vw, 800px) auto !important;
+    background-position: right 16px bottom 12px;
+    background-size: clamp(440px, 66vw, 800px) auto;
   }
   .balloonBg { width: 90%; height: 68px; top: -42px; }
   .balloonContent { height: auto; }
@@ -696,7 +696,7 @@ body {
     border-radius: 20px;
     padding: 24px 14px 88px;
     min-height: 380px;
-    background-position: right 14px bottom 12px !important;
+    background-position: right 14px bottom 12px;
     background-size: clamp(400px, 70vw, 720px) auto !IMPORTANT;
   }
 
@@ -755,8 +755,8 @@ body {
   .mainpage-container { padding: calc(var(--header-height) + 6px) 16px 16px 16px; }
   .bgBox {
     min-height: 340px;
-    background-position: right 10px bottom 10px !important;
-    background-size: clamp(320px, 85vw, 640px) auto !important;
+    background-position: right 10px bottom 10px;
+    background-size: clamp(320px, 85vw, 640px) auto ;
   }
   .today-section{ order:0; }
   .events-section{ order:1; }
@@ -777,8 +777,8 @@ body {
   .bgBox {
     padding: 22px 10px 70px;
     min-height: 320px;
-    background-position: right 8px bottom 8px !important;
-    background-size: clamp(280px, 90vw, 560px) auto !important;
+    background-position: right 8px bottom 8px ;
+    background-size: clamp(280px, 90vw, 560px) auto ;
   }
   .balloonInput { font-size: 16px; }
   .today-section{ order:0; }
@@ -800,8 +800,8 @@ body {
   .mainpage-container { padding: calc(var(--header-height) + 6px) 12px 12px 12px; }
   .bgBox {
     padding: 20px 10px 60px;
-    background-position: right 6px bottom 6px !important;
-    background-size: clamp(240px, 95vw, 480px) auto !important;
+    background-position: right 6px bottom 6px ;
+    background-size: clamp(240px, 95vw, 480px) auto ;
   }
   .today-section{ order:0; }
   .events-section{ order:1; }
