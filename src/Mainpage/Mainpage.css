@@ -595,6 +595,30 @@ body {
 .trending-chev:hover:not(.is-disabled) { background: #20a59e; color: #fff; border-color: #20a59e; transform: scale(1.1); }
 .trending-chev.is-disabled{ opacity: .35; cursor: default; }
 
+/* 🔷 초광폭에서 오른쪽 히어로를 '정가운데' 배치(중요 변경) */
+@media (min-width: 1400px){
+  .mainpage-container{
+        display: grid;
+    /* 좌 여백 > 우 여백 → 가운데 열이 오른쪽으로 이동 */
+    grid-template-columns:
+      minmax(340px, 1.20fr)   /* 좌 */
+      minmax(860px, 980px)    /* 가운데(히어로) */
+      0.80fr;                 /* 우 */
+    align-items: start;
+    gap: 40px;
+  }
+  .mainpage-left{
+    grid-column: 1;
+    justify-self: end;   /* 중앙 쪽으로 붙임 */
+    margin-left: 0;      /* 좌측 여백 제거 */
+  }
+  .mainpage-right{
+    grid-column: 2;      /* 가운데 열에 고정 */
+    width: 100%;
+    justify-self: center;
+  }
+}
+
 /* ========== 반응형 디자인 ========== */
 @media (max-width: 1200px) {
   .mainpage-container { padding: 32px 20px; }   /* 데스크톱/태블릿은 기존 유지 */

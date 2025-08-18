@@ -6,6 +6,9 @@
   --muted:#6C8484;
   --line:#DDEFEA;
   --shadow:0 8px 28px rgba(41,53,72,.10);
+  /* ▼ 중앙 레일(탭/리스트 공통) */
+  --rail-max: clamp(980px, 66vw, 1120px);
+  --rail-pad: clamp(12px, 2vw, 18px);
 }
 
 .page{
@@ -61,7 +64,7 @@
 /* ================= 상단 탭 ================= */
 .tabPill{
   max-width:1200px; 
-  width:80%;
+  width:90%;
   margin:24px 210px 14px;
   background:var(--pill);
   border-radius:25px; 
@@ -74,8 +77,17 @@
 }
 .tabItem{ position:relative; }
 .tabBtn{
-  position:relative; border:none; background:transparent; font-weight:700; color:#7C8B8B;
-  padding:10px 16px; cursor:pointer; display:flex; align-items:center; gap:8px; border-radius:20px;
+  position:relative; 
+  border:none; 
+  background:transparent; 
+  font-weight:700; 
+  color:#7C8B8B;
+  padding:10px 16px; 
+  cursor:pointer; 
+  display:flex; 
+  align-items:center; 
+  gap:8px; 
+  border-radius:20px;
   transition:all .3s cubic-bezier(.4,0,.2,1);
 }
 .tabBtn:hover{ background:rgba(17,163,154,.08); color:#11A39A; transform:translateY(-1px); }
@@ -395,7 +407,7 @@
 /* 반응형 */
 @media (max-width:768px){
   .frame{ grid-template-columns:1fr; gap:24px; }
-  .side{ width:100%; margin-left:0; border-radius:20px; min-height:auto; }
+  .side{ width:100%; margin-left:0; border-radius:20px; min-height:auto; position:relative; top:0; }
   .sideList{ flex-direction:row; flex-wrap:wrap; justify-content:center; }
   .ddMenu{ width:180px; padding:12px; }
   .ddItem{ font-size:13px; }
@@ -423,6 +435,41 @@
   .pnItem{ padding:14px 14px; }
 }
 
+/*  초광폭 레이아웃: 메인페이지처럼 중앙 레일, 왼쪽 지역 바 고정 */
+@media (min-width: 1400px){
+  /* 콘텐츠 프레임은 한 열만 사용(콘텐츠만 중앙) */
+  .frame{
+    max-width:none;
+    width:100%;
+    grid-template-columns: 1fr;
+    column-gap:0;
+  }
+  /* 왼쪽 지역 바 고정(뷰포트 기준) */
+  .side{
+    position: absolute;
+    left: 0;
+    top:-30px;         /* 필요하면 조절 */
+    margin-left: 0;
+    z-index: 50;
+    min-height: 100%;
+  }
+  /* 중앙 레일: main / 탭 / 리스트 모두 같은 폭으로 정중앙 */
+  .main{
+    width: min(100%, var(--rail-max));
+    margin: 0 auto;
+  }
+  .tabPill{
+    width: min(100%, var(--rail-max));
+    margin: 24px auto 14px;
+    padding-inline: var(--rail-pad);
+  }
+  .list{
+    width: min(100%, var(--rail-max));
+    margin: 16px auto 0;
+    padding-inline: var(--rail-pad);
+  }
+}
+  
 /* 애니메이션 */
 @keyframes fadeInLeft{ from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
 @keyframes fadeInUp{ from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
