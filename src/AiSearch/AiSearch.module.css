@@ -104,28 +104,29 @@
   font-weight: bold; 
   color: #fff; 
   font-family: 'Pretendard', sans-serif;
- }
- .aiSearchBold .aiSearchBtn{
- background: transparent ;  /* 배경 제거 */
+}
+.aiSearchBold .aiSearchBtn{
+  background: transparent;  /* 배경 제거 */
   border: 0;
   box-shadow: none;
   appearance: none;
- }
+}
   
 .sparkleIcon { 
-    width: 32px;
-   height: auto; 
-   margin-left: 2px; 
-   animation: sparkleRotate 3s ease-in-out infinite;
-    transition: all 0.3s ease; 
-  }
+  width: 32px;
+  height: auto; 
+  margin-left: 2px; 
+  animation: sparkleRotate 3s ease-in-out infinite;
+  transition: all 0.3s ease; 
+}
 
 /* 버튼/최근검색 */
-.buttonWrap { display: flex; 
+.buttonWrap { 
+  display: flex; 
   flex-direction: column; 
   gap: 9px; 
   margin-top: 5px;
- }
+}
 .roundBtn {
   background: #fff;
   border-radius: 18px;
@@ -156,19 +157,6 @@
   margin: 36px auto 0 auto;
   display: flex;
   gap: 42px;
-}
-
-@media (max-width: 1100px) {
-  .topSection, .contentsWrap { max-width: 98vw;}
-  .questionLogo { width: 180px;}
-  .aiSearchBalloonBox, .speechBalloonBox { width: 98vw; max-width: 500px;}
-}
-@media (max-width: 900px) {
-  .contentsWrap { flex-direction: column; gap: 20px; }
-  .topSection { flex-direction: column; }
-  .bgBox { min-height: 160px; padding: 20px 0 20px 16px;}
-  .aiSearchBalloonBox, .speechBalloonBox { width: 90vw; min-width: 0; }
-  .questionLogo { width: 140px; right: 10px;}
 }
 
 .section { flex: 1 1 0; }
@@ -207,21 +195,23 @@
   position: relative;
   box-shadow: 0 1.5px 10px rgba(65, 85, 90, 0.08);
 }
-.catTitle { font-size: 1.07rem; 
+.catTitle { 
+  font-size: 1.07rem; 
   font-weight: 700;
-   margin-bottom: 5px;
-   }
+  margin-bottom: 5px;
+}
 .catDesc { 
-   font-size: 0.97rem;
-   color: #464646; 
-   line-height: 1.35;
-   display: flex;
-   align-items: flex-start;
-   }
+  font-size: 0.97rem;
+  color: #464646; 
+  line-height: 1.35;
+  display: flex;
+  align-items: flex-start;
+}
 .catImg { 
   width: 52px; 
   height: 52px; 
-  margin-top: 14px; }
+  margin-top: 14px; 
+}
 .arrowIcon { position: absolute; right: 15px; bottom: 15px; width: 28px; height: 28px; }
 
 /* 최근 검색 */
@@ -235,18 +225,22 @@
   left:180px;
   position: relative;
 }
-.searchHistoryTitle { display: flex; 
+.searchHistoryTitle { 
+  display: flex; 
   align-items: center;
-   gap: 4px;
-   color: #737373; 
-  font-weight: 600; font-size: 15px; 
+  gap: 4px;
+  color: #737373; 
+  font-weight: 600; 
+  font-size: 15px; 
   margin-left: 3px; 
-  bottom: 400px; }
+  bottom: 400px; 
+}
 .historyIcon { 
   width: 15.63px; 
   height: 15px; 
   opacity: 0.85; 
-  margin-right: 1px; }
+  margin-right: 1px; 
+}
 
 .pillBtn {
   background: #fff;
@@ -272,9 +266,14 @@
 /* 결과 레이아웃 */
 .aiResultWrap { 
   margin: 0 auto 36px auto;
-   max-width: 900px; 
-  }
-.resultRow { display: flex; align-items: flex-start; gap: 18px; margin-top: 14px; } /* ← 겹침 방지 */
+  max-width: 900px; 
+}
+.resultRow { 
+  display: flex; 
+  align-items: flex-start; 
+  gap: 18px; 
+  margin-top: 14px; 
+}
 .resultLogo { width: 56px; height: 56px; margin-top: 8px; }
 .resultBubbleWrap { position: relative; }
 .resultBubbleImg { width: 260px; display: block; }
@@ -293,7 +292,6 @@
   gap: 4px;
 }
 .resultCardTitle { font-weight: 700; }
-/* .resultCardProvider { color: #6d7075; font-size: 0.97em; } */
 .resultCardLink { margin-top: 4px; color: #0096ff; font-size: 0.99em; text-decoration: underline; }
 
 /* 애니메이션 */
@@ -402,3 +400,242 @@
 /* (선택) 답변 말풍선 UI를 완전히 안 쓰려면 아래 두 클래스를 사용하지 않아도 됨.
    기존 레이아웃 충돌 방지를 위해 margin-top만 남겨둠 */
 .resultRow{ margin-top: 14px; }
+
+/* ========================= */
+/* ===== 모바일 대응(비주얼 유지) */
+/* ========================= */
+
+/* <=1100px : 컨테이너 폭 조절 + 배경 이미지 스케일만 */
+@media (max-width: 1100px) {
+  .topSection, 
+  .contentsWrap { max-width: 98vw; }
+
+  .bgBox {
+    /* 같은 그라데이션/이미지 유지, 크기와 위치만 반응형 */
+    background:
+      linear-gradient(rgba(60,197,182,0.2)),
+      url('../assets/group.png') no-repeat 70% 100% / clamp(480px, 90vw, 800px) auto;
+    padding: 28px 16px 20px 16px;
+    max-height: none;
+  }
+
+  .questionLogo { width: clamp(260px, 36vw, 360px); height: auto; right: 16px; bottom: 16px; }
+  .aiSearchBalloonBox, 
+  .speechBalloonBox { width: 98vw; max-width: 640px; }
+}
+
+/* <=900px : 레이아웃 전환 + 말풍선/버튼/인풋 스케일(숨김 X) */
+@media (max-width: 900px) {
+  .contentsWrap { 
+    flex-direction: column; 
+    gap: 20px; 
+    padding: 0 16px;
+  }
+  .topSection { 
+    flex-direction: column; 
+    padding: 24px 16px 12px 16px;
+  }
+  .bgBox { 
+    padding: 16px; 
+    border-radius: 24px;
+    background:
+      linear-gradient(rgba(60,197,182,0.2)),
+      url('../assets/group.png') no-repeat 80% 100% / clamp(380px, 120vw, 720px) auto;
+  }
+
+  /* 말풍선 배경 유지 + 가운데 정렬 */
+  .aiSearchBalloonBox { height: clamp(64px, 12vw, 84px); }
+  .balloonBg {
+    display: block;
+    width: clamp(340px, 92vw, 800px);
+    height: auto;
+    left: 50%; top: calc(-1 * clamp(24px, 6vw, 70px));
+    transform: translateX(-50%);
+  }
+  .balloonContent {
+    position: absolute;
+    inset: 0;
+    padding: 0 clamp(12px, 4vw, 24px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* 입력창: 스타일 그대로, 폭만 버튼 고려해 계산 */
+  .balloonInput {
+    position: relative;
+    top: 0; left: 0;
+    width: calc(100% - clamp(120px, 26vw, 180px));
+    height: auto;
+    padding: 0;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: clamp(14px, 3.6vw, 18px);
+  }
+
+  /* AI 검색 버튼: 말풍선 우측에 고정(비주얼 유지) */
+  .aiSearchRight {
+    position: absolute;
+    top: 50%; right: clamp(10px, 3vw, 16px);
+    left: auto;
+    margin: 0;
+    transform: translateY(-50%);
+    gap: clamp(6px, 1.8vw, 10px);
+  }
+  .aiSearchBold { font-size: clamp(16px, 4.2vw, 18px); }
+  .sparkleIcon { width: clamp(18px, 4.5vw, 24px); height: auto; }
+
+  /* 최근 검색 좌표 초기화 */
+  .buttonGroup {
+    position: static;
+    top: auto; left: auto;
+    margin-top: 12px;
+    gap: 8px;
+  }
+  .roundBtn { font-size: 14px; padding: 6px 14px; }
+
+  /* 마스코트 유지 (크기만 축소) */
+  .questionLogo { display: block; width: clamp(200px, 40vw, 300px); height: auto; right: 12px; bottom: 12px; }
+
+  /* 그리드/카테고리 1열 */
+  .grid { grid-template-columns: 1fr; gap: 12px; }
+  .gridCat { grid-template-columns: 1fr; gap: 12px; }
+  .catCard { width: 100%; min-height: auto; padding: 16px; border-radius: 16px; }
+
+  /* 결과 레이아웃 세로 스택 */
+  .aiResultWrap { max-width: 100%; padding: 0 16px; }
+  .resultRow { flex-direction: column; gap: 10px; }
+  .resultLogo { width: 44px; height: 44px; margin-top: 0; }
+  .resultBubbleWrap { width: 100%; }
+  .resultBubbleImg { width: 100%; max-width: 360px; }
+  .resultBubbleText { top: 14px; left: 20px; font-size: 1rem; }
+
+  /* 탭/카드 여백 축소 */
+  .tabsBar { gap: 16px; }
+  .tabBtn { font-size: 15px; padding: 10px 2px 10px; }
+  .answerCard { padding: 16px; }
+}
+
+/* <=768px : 미세 보정 */
+@media (max-width: 768px) {
+  .sectionTitle { font-size: 0.98rem; }
+  .cardText { font-size: 14px; }
+  .catTitle { font-size: 1rem; }
+  .catDesc { font-size: 0.94rem; }
+  .pillBtn { font-size: 14px; padding: 4px 14px; }
+  .resultCard { padding: 12px 14px; }
+  .resultCardTitle { font-size: 0.98rem; }
+  .resultCardLink { font-size: 0.95rem; }
+}
+
+/* <=480px : 소형 폰 최적화 */
+@media (max-width: 480px) {
+  .topSection { padding: 16px 12px 8px; }
+  .contentsWrap { padding: 0 12px; }
+  .bgBox { padding: 12px; border-radius: 16px; }
+
+  /* 말풍선 내부 요소 간격 더 타이트하게 */
+  .balloonContent { padding: 0 12px; }
+  .balloonInput { width: calc(100% - 120px); font-size: 15px; }
+  .aiSearchRight { right: 10px; }
+
+  .tabsBar { gap: 12px; }
+  .tabBtn { font-size: 14px; padding: 8px 2px 10px; }
+  .answerCard { padding: 14px; border-radius: 14px; }
+}
+
+/* 포커스 테두리(검은 박스) 제거 + 접근성 포커스 */
+.aiSearchRight button,
+.aiSearchBold .aiSearchBtn{
+  -webkit-appearance:none; appearance:none;
+  background: transparent; border: 0; box-shadow: none;
+}
+.aiSearchRight:focus{ outline: none; }
+.aiSearchBold .aiSearchBtn:focus{ outline: none; }
+.aiSearchRight:focus-visible,
+.aiSearchBold .aiSearchBtn:focus-visible{
+  outline: 2px solid #11a39a; outline-offset: 2px;
+}
+
+/* =========================================
+   AiSearch 모바일 보정 v3 (정렬/테두리/배경/마스코트)
+   ========================================= */
+@media (max-width: 900px) {
+  /* 말풍선 레이아웃: 입력은 유연폭, 버튼은 우측 고정 */
+  .balloonContent{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap: clamp(8px, 2.2vw, 12px) !important;
+  }
+  .balloonInput{
+    position: static !important;
+    top:auto !important; left:auto !important;
+    flex: 1 1 auto !important;      /* width 계산 대신 플렉스 */
+    min-width: 0 !important;
+    width: auto !important;
+    line-height: 1.35 !important;   /* placeholder 수직 정렬 */
+    transform: translateY(2px) !important;
+    font-size: clamp(16px, 4vw, 18px) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    background: none !important; border: none !important; color:#fff !important;
+  }
+  .balloonInput::placeholder{ color: rgba(255,255,255,.9) !important; }
+
+  .aiSearchRight{
+    position:absolute !important;
+    top:50% !important; right: clamp(8px, 3vw, 14px) !important;
+    left:auto !important;
+    transform: translateY(-50%) !important;
+    margin:0 !important;
+    white-space: nowrap !important;
+    padding: 6px 10px !important;
+    gap: clamp(6px, 1.8vw, 10px) !important;
+
+    /* 기본 포커스/하이라이트 제거 */
+    background:transparent !important; border:0 !important; outline:0 !important; box-shadow:none !important;
+    -webkit-appearance:none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  .aiSearchRight *, .aiSearchBold .aiSearchBtn{
+    background:transparent !important; border:0 !important; outline:0 !important; box-shadow:none !important;
+    -webkit-appearance:none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  /* 배경 일러 위치/크기 미세 조정 */
+  .bgBox{
+    background:
+      linear-gradient(rgba(60,197,182,0.2)),
+      url('../assets/group.png') no-repeat 85% 100% / clamp(420px, 110vw, 760px) auto !important;
+  }
+
+  /* 마스코트 잘림 방지 */
+  .questionLogo{
+    display:block !important;
+    width: clamp(180px, 36vw, 260px) !important;
+    height:auto !important;
+    right: clamp(6px, 2vw, 12px) !important;
+    bottom: clamp(4px, 1vw, 10px) !important;
+  }
+}
+
+/* 초소형 폰 추가 보정 */
+@media (max-width: 375px){
+  .aiSearchBalloonBox{ height: 64px !important; }
+  .balloonBg{ top: -22px !important; }
+  .balloonInput{ width:auto !important; }  /* 플렉스로 처리 */
+  .aiSearchRight{ right: 8px !important; }
+}
+
+/* 접근성 포커스 링 재적용 (모바일) */
+@media (max-width: 900px){
+  .aiSearchRight:focus-visible,
+  .aiSearchBold .aiSearchBtn:focus-visible{
+    outline: 2px solid #11a39a !important;
+    outline-offset: 2px !important;
+  }
+}
