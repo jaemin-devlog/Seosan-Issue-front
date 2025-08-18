@@ -166,7 +166,7 @@ export default function AiSearch() {
             {searchState === "loading" ? null : searchState === "empty" ? (
               <div className={styles.noResultBox}>이런, 결과가 없습니다. 다시 시도해보세요.</div>
             ) : activeTab === "answer" ? (
-              // ====== 여기! 흰 카드로 답변 표시 (오른쪽 스샷) ======
+              // ====== 여기! 흰 카드로 답변 표시 ======
               <section className={styles.answerCard}>
                 <div
                   className={styles.answerBody}

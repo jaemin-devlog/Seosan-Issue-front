@@ -119,40 +119,53 @@
 /* ================= 리스트 본문 ================= */
 /* ▼ 브레드크럼(복지 > 장애인) */
 .filterCrumb{
-  margin: 4px 0 2px;
-  padding-left: 6px;
-  color: #7f9090;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  width: min(100%, var(--rail-max));
+  max-width: none;                 /* fit-content 해제 → 부모 가운데 정렬 영향 제거 */
+  margin: 0 auto;                  /* 중앙 레일에 위치 */
+  padding-left: calc(var(--rail-pad) + 6px);
+  padding-right: var(--rail-pad);
+  text-align: left;     /* 상위 text-align:center 덮어쓰기 */
+  align-self: flex-start;  
+  
+}
+.filterCrumb,
+.countBar{
+  width: min(100%, var(--rail-max));
+  max-width: none !important;              /* fit-content 해제 */
+  margin: 0 auto;                          /* 중앙 레일 위에 얹기 */
+  padding-left: calc(var(--rail-pad) + var(--card-pad));
+  padding-right: var(--rail-pad);
+  text-align: left !important;             /* 상위 center 무력화 */
+  align-self: flex-start;                  /* grid/flex 부모 대비 */
+  display: block;
+color: #6a8b8a;
+font-size: 17px;
+font-family: 'Pretendard', sans-serif;
+}
+.countBar img{
+  width: 26.73px;
+  height: 26.73px;
 }
 .crumbSep{ opacity:.7; }
 
 /* ▼ 결과 바: 작고 왼쪽 정렬 */
 .countBar{
-  margin:8px 0 12px 0;
-  color:var(--muted);
-  font-weight:600;
-  font-size:14px;
-  padding:0 0 0 6px;
-  border-radius:0;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  height:24px;
-  max-width:fit-content;
-  text-align:left;
-  animation:slideInRight .8s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
 }
 .countIconWrap{ width:16px; height:16px; display:grid; place-items:center; }
 .countIconWrap img{ width:16px; height:16px; display:block; opacity:.9; }
 .countSub{ color:#8aa9a7; font-weight:700; margin-left:6px; }
 
-.list{ margin-top:16px; max-width:860px; }
+.list
+{ 
+   width: min(100%, var(--rail-max));
+  max-width: var(--rail-max);
+  margin: 16px auto 0;
+  padding-inline: var(--rail-pad); 
+}
 .list.transitioning{ opacity:.5; filter:blur(1px); pointer-events:none; transition:opacity .2s ease; }
 
 .card{

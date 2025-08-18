@@ -46,6 +46,15 @@
   height: 83.94px;
   margin-bottom: 20px;
 }
+.aiSearchRight,
+.aiSearchRight button,
+.aiSearchRight [role="button"]{
+  background:transparent ;
+  border:0 ;
+  outline:0 ;
+  -webkit-appearance:none;
+  appearance:none;
+}
 .balloonBg {
   width: 800px;
   height: 83.94px;
@@ -94,7 +103,7 @@
   position: absolute;
   align-items: center;
   gap: 8px;
-  top: -55px;
+  top: -53px;
   left: 800px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -106,10 +115,10 @@
   font-family: 'Pretendard', sans-serif;
 }
 .aiSearchBold .aiSearchBtn{
-  background: transparent;  /* 배경 제거 */
+  background: none;  /* 배경 제거 */
   border: 0;
-  box-shadow: none;
-  appearance: none;
+  box-shadow: transparent;
+  appearance: transparent;
 }
   
 .sparkleIcon { 
