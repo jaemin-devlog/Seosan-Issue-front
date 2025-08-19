@@ -16,10 +16,11 @@
 
 .weather-card {
   position: relative;
-  width: 260px;
-  top: 160px;
+  width: 100%;
+  max-width: 300px;
+  top: 0px;
   background: #fff;
-  border-radius: 18px;
+  border-radius: 20px;
   box-shadow: 0 4px 16px rgba(32, 56, 85, 0.06);
   padding: 18px 18px 25px 18px;
   min-height: 135px;
@@ -27,7 +28,8 @@
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   animation: slideInLeft 0.8s ease-out 0.2s backwards;
   z-index: 100 !important;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  margin-top: 144px; /* 오늘의 서산과 정확한 수평 정렬 */
 }
 .weather-card:hover {
   transform: translateY(-5px);
@@ -45,8 +47,8 @@
 }
 .weather-title {
     position: relative;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: #23272a;
   margin-bottom: 0px;
   bottom: 70px;

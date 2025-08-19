@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './HeroSection.css';
+import Logo1 from '../assets/로고1.png';
+import MainLogo from '../assets/MainLogo.png';
 
 const HeroSection: React.FC = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -34,7 +36,7 @@ const HeroSection: React.FC = () => {
       <div className="hero-container">
         <div className="hero-content">
           <img 
-            src="/images/로고2.png" 
+            src={Logo1} 
             alt="오늘 - 서산시민을 위한 종합 정보 플랫폼 로고" 
             className="hero-logo"
             style={{
@@ -46,7 +48,7 @@ const HeroSection: React.FC = () => {
         
         <div className="ai-search-section">
           <img 
-            src="/images/Group 346.png" 
+            src={MainLogo} 
             alt="AI 기반 서산 정보 검색 서비스 - 무엇이든 물어보세요" 
             className="ai-search-banner"
             style={{

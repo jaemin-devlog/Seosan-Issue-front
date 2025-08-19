@@ -1,4 +1,4 @@
-const DUST_PROXY_URL = "http://localhost:4000/api/dust"; // 미세먼지 프록시 서버 주소
+const DUST_PROXY_URL = process.env.REACT_APP_DUST_API_URL || "http://localhost:4000/api/dust"; // 미세먼지 프록시 서버 주소
 
 // 실제 미세먼지 API 요청 함수
 export async function fetchDustData(sidoName = "충남") {

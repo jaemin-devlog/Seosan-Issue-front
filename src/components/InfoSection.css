@@ -842,124 +842,275 @@
 
 @media (max-width: 768px) {
   .info-section {
-    padding: 60px 0 80px;
+    padding: 40px 0 60px;
+    background: #E9F5F4;
   }
   
   .info-container {
-    padding: 0 20px;
-  }
-  
-  .section-title {
-    font-size: 22px;
-    margin-bottom: 24px;
-  }
-  
-  .title-emoji {
-    font-size: 24px;
-  }
-  
-  .recommended-section {
-    margin-bottom: 48px;
-  }
-  
-  .recommended-card {
-    flex: 0 0 260px;
-    padding: 20px;
-    min-height: 160px;
-  }
-  
-  .card-title {
-    font-size: 16px;
-  }
-  
-  .card-description {
-    font-size: 13px;
-  }
-  
-  .news-card {
-    padding: 20px;
-    min-height: 140px;
-  }
-  
-  .news-title {
-    font-size: 15px;
-  }
-  
-  .cards-carousel {
-    padding: 0 30px;
-  }
-  
-  .scroll-button.left {
-    left: -15px;
-  }
-  
-  .scroll-button.right {
-    right: -15px;
-  }
-  
-  .cards-wrapper {
-    gap: 16px;
-  }
-  
-  .news-grid {
-    gap: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .info-section {
-    padding: 48px 0 60px;
-  }
-  
-  .info-container {
-    padding: 0 16px;
+    padding: 0 15px;
+    max-width: 100%;
   }
   
   .section-title {
     font-size: 20px;
     margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .festival-title, .festival-news-title {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
   }
   
   .title-emoji {
-    font-size: 20px;
+    font-size: 22px;
   }
   
   .recommended-section {
     margin-bottom: 40px;
   }
   
-  .recommended-card {
-    flex: 0 0 240px;
-    padding: 18px;
-    min-height: 140px;
-  }
-  
-  .card-tag,
-  .news-category {
-    font-size: 11px;
-    padding: 5px 10px;
-  }
-  
-  .card-title,
-  .news-title {
-    font-size: 14px;
-    line-height: 1.4;
-  }
-  
-  .card-description {
-    font-size: 12px;
+  .cards-carousel {
+    padding: 0;
+    margin: 0;
   }
   
   .cards-wrapper {
     gap: 12px;
-    padding: 8px 5px 16px;
+    padding: 12px 0 20px;
+    margin-left: 15px;
+    margin-right: 15px;
   }
   
+  .recommended-card {
+    flex: 0 0 280px;
+    padding: 18px;
+    min-height: 150px;
+    border-radius: 16px;
+  }
+  
+  .card-tag {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+  
+  .card-title {
+    font-size: 15px;
+    line-height: 1.4;
+    margin: 12px 0 8px;
+  }
+  
+  .card-description {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  
+  .card-date {
+    font-size: 11px;
+  }
+  
+  /* Local News Section Mobile */
+  .local-news-section {
+    margin-top: 40px;
+  }
+  
+  .news-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 15px;
+  }
+  
+  .news-card {
+    padding: 16px;
+    min-height: auto;
+    border-radius: 14px;
+  }
+  
+  .news-category {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  
+  .news-title {
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 10px 0 8px;
+  }
+  
+  .news-source {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+  
+  .news-date {
+    font-size: 10px;
+  }
+  
+  /* Scroll buttons adjustment */
+  .scroll-button {
+    display: none; /* Hide on mobile for touch scrolling */
+  }
+  
+  /* Loading states */
+  .loading-placeholder {
+    height: 140px;
+    border-radius: 14px;
+  }
+  
+  .skeleton-card {
+    padding: 16px;
+    min-height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .info-section {
+    padding: 30px 0 50px;
+    background: #E9F5F4;
+  }
+  
+  .info-container {
+    padding: 0 12px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  
+  .title-emoji {
+    font-size: 18px;
+  }
+  
+  .recommended-section {
+    margin-bottom: 32px;
+  }
+  
+  .cards-wrapper {
+    gap: 10px;
+    padding: 10px 0 16px;
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+  
+  .recommended-card {
+    flex: 0 0 250px;
+    padding: 14px;
+    min-height: 130px;
+    border-radius: 14px;
+  }
+  
+  .card-tag {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  
+  .card-title {
+    font-size: 14px;
+    line-height: 1.3;
+    margin: 10px 0 6px;
+  }
+  
+  .card-description {
+    font-size: 11px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  
+  .card-date {
+    font-size: 10px;
+  }
+  
+  /* Local News Small Mobile */
   .local-news-section {
     margin-top: 32px;
   }
   
+  .news-grid {
+    padding: 0 12px;
+    gap: 10px;
+  }
+  
+  .news-card {
+    padding: 14px;
+    border-radius: 12px;
+  }
+  
+  .news-category {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  
+  .news-title {
+    font-size: 13px;
+    line-height: 1.3;
+    margin: 8px 0 6px;
+  }
+  
+  .news-source {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+  
+  .news-date {
+    font-size: 9px;
+  }
+  
   .section-header {
-    margin-bottom: 28px;
+    margin-bottom: 20px;
+  }
+  
+  /* Error states */
+  .error-message {
+    padding: 32px 20px;
+    margin: 0 12px;
+  }
+  
+  .retry-button {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+}
+
+/* iPhone SE and very small screens */
+@media (max-width: 375px) {
+  .info-section {
+    padding: 25px 0 40px;
+  }
+  
+  .info-container {
+    padding: 0 10px;
+  }
+  
+  .section-title {
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+  
+  .recommended-card {
+    flex: 0 0 220px;
+    padding: 12px;
+    min-height: 120px;
+  }
+  
+  .card-title {
+    font-size: 13px;
+  }
+  
+  .card-description {
+    font-size: 10px;
+  }
+  
+  .news-card {
+    padding: 12px;
+  }
+  
+  .news-title {
+    font-size: 12px;
   }
 }

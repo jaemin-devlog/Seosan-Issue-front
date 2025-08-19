@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>뉴스/카페/블로그 탭 테스트</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .tab-buttons { margin-bottom: 20px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; font-size: 16px; }
+        button.active { background: #007bff; color: white; }
+        .result { 
+            background: #f5f5f5; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin-top: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .error { color: red; }
+        .success { color: green; }
+        .item { 
+            background: white; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .item-title { font-weight: bold; color: #333; }
+        .item-body { color: #666; margin-top: 5px; }
+        .item-date { color: #999; font-size: 14px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>뉴스/카페/블로그 탭 테스트</h1>
+    
+    <div class="tab-buttons">
+        <button onclick="testTab('뉴스')" id="btn-news">뉴스 테스트</button>
+        <button onclick="testTab('카페')" id="btn-cafe">카페 테스트</button>
+        <button onclick="testTab('블로그')" id="btn-blog">블로그 테스트</button>
+        <button onclick="testTab('복지')" id="btn-welfare">복지 테스트 (비교용)</button>
+    </div>
+    
+    <div id="status"></div>
+    <div id="result" class="result"></div>
+    
+    <script>
+        // React 앱이 사용하는 것과 동일한 방식으로 탭 전환 시뮬레이션
+        async function testTab(tabName) {
+            const statusDiv = document.getElementById('status');
+            const resultDiv = document.getElementById('result');
+            
+            // 버튼 스타일 업데이트
+            document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            statusDiv.innerHTML = `<p>테스트 중: ${tabName} 탭...</p>`;
+            resultDiv.innerHTML = '';
+            
+            try {
+                // React 컴포넌트가 하는 것처럼 탭에 따라 다른 처리
+                let mockData = [];
+                
+                if (tabName === '뉴스') {
+                    // 뉴스 mock 데이터 생성 (React 컴포넌트와 동일한 로직)
+                    mockData = Array.from({ length: 15 }, (_, i) => ({
+                        id: i + 1,
+                        title: `대산읍 지역 뉴스 ${i + 1}: 종합 소식`,
+                        body: `대산읍에서 일어난 다양한 관련 소식입니다. 지역 주민들의 관심이 높아지고 있으며, 관련 기관에서는 적극적인 대응을 하고 있습니다.`,
+                        date: new Date(Date.now() - i * 86400000).toLocaleDateString('ko-KR').replace(/\. /g, '.').replace(/\.$/, ''),
+                        categoryPath: `뉴스 > 전체`
+                    }));
+                    statusDiv.innerHTML = `<p class="success">✅ 뉴스 Mock 데이터 생성 완료: ${mockData.length}개</p>`;
+                    
+                } else if (tabName === '카페' || tabName === '블로그') {
+                    // 카페/블로그 mock 데이터 생성
+                    const contentType = tabName === "카페" ? "카페 글" : "블로그 포스트";
+                    mockData = Array.from({ length: 12 }, (_, i) => ({
+                        id: i + 1,
+                        title: `대산읍 ${contentType} ${i + 1}: 지역 소식과 정보 공유`,
+                        body: `대산읍 지역의 ${contentType}입니다. 지역 주민들이 직접 작성한 생생한 이야기와 유용한 정보를 공유합니다. 맛집, 명소, 생활 정보 등 다양한 내용을 담고 있습니다.`,
+                        date: new Date(Date.now() - i * 172800000).toLocaleDateString('ko-KR').replace(/\. /g, '.').replace(/\.$/, ''),
+                        categoryPath: `${tabName} > 대산읍`
+                    }));
+                    statusDiv.innerHTML = `<p class="success">✅ ${tabName} Mock 데이터 생성 완료: ${mockData.length}개</p>`;
+                    
+                } else if (tabName === '복지') {
+                    // 실제 API 호출 테스트
+                    const response = await fetch('/api/posts?category=WELFARE_SENIOR&region=대산읍&page=0&size=5');
+                    const data = await response.json();
+                    if (data.content) {
+                        mockData = data.content.map((item, idx) => ({
+                            id: item.id || idx + 1,
+                            title: item.title || '제목 없음',
+                            body: item.content || item.description || '내용 없음',
+                            date: item.pubDate || new Date().toLocaleDateString('ko-KR'),
+                            categoryPath: '복지 > 어르신'
+                        }));
+                        statusDiv.innerHTML = `<p class="success">✅ 복지 API 호출 성공: ${mockData.length}개</p>`;
+                    }
+                }
+                
+                // 결과 표시
+                if (mockData.length > 0) {
+                    let html = `<h3>${tabName} 데이터 (${mockData.length}개)</h3>`;
+                    mockData.slice(0, 5).forEach(item => {
+                        html += `
+                            <div class="item">
+                                <div class="item-title">${item.title}</div>
+                                <div class="item-body">${item.body}</div>
+                                <div class="item-date">📅 ${item.date} | 📁 ${item.categoryPath}</div>
+                            </div>
+                        `;
+                    });
+                    if (mockData.length > 5) {
+                        html += `<p style="text-align: center; color: #666;">... 그리고 ${mockData.length - 5}개 더</p>`;
+                    }
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = '<p class="error">데이터가 없습니다.</p>';
+                }
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<p class="error">❌ 오류: ${error.message}</p>`;
+                console.error('테스트 오류:', error);
+            }
+        }
+        
+        // 페이지 로드 시 뉴스 탭 자동 테스트
+        window.onload = () => {
+            document.getElementById('btn-news').click();
+        };
+    </script>
+</body>
+</html>

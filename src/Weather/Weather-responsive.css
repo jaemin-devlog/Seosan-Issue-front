@@ -1,0 +1,66 @@
+/* Weather 컴포넌트 반응형 스타일 */
+
+/* 태블릿 */
+@media (max-width: 1024px) {
+  .weather-card {
+    max-width: 260px;
+    margin-top: 80px;
+    padding: 16px;
+  }
+  
+  .weather-title {
+    font-size: 17px;
+  }
+  
+  .weather-temp {
+    font-size: 36px;
+  }
+  
+  .weather-icon {
+    width: 180px;
+    height: 126px;
+    left: 110px;
+  }
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+  .weather-card {
+    max-width: 340px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .weather-title {
+    font-size: 18px;
+  }
+  
+  .weather-temp {
+    font-size: 38px;
+  }
+  
+  .weather-icon {
+    width: 190px;
+    height: 133px;
+    left: 140px;
+  }
+}
+
+/* 소형 모바일 */
+@media (max-width: 480px) {
+  .weather-card {
+    max-width: 300px;
+    padding: 15px;
+  }
+  
+  .weather-temp {
+    font-size: 34px;
+  }
+  
+  .weather-icon {
+    width: 170px;
+    height: 119px;
+    left: 120px;
+  }
+}

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Mainpage.css";
-import "./Mainpage-responsive.css";
 import { mainPageAPI, seosanAPI } from "../api/backend.api";
 import logo1 from "../assets/로고1.png";
 import mascot from "../assets/물음표로고 .png";
@@ -45,15 +44,15 @@ const Mainpage = memo(() => {
       
       if (data && typeof data === 'object') {
         if (data.daily && data.weekly) {
-          // 6개로 제한하고 포맷팅
+          // 5개로 제한하고 포맷팅
           const formattedDaily = Array.isArray(data.daily) 
-            ? data.daily.slice(0, 6).map((title, index) => ({ 
+            ? data.daily.slice(0, 5).map((title, index) => ({ 
                 title: String(title), 
-                isNew: index >= 4  // 5번째부터 new 표시
+                isNew: index >= 3  // 3번째부터 new 표시
               })) 
             : [];
           const formattedWeekly = Array.isArray(data.weekly) 
-            ? data.weekly.slice(0, 6).map(title => ({ 
+            ? data.weekly.slice(0, 5).map(title => ({ 
                 title: String(title) 
               })) 
             : [];

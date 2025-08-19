@@ -1,5 +1,6 @@
 import React from 'react';
 import './Footer.css';
+import Logo from '../assets/로고.png';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -12,7 +13,7 @@ const Footer: React.FC = () => {
         <div className="footer-content">
           <div className="footer-logo-section">
             <img
-              src="/images/로고.png"
+              src={Logo}
               alt="오늘 - 서산시민을 위한 종합 정보 플랫폼"
               className="footer-logo"
               loading="lazy"

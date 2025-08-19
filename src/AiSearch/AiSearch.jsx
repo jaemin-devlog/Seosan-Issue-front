@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import styles from "./AiSearch.module.css";
+import { aiSearchAPI } from "../api/backend.api";
 import LightningIcon from "../assets/Lightning.png";
 import QuestionLogo from "../assets/물음표로고 .png";
 import ChatCircleDots from "../assets/ChatCircleDots.png";
@@ -31,6 +33,7 @@ function getRandomList(prevList) {
 }
 
 export default function AiSearch() {
+  const location = useLocation();
   const [inputValue, setInputValue] = useState("");
   const [recentSearches, setRecentSearches] = useState(recentSearchPool[0]);
 
@@ -39,27 +42,77 @@ export default function AiSearch() {
   const [activeTab, setActiveTab] = useState("answer"); // 'answer' | 'sources'
   const [result, setResult] = useState({ answerHtml: "", sources: [] });
 
-  // 검색 실행
-  const handleAiSearch = async () => {
-    const q = inputValue.trim();
+  // URL 파라미터에서 검색어 가져와서 자동 검색
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const query = params.get('q');
+    if (query) {
+      setInputValue(query);
+      handleAiSearchWithQuery(query);
+    }
+  }, [location.search]);
+
+  // 검색 실행 (공통 함수)
+  const handleAiSearchWithQuery = async (query) => {
+    const q = query.trim();
     if (!q) return;
 
+    setSearchState("loading");
+    
     try {
-      const data = await mockSearch(q); // ← 실제 API로 교체
-      if (
-        !data ||
-        (!data.answerHtml && (!data.sources || data.sources.length === 0))
-      ) {
+      // 실제 백엔드 AI 검색 API 호출
+      const data = await aiSearchAPI.searchBrief(q);
+      console.log("AI 검색 결과:", data);
+      
+      // 응답 데이터 형식 확인 및 처리
+      if (!data) {
         setResult({ answerHtml: "", sources: [] });
         setSearchState("empty");
+      } else if (data.summary || data.answer || data.content || data.response) {
+        // 백엔드 응답 형식에 맞게 조정 (summary 필드 추가)
+        const answerHtml = data.summary || data.answer || data.content || data.response || "답변을 생성중입니다...";
+        const sources = data.sources || data.references || [];
+        
+        // sources가 URL 문자열 배열인 경우 객체 형태로 변환
+        const formattedSources = sources.map((source, idx) => {
+          if (typeof source === 'string') {
+            return {
+              title: `참고 자료 ${idx + 1}`,
+              link: source,
+              provider: new URL(source).hostname
+            };
+          }
+          return source;
+        });
+        
+        setResult({ answerHtml, sources: formattedSources });
+        setSearchState("ok");
+      } else if (data.answerHtml || data.sources) {
+        // 기존 형식 지원
+        setResult({
+          answerHtml: data.answerHtml || "",
+          sources: data.sources || []
+        });
+        setSearchState(data.answerHtml || (data.sources && data.sources.length > 0) ? "ok" : "empty");
       } else {
-        setResult(data);
+        // 알 수 없는 형식
+        console.log("예상치 못한 응답 형식:", data);
+        setResult({ 
+          answerHtml: JSON.stringify(data, null, 2), 
+          sources: [] 
+        });
         setSearchState("ok");
       }
-    } catch {
+    } catch (error) {
+      console.error("AI 검색 오류:", error);
       setResult({ answerHtml: "", sources: [] });
       setSearchState("empty");
     }
+  };
+
+  // 검색 버튼 클릭 핸들러
+  const handleAiSearch = () => {
+    handleAiSearchWithQuery(inputValue);
   };
 
   // 최근 검색 새로고침
@@ -258,44 +311,3 @@ export default function AiSearch() {
   );
 }
 
-/* ===== 목업 검색 함수 (나중에 실제 API로 교체) ===== */
-function mockSearch(q) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (/(없어|노결과|no|zero)/i.test(q)) {
-        resolve({ answerHtml: "", sources: [] });
-        return;
-      }
-      const answerHtml = `
-        <h2 class="${styles.answerTitle}">서산시의 노인 복지에 대한 주요 내용은 다음과 같아요.</h2>
-        <hr class="${styles.answerHr}" />
-        <h3 class="${styles.answerH3}">• 주요 복지 정책 및 사업</h3>
-        <p class="${styles.answerP}">
-          <b>노인여가복지시설 지원:</b> 서산시는 경로당, 마을회관 등 관내 440개소의 노인여가복지시설을 대상으로 난방비와 각종 물품을 지원하고 있습니다.
-          또한, 어르신들의 안전을 위해 시설에 대한 종합 보험 가입을 지원하고, 주기적인 소독을 실시하여 전염병을 예방하고 있습니다.
-        </p>
-        <p class="${styles.answerP}">
-          <b>노인 일자리 사업:</b> 어르신들의 경제적 안정과 사회 참여를 돕기 위해 노인 일자리를 제공하고 있습니다.
-        </p>
-        <hr class="${styles.answerHr}" />
-        <h3 class="${styles.answerH3}">• 주요 복지 시설</h3>
-        <p class="${styles.answerP}">
-          <b>서산노인복지센터:</b> 지곡면에 위치한 시설로, 노인 장기요양보험 관련 서비스를 제공합니다.
-        </p>
-        <p class="${styles.answerP}">
-          <b>서산한노인복지센터:</b> 음암면에 위치한 요양시설입니다.
-        </p>
-        <p class="${styles.answerP}">
-          <b>우리들주야간노인복지센터:</b> 수석동에 위치하며 방문목욕, 방문요양, 주·야간 보호 등 다양한 재가노인복지 서비스를 제공합니다.
-        </p>
-      `;
-      resolve({
-        answerHtml,
-        sources: [
-          { title: "충청남도 서산시_재가노인 복지시설", link: "#", provider: "충청남도 데이터포털 올담" },
-          { title: "충청남도 서산시_노인의료복지시설", link: "#", provider: "충청남도 데이터포털 올담" },
-        ],
-      });
-    }, 400);
-  });
-}

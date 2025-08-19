@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './MapSection.css';
 import './PremiumMinimalMap.css';
 import { MapPin, Calendar, Users, Mountain, Waves, TreePalm, Sparkles, Trees, ChevronLeft, ChevronRight } from 'lucide-react';
+import MapImage from '../assets/map.png';
+import MapTitleImage from '../assets/maptitle.png';
 
 interface Festival {
   readonly month: string;
@@ -586,11 +588,6 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
             <div className="final-info-panel">
               {activeTab === 'festival' && (
                 <div className="festival-panel-content">
-                  {/* Festival Image */}
-                  <div className="festival-image-container">
-                    <img src="/images/벚꽃.png" alt="해미벚꽃축제 풍경" className="festival-main-image" />
-                  </div>
-                  
                   <div className="festival-badge-container">
                     <span className="festival-title-badge">{currentFestival.month} {currentFestival.name}</span>
                   </div>
@@ -601,12 +598,8 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                   
                   <div className="festival-details-final">
                     {currentFestival.details.map((detail, index) => {
-                      const IconComponent = detail.icon;
                       return (
                         <div key={index} className="detail-row-final">
-                          <div className="detail-icon-container">
-                            <IconComponent className="detail-icon-final" size={20} />
-                          </div>
                           <div className="detail-content-final">
                             <span className="detail-label-final">
                               {index === 0 ? '개최일' : index === 1 ? '장소' : '주요'}
@@ -703,7 +696,7 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                   </div>
                 )}
                 <img 
-                  src="/images/지도.png" 
+                  src={MapImage} 
                   alt="서산시 전체 지도. 축제 및 체험 장소가 표시되어 있습니다" 
                   className={`map-image-final ${isMapLoaded ? 'loaded' : 'loading'}`}
                   onLoad={handleMapLoad}
@@ -844,7 +837,7 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
           <div className="right-area">
             <div className="final-header">
               <img 
-                src="/images/Group 341.png" 
+                src={MapTitleImage} 
                 alt="마을 구석구석, 서산 정복하기! 타이틀" 
                 className="final-title-image"
               />

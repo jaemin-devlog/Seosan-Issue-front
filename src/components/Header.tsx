@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Header.css';
+import Logo from '../assets/로고.png';
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -36,7 +37,7 @@ const Header: React.FC = () => {
           aria-label="오늘 홈페이지로 이동"
         >
           <img 
-            src="/images/로고.png" 
+            src={Logo} 
             alt="오늘 - 서산시민을 위한 종합 정보 플랫폼" 
             className={`logo-image ${isLogoHovered ? 'hovered' : ''}`}
             loading="eager"

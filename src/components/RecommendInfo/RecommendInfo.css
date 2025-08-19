@@ -1,0 +1,622 @@
+.recommend-info-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 60px auto;
+  position: relative;
+  background: none;
+  border-radius: 28px;
+  padding: 50px 40px;
+  box-shadow: none;
+}
+
+.recommend-header {
+  margin-bottom: 30px;
+}
+
+.recommend-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+  text-align: center;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.recommend-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #2ad0c9, #20b2aa);
+  border-radius: 2px;
+}
+
+.recommend-content-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 스크롤 버튼 */
+.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;
+  height: auto;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 15;
+  padding: 10px;
+  outline: none;
+}
+
+.scroll-button:hover:not(:disabled) {
+  transform: translateY(-50%) scale(1.2);
+}
+
+.scroll-button:active:not(:disabled) {
+  transform: translateY(-50%) scale(1.1);
+}
+
+.scroll-button:focus-visible {
+  outline: 2px solid rgba(42, 208, 201, 0.5);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.scroll-button:disabled {
+  opacity: 0.15;
+  cursor: not-allowed;
+  animation: none !important;
+}
+
+/* 화살표 위치 - 카드와 겹치지 않게 배치 */
+.scroll-left {
+  left: -60px;
+  animation: slideLeft 2s ease-in-out infinite;
+}
+
+.scroll-right {
+  right: -60px;
+  animation: slideRight 2s ease-in-out infinite;
+}
+
+/* 좌우 이동 애니메이션 */
+@keyframes slideLeft {
+  0%, 100% {
+    left: -60px;
+    transform: translateY(-50%);
+  }
+  50% {
+    left: -65px;
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes slideRight {
+  0%, 100% {
+    right: -60px;
+    transform: translateY(-50%);
+  }
+  50% {
+    right: -65px;
+    transform: translateY(-50%);
+  }
+}
+
+/* 호버 시 애니메이션 멈춤 */
+.scroll-left:hover {
+  animation-play-state: paused;
+  left: -55px;
+}
+
+.scroll-right:hover {
+  animation-play-state: paused;
+  right: -55px;
+}
+
+/* 스크롤 화살표 이미지 */
+.scroll-arrow-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.15));
+  opacity: 0.9;
+}
+
+.scroll-button:hover:not(:disabled) .scroll-arrow-img {
+  filter: drop-shadow(0 4px 16px rgba(42, 208, 201, 0.4));
+  opacity: 1;
+}
+
+.scroll-left:hover:not(:disabled) .scroll-arrow-img {
+  transform: translateX(-4px);
+}
+
+.scroll-right:hover:not(:disabled) .scroll-arrow-img {
+  transform: translateX(4px);
+}
+
+/* 이미지가 없을 때 대체 화살표 */
+.scroll-arrow {
+  color: #2ad0c9;
+  font-size: 36px;
+  font-weight: 300;
+  transition: all 0.3s ease;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.scroll-button:hover:not(:disabled) .scroll-arrow {
+  color: #20b2aa;
+  font-weight: 400;
+  text-shadow: 0 4px 12px rgba(42, 208, 201, 0.3);
+}
+
+/* 카드 컨테이너 */
+.recommend-cards-container {
+  width: 100%;
+  overflow: hidden;
+  padding: 20px 0;
+  position: relative;
+}
+
+.recommend-cards-scroll {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px 20px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.recommend-cards-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* 추천 카드 */
+.recommend-card {
+  flex: 0 0 320px;
+  background: linear-gradient(145deg, #ffffff 0%, #fafafa 100%);
+  border-radius: 24px;
+  padding: 32px 28px 60px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(10px);
+  outline: none;
+}
+
+.recommend-card:focus-visible {
+  box-shadow: 0 0 0 3px rgba(42, 208, 201, 0.3);
+  border-color: #2ad0c9;
+}
+
+.recommend-card:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+.recommend-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(42, 208, 201, 0.08);
+  border-color: rgba(42, 208, 201, 0.3);
+  background: linear-gradient(145deg, #ffffff 0%, #f5fffe 100%);
+}
+
+/* 말풍선 태그 래퍼 */
+.recommend-tag-wrapper {
+  position: relative;
+  width: fit-content;
+  margin-bottom: 20px;
+  animation: fadeInDown 0.5s ease-out;
+}
+
+.balloon-bg {
+  width: auto;
+  height: 40px;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.tag-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #2ad0c9;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 이미지가 없을 때 대체 태그 스타일 */
+.recommend-tag {
+  display: inline-block;
+  padding: 8px 20px;
+  background: #2c3e50;
+  color: #2ad0c9;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  width: fit-content;
+  position: relative;
+  border-radius: 0 20px 20px 20px;
+}
+
+.recommend-tag::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 15px;
+  background: #2c3e50;
+  clip-path: polygon(0 0, 0% 100%, 100% 0);
+}
+
+/* 카드 제목 */
+.recommend-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #2c3e50;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 75px;
+}
+
+/* 카드 날짜/설명 */
+.recommend-card-date {
+  font-size: 14px;
+  color: #8b95a1;
+  margin: 0;
+  line-height: 1.5;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* 카드 푸터 - 화살표 이미지 */
+.recommend-card-footer {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  transition: all 0.3s ease;
+}
+
+.card-arrow-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.recommend-card:hover .card-arrow-img {
+  transform: scale(1.1) translateX(3px);
+}
+
+/* 이미지가 없을 때 대체 화살표 스타일 */
+.card-arrow {
+  width: 36px;
+  height: 36px;
+  background: #2ad0c9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.recommend-card:hover .card-arrow {
+  transform: scale(1.1) translateX(2px);
+  background: #20b2aa;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .recommend-info-container {
+    margin: 40px 16px;
+    padding: 35px 20px;
+    border-radius: 20px;
+  }
+
+  .recommend-title {
+    font-size: 24px;
+  }
+
+  .recommend-title::after {
+    width: 50px;
+    height: 2px;
+  }
+
+  .scroll-button {
+    padding: 8px;
+  }
+
+  .scroll-left {
+    left: 35px;
+    animation: slideLeft-mobile 2s ease-in-out infinite;
+  }
+
+  .scroll-right {
+    right: 35px;
+    animation: slideRight-mobile 2s ease-in-out infinite;
+  }
+
+  @keyframes slideLeft-mobile {
+    0%, 100% {
+      left: 35px;
+    }
+    50% {
+      left: 32px;
+    }
+  }
+
+  @keyframes slideRight-mobile {
+    0%, 100% {
+      right: 35px;
+    }
+    50% {
+      right: 32px;
+    }
+  }
+
+  .scroll-left:hover {
+    left: 30px;
+  }
+
+  .scroll-right:hover {
+    right: 30px;
+  }
+
+  .scroll-arrow-img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .scroll-arrow {
+    font-size: 28px;
+  }
+
+  .recommend-cards-scroll {
+    padding: 8px 50px;
+    gap: 16px;
+  }
+
+  .recommend-card {
+    flex: 0 0 260px;
+    padding: 24px 20px 50px;
+    min-height: 200px;
+    border-radius: 20px;
+  }
+
+  .balloon-bg {
+    height: 35px;
+  }
+
+  .tag-text {
+    font-size: 13px;
+  }
+
+  .recommend-card-title {
+    font-size: 15px;
+    min-height: 60px;
+  }
+
+  .recommend-card-date {
+    font-size: 13px;
+  }
+
+  .card-arrow-img {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .recommend-info-container {
+    margin: 25px 12px;
+    padding: 30px 16px;
+    border-radius: 18px;
+  }
+
+  .recommend-title {
+    font-size: 20px;
+  }
+
+  .recommend-title::after {
+    width: 40px;
+  }
+
+  .scroll-button {
+    padding: 6px;
+  }
+
+  .scroll-left {
+    left: 25px;
+    animation: slideLeft-small 2s ease-in-out infinite;
+  }
+
+  .scroll-right {
+    right: 25px;
+    animation: slideRight-small 2s ease-in-out infinite;
+  }
+
+  @keyframes slideLeft-small {
+    0%, 100% {
+      left: 25px;
+    }
+    50% {
+      left: 23px;
+    }
+  }
+
+  @keyframes slideRight-small {
+    0%, 100% {
+      right: 25px;
+    }
+    50% {
+      right: 23px;
+    }
+  }
+
+  .scroll-left:hover {
+    left: 20px;
+  }
+
+  .scroll-right:hover {
+    right: 20px;
+  }
+
+  .scroll-arrow-img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .scroll-arrow {
+    font-size: 24px;
+  }
+
+  .recommend-cards-scroll {
+    padding: 5px 45px;
+    gap: 12px;
+  }
+
+  .recommend-card {
+    flex: 0 0 230px;
+    padding: 20px 16px 45px;
+    min-height: 180px;
+    border-radius: 18px;
+  }
+
+  .balloon-bg {
+    height: 32px;
+  }
+
+  .tag-text {
+    font-size: 12px;
+  }
+
+  .recommend-tag {
+    font-size: 12px;
+    padding: 6px 16px;
+  }
+
+  .recommend-card-title {
+    font-size: 14px;
+    min-height: 55px;
+  }
+
+  .recommend-card-date {
+    font-size: 12px;
+  }
+
+  .card-arrow-img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .recommend-card-footer {
+    bottom: 15px;
+    right: 15px;
+  }
+}
+
+/* 애니메이션 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.recommend-info-container {
+  animation: slideIn 0.6s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.recommend-info-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(42, 208, 201, 0.3), transparent);
+  background-size: 1000px 1px;
+  animation: shimmer 3s infinite;
+}
+
+/* 카드 애니메이션 개선 */
+.recommend-card {
+  animation: fadeInUp 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+.recommend-card:nth-child(1) { animation-delay: 0.1s; }
+.recommend-card:nth-child(2) { animation-delay: 0.2s; }
+.recommend-card:nth-child(3) { animation-delay: 0.3s; }
+.recommend-card:nth-child(4) { animation-delay: 0.4s; }
+.recommend-card:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

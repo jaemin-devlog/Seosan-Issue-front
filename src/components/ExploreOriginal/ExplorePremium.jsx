@@ -6,8 +6,9 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import styles from "./ExplorePremium.module.css";
+import { seosanAPI, welfareAPI, cultureAPI, naverSearchAPI } from "../../api/backend.api";
 
 /* ===== 이미지 ===== */
 import newslogo from "../../assets/newslogo.png";
@@ -202,14 +203,35 @@ function DetailView({
         </section>
       )}
 
-      <div className={styles.linkBar}>
-        <div className={styles.linkBtn}>
-          <img src={chainIcon} alt="" className="chain-img"/>
-          <span>자세한 사항 및 파일첨부 등은 링크에서 확인하세요!</span>
+      {/* 원본 링크 표시 - 뉴스/카페/블로그에서만 표시 */}
+      {item?.link && (item?.link !== '#') && (
+        <div className={styles.linkBar}>
+          <a 
+            href={item.link} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className={styles.linkBtn}
+            style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            <img src={chainIcon} alt="" className="chain-img"/>
+            <span>원본 기사 보기 - 클릭하여 이동</span>
+          </a>
+          <img className={styles.rightBird} src={rightHere} alt="" />
+          <div className={styles.underbar} aria-hidden="true" />
         </div>
-        <img className={styles.rightBird} src={rightHere} alt="" />
-        <div className={styles.underbar} aria-hidden="true" />
-      </div>
+      )}
+      
+      {/* 원본 링크가 없는 경우 기존 안내 문구 */}
+      {(!item?.link || item?.link === '#') && (
+        <div className={styles.linkBar}>
+          <div className={styles.linkBtn}>
+            <img src={chainIcon} alt="" className="chain-img"/>
+            <span>자세한 사항 및 파일첨부 등은 링크에서 확인하세요!</span>
+          </div>
+          <img className={styles.rightBird} src={rightHere} alt="" />
+          <div className={styles.underbar} aria-hidden="true" />
+        </div>
+      )}
 
       {/* 이전/다음 글 */}
       <nav className={styles.pnWrap}>
@@ -252,6 +274,7 @@ function DetailView({
 /* ===== 메인(목록 + 상세 전환) ===== */
 export default function ExplorePremium() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
 
   const regionFromUrl = searchParams.get("region");
   const viewFromUrl = searchParams.get("view");
@@ -271,14 +294,22 @@ export default function ExplorePremium() {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const [mode, setMode] = useState(viewFromUrl === "detail" ? "detail" : "list");
-  const [selectedId, setSelectedId] = useState(idFromUrl || null);
+  const [selectedId, setSelectedId] = useState(idFromUrl ? Number(idFromUrl) : null);
+  
+  // API 데이터 상태 추가
+  const [apiData, setApiData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const [page, setPage] = useState(!isNaN(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1);
-  const totalPages = Math.max(1, Math.ceil(MOCK.length / PAGE_SIZE));
+  
+  // apiData가 있으면 사용, 없으면 MOCK 데이터 사용
+  const dataToUse = apiData.length > 0 ? apiData : MOCK;
+  const totalPages = Math.max(1, Math.ceil(dataToUse.length / PAGE_SIZE));
   const pagedItems = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
-    return MOCK.slice(start, start + PAGE_SIZE);
-  }, [page]);
+    return dataToUse.slice(start, start + PAGE_SIZE);
+  }, [page, dataToUse]);
 
   const pageNumbers = useMemo(() => {
     const win = 5;
@@ -290,12 +321,238 @@ export default function ExplorePremium() {
 
   const tabBarRef = useRef(null);
 
+  // API 데이터 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        let data = [];
+        
+        // 탭에 따라 다른 API 호출
+        switch (activeTab) {
+          case "뉴스":
+            // 네이버 뉴스 검색 API
+            try {
+              const searchQuery = `서산시 ${activeRegion}`;
+              const newsResult = await naverSearchAPI.search(searchQuery, 'news', 20);
+              
+              // API가 배열을 직접 반환
+              if (newsResult && Array.isArray(newsResult) && newsResult.length > 0) {
+                data = newsResult.map((item, idx) => ({
+                  id: idx + 1,
+                  title: item.title
+                    ? item.title
+                        .replace(/<[^>]*>/g, '')  // HTML 태그 제거
+                        .replace(/&quot;/g, '"')
+                        .replace(/&amp;/g, '&')
+                        .replace(/&lt;/g, '<')
+                        .replace(/&gt;/g, '>')
+                        .replace(/&#39;/g, "'")
+                    : '제목 없음',
+                  body: item.description
+                    ? item.description
+                        .replace(/<[^>]*>/g, '')
+                        .replace(/&quot;/g, '"')
+                        .replace(/&amp;/g, '&')
+                        .replace(/&lt;/g, '<')
+                        .replace(/&gt;/g, '>')
+                        .replace(/&#39;/g, "'")
+                    : '내용 없음',
+                  date: item.date || item.pubDate || new Date().toLocaleDateString('ko-KR').replace(/\. /g, '.').replace(/\.$/, ''),
+                  categoryPath: `뉴스 > ${activeSub || '전체'}`,
+                  link: item.link || '#'
+                }));
+              } else {
+                // 검색 결과가 없을 경우 기본 메시지
+                data = [{
+                  id: 1,
+                  title: '검색 결과가 없습니다',
+                  body: `"${searchQuery}"에 대한 뉴스가 없습니다.`,
+                  date: new Date().toLocaleDateString('ko-KR'),
+                  categoryPath: '뉴스'
+                }];
+              }
+            } catch (newsError) {
+              console.error('네이버 뉴스 API 에러:', newsError);
+              // 에러 발생 시 기본 데이터
+              data = [{
+                id: 1,
+                title: 'API 연결 오류',
+                body: '뉴스를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+                date: new Date().toLocaleDateString('ko-KR'),
+                categoryPath: '뉴스'
+              }];
+            }
+            break;
+            
+          case "복지":
+            // 복지 API - 서브 카테고리에 따라 다른 API 호출
+            if (activeSub === "어르신") {
+              data = await welfareAPI.getElderly();
+            } else if (activeSub === "장애인") {
+              data = await welfareAPI.getDisabled();
+            } else if (activeSub === "여성 / 가족") {
+              data = await welfareAPI.getWomenFamily();
+            } else if (activeSub === "아동 / 청소년") {
+              data = await welfareAPI.getChildYouth();
+            } else if (activeSub === "청년") {
+              data = await welfareAPI.getYouth();
+            } else {
+              // 서브 카테고리가 없으면 어르신 데이터를 기본으로
+              data = await welfareAPI.getElderly();
+            }
+            // 복지 데이터 형식 변환
+            if (data && Array.isArray(data)) {
+              data = data.map((item, idx) => ({
+                id: item.id || idx + 1,
+                title: item.title || item.name || '제목 없음',
+                body: item.description || item.content || item.pubDate || '내용 없음',
+                date: item.pubDate || item.date || new Date().toLocaleDateString('ko-KR'),
+                categoryPath: `복지 > ${activeSub || '전체'}`
+              }));
+            }
+            break;
+            
+          case "서산시청":
+            // 서산시청 API
+            if (activeSub === "공지사항") {
+              data = await seosanAPI.getNotices();
+            } else if (activeSub === "보도자료") {
+              data = await seosanAPI.getPressRelease();
+            } else if (activeSub === "보건/건강") {
+              data = await seosanAPI.getHealth();
+            } else {
+              // 기본값으로 공지사항
+              data = await seosanAPI.getNotices();
+            }
+            // 서산시청 데이터 형식 변환
+            if (data && Array.isArray(data)) {
+              data = data.map((item, idx) => ({
+                id: item.id || idx + 1,
+                title: item.title || '제목 없음',
+                body: item.content || item.description || item.pubDate || '내용 없음',
+                date: item.pubDate || item.date || new Date().toLocaleDateString('ko-KR'),
+                categoryPath: `서산시청 > ${activeSub || '전체'}`
+              }));
+            }
+            break;
+            
+          case "문화관광":
+            // 문화 API
+            if (activeSub === "문화소식") {
+              data = await cultureAPI.getCultureNews();
+            } else if (activeSub === "시티투어") {
+              data = await cultureAPI.getCityTour();
+            } else if (activeSub === "관광 / 안내") {
+              data = await cultureAPI.getTourGuide();
+            } else {
+              // 기본값으로 문화소식
+              data = await cultureAPI.getCultureNews();
+            }
+            // 문화 데이터 형식 변환
+            if (data && Array.isArray(data)) {
+              data = data.map((item, idx) => ({
+                id: item.id || idx + 1,
+                title: item.title || '제목 없음',
+                body: item.content || item.description || item.pubDate || '내용 없음',
+                date: item.pubDate || item.date || new Date().toLocaleDateString('ko-KR'),
+                categoryPath: `문화관광 > ${activeSub || '전체'}`
+              }));
+            }
+            break;
+            
+          case "카페":
+          case "블로그":
+            // 네이버 카페/블로그 검색 API
+            try {
+              const searchQuery = `서산시 ${activeRegion}`;
+              const searchType = activeTab === "카페" ? 'cafearticle' : 'blog';
+              const searchResult = await naverSearchAPI.search(searchQuery, searchType, 20);
+              
+              // API가 배열을 직접 반환
+              if (searchResult && Array.isArray(searchResult) && searchResult.length > 0) {
+                data = searchResult.map((item, idx) => ({
+                  id: idx + 1,
+                  title: item.title
+                    ? item.title
+                        .replace(/<[^>]*>/g, '')  // HTML 태그 제거
+                        .replace(/&quot;/g, '"')
+                        .replace(/&amp;/g, '&')
+                        .replace(/&lt;/g, '<')
+                        .replace(/&gt;/g, '>')
+                        .replace(/&#39;/g, "'")
+                    : '제목 없음',
+                  body: item.description
+                    ? item.description
+                        .replace(/<[^>]*>/g, '')
+                        .replace(/&quot;/g, '"')
+                        .replace(/&amp;/g, '&')
+                        .replace(/&lt;/g, '<')
+                        .replace(/&gt;/g, '>')
+                        .replace(/&#39;/g, "'")
+                    : '내용 없음',
+                  date: item.date || item.postdate || new Date().toLocaleDateString('ko-KR').replace(/\. /g, '.').replace(/\.$/, ''),
+                  categoryPath: `${activeTab} > ${activeRegion}`,
+                  link: item.link || '#',
+                  cafename: item.cafename || '',
+                  bloggername: item.bloggername || ''
+                }));
+              } else {
+                // 검색 결과가 없을 경우
+                data = [{
+                  id: 1,
+                  title: '검색 결과가 없습니다',
+                  body: `"${searchQuery}"에 대한 ${activeTab} 글이 없습니다.`,
+                  date: new Date().toLocaleDateString('ko-KR'),
+                  categoryPath: activeTab
+                }];
+              }
+            } catch (error) {
+              console.error(`네이버 ${activeTab} API 에러:`, error);
+              // 에러 발생 시 기본 데이터
+              data = [{
+                id: 1,
+                title: 'API 연결 오류',
+                body: `${activeTab} 글을 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.`,
+                date: new Date().toLocaleDateString('ko-KR'),
+                categoryPath: activeTab
+              }];
+            }
+            break;
+            
+          default:
+            // 기본값으로 MOCK 데이터 사용
+            data = MOCK;
+        }
+        
+        setApiData(data || []);
+      } catch (err) {
+        setError(err.message);
+        // 뉴스/카페/블로그는 에러가 발생해도 mock 데이터를 사용
+        if (activeTab === "뉴스" || activeTab === "카페" || activeTab === "블로그") {
+          // 여기서는 빈 배열로 설정하여 상위의 MOCK 데이터가 사용되도록 함
+          setApiData([]);
+        } else {
+          setApiData([]); // 다른 탭은 에러 시 빈 배열
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [activeTab, activeSub, activeRegion]);
+
   useEffect(() => {
     if (regionFromUrl && REGIONS.includes(regionFromUrl)) setActiveRegion(regionFromUrl);
     if (tabFromUrl && TABS.some((t) => t.label === tabFromUrl)) setActiveTab(tabFromUrl);
     setActiveSub(subFromUrl || "");
     setMode(viewFromUrl === "detail" ? "detail" : "list");
-    if (idFromUrl) setSelectedId(idFromUrl);
+    if (idFromUrl) setSelectedId(Number(idFromUrl));
+    // URL 파라미터가 변경되면 상단으로 스크롤
+    window.scrollTo(0, 0);
   }, [regionFromUrl, tabFromUrl, subFromUrl, viewFromUrl, idFromUrl]);
 
   useEffect(() => {
@@ -307,7 +564,78 @@ export default function ExplorePremium() {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  // 페이지 로드 시 상단으로 스크롤
+  useEffect(() => { 
+    window.scrollTo(0, 0); 
+  }, []);
+  
+  // 지역이나 탭이 변경될 때마다 상단으로 스크롤
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeRegion, activeTab]);
+  
+  // location state에서 scrollToTop이 true면 상단으로 스크롤
+  useEffect(() => {
+    if (location.state?.scrollToTop) {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
+    }
+  }, [location]);
+
+  // location.state에서 전달된 selectedItem 처리
+  useEffect(() => {
+    if (location.state?.selectedItem) {
+      const item = location.state.selectedItem;
+      const tab = location.state.tab || item.tag;
+      const view = location.state.view || 'detail';
+      
+      // 탭 설정
+      if (tab && TABS.some(t => t.label === tab)) {
+        setActiveTab(tab);
+      }
+      
+      // 상세보기 모드로 전환
+      if (view === 'detail') {
+        setMode('detail');
+        
+        // 전달받은 item을 적절한 형태로 변환
+        const itemWithBody = {
+          ...item,
+          id: Number(item.id), // id를 숫자로 통일
+          body: item.content || item.description || item.date || '상세 내용이 없습니다.',
+          categoryPath: item.categoryPath || `${tab} > ${item.tag || '일반'}`
+        };
+        
+        // 기존 apiData가 있으면 유지하고, 없으면 새로 설정
+        const existingData = apiData.length > 0 ? apiData : MOCK;
+        
+        // 전달받은 item이 기존 데이터에 없으면 추가
+        const itemExists = existingData.some(d => Number(d.id) === Number(item.id));
+        if (!itemExists) {
+          setApiData([itemWithBody, ...existingData]);
+        } else {
+          // 이미 있으면 해당 item 업데이트
+          setApiData(existingData.map(d => 
+            Number(d.id) === Number(item.id) ? itemWithBody : d
+          ));
+        }
+        
+        setSelectedId(Number(item.id));
+      }
+      
+      // URL 파라미터 업데이트
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set('view', 'detail');
+      newParams.set('tab', tab);
+      newParams.set('id', String(item.id));
+      setSearchParams(newParams, { replace: true });
+      
+      // 상단으로 스크롤
+      window.scrollTo(0, 0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state]);
 
   useEffect(() => {
     const close = (e) => {
@@ -334,6 +662,8 @@ export default function ExplorePremium() {
           next.delete("id");
           setSearchParams(next);
           setIsTransitioning(false);
+          // 지역 변경 시 상단으로 스크롤
+          window.scrollTo(0, 0);
         }, 150);
       }
     },
@@ -399,7 +729,7 @@ export default function ExplorePremium() {
 
   const openDetail = useCallback(
     (id) => {
-      setSelectedId(id);
+      setSelectedId(Number(id));
       setMode("detail");
       setOpenMenu(null);
       const next = new URLSearchParams(searchParams);
@@ -418,25 +748,25 @@ export default function ExplorePremium() {
 
   /* ====== 이전/다음 계산 & 이동 ====== */
   const selectedItem = useMemo(
-    () => MOCK.find((m) => m.id === selectedId) || MOCK[0],
-    [selectedId]
+    () => dataToUse.find((m) => Number(m.id) === Number(selectedId)) || dataToUse[0],
+    [selectedId, dataToUse]
   );
   const currentIndex = useMemo(
-    () => MOCK.findIndex((m) => m.id === selectedItem.id),
-    [selectedItem]
+    () => dataToUse.findIndex((m) => Number(m.id) === Number(selectedItem.id)),
+    [selectedItem, dataToUse]
   );
-  const prevItem = currentIndex > 0 ? MOCK[currentIndex - 1] : null;
-  const nextItem = currentIndex < MOCK.length - 1 ? MOCK[currentIndex + 1] : null;
+  const prevItem = currentIndex > 0 ? dataToUse[currentIndex - 1] : null;
+  const nextItem = currentIndex < dataToUse.length - 1 ? dataToUse[currentIndex + 1] : null;
 
   const goPrev = useCallback(() => {
-    if (currentIndex > 0) openDetail(MOCK[currentIndex - 1].id);
-  }, [currentIndex, openDetail]);
+    if (currentIndex > 0) openDetail(dataToUse[currentIndex - 1].id);
+  }, [currentIndex, openDetail, dataToUse]);
 
   const goNext = useCallback(() => {
-    if (currentIndex < MOCK.length - 1) openDetail(MOCK[currentIndex + 1].id);
-  }, [currentIndex, openDetail]);
+    if (currentIndex < dataToUse.length - 1) openDetail(dataToUse[currentIndex + 1].id);
+  }, [currentIndex, openDetail, dataToUse]);
 
-  const countText = useMemo(() => `결과 ${MOCK.length.toLocaleString()}개`, []);
+  const countText = useMemo(() => `결과 ${dataToUse.length.toLocaleString()}개`, [dataToUse]);
 
   return (
     <div className={styles.page}>
@@ -518,21 +848,35 @@ export default function ExplorePremium() {
             </div>
 
             <section className={`${styles.list} ${isTransitioning ? styles.transitioning : ""}`}>
-              {pagedItems.map((item, index) => (
-                <article key={item.id} className={styles.card} style={{ animationDelay: `${index * 80}ms` }}>
-                  <h3 className={styles.cardTitle}>{item.title}</h3>
-                  <div className={styles.divider} />
-                  <p className={styles.cardBody}>{item.body}</p>
-                  <div className={styles.cardFooter}>
-                    <button type="button" className={styles.viewLink} onClick={() => openDetail(item.id)}>
-                      보기
-                    </button>
-                    <button type="button" className={styles.circleIcon} aria-label="상세 보기" onClick={() => openDetail(item.id)}>
-                      <img className={styles.noticeIcon} src={noteIcon} alt="" />
-                    </button>
-                  </div>
-                </article>
-              ))}
+              {loading ? (
+                <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+                  데이터를 불러오는 중...
+                </div>
+              ) : error ? (
+                <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+                  데이터를 불러올 수 없습니다. (임시 데이터 표시 중)
+                </div>
+              ) : pagedItems.length === 0 ? (
+                <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+                  검색 결과가 없습니다.
+                </div>
+              ) : (
+                pagedItems.map((item, index) => (
+                  <article key={item.id} className={styles.card} style={{ animationDelay: `${index * 80}ms` }}>
+                    <h3 className={styles.cardTitle}>{item.title}</h3>
+                    <div className={styles.divider} />
+                    <p className={styles.cardBody}>{item.body}</p>
+                    <div className={styles.cardFooter}>
+                      <button type="button" className={styles.viewLink} onClick={() => openDetail(item.id)}>
+                        보기
+                      </button>
+                      <button type="button" className={styles.circleIcon} aria-label="상세 보기" onClick={() => openDetail(item.id)}>
+                        <img className={styles.noticeIcon} src={noteIcon} alt="" />
+                      </button>
+                    </div>
+                  </article>
+                ))
+              )}
             </section>
 
             <nav className={styles.paginationWrap} aria-label="페이지네이션">

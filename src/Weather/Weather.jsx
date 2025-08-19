@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchWeatherData } from "../api/Weather.api.js";
 
 import "./Weather.css";
+import "./Weather-responsive.css";
 import Sun from "../assets/sun.png";
 import Cloud from "../assets/cloud.png";
 import Rain from "../assets/rain.png";
@@ -16,6 +17,7 @@ const weatherTypeInfo = {
 };
 
 // 기상청 예보값(category) → weatherType 변환 함수 (예보/관측 모두 대응)
+// eslint-disable-next-line no-unused-vars
 function parseWeatherType(obj) {
   // PTY: 0없음 1비 2비/눈 3눈 4소나기
   // SKY: 1맑음 3구름많음 4흐림
@@ -26,39 +28,75 @@ function parseWeatherType(obj) {
   return "sunny";
 }
 
-export default function Weather() {
+const Weather = React.memo(() => {
   const [weatherData, setWeatherData] = useState(null);
   const [weatherType, setWeatherType] = useState("sunny");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchWeatherData().then((rawData) => {
-      // 1. 기상청 단기예보 items 배열 추출
-      const items = rawData?.response?.body?.items?.item || [];
-
-      // 2. category별 객체로 변환
-      const obj = {};
-      items.forEach(item => {
-        obj[item.category] = item.fcstValue;
+    let isMounted = true;
+    
+    // 실제 API 호출
+    fetchWeatherData("해미면")
+      .then((rawData) => {
+        if (!isMounted) return;
+        
+        if (rawData && rawData.temperature) {
+          // API 응답 형식: {"temperature":"32.2","humidity":"55","sky":"1","pty":"0","windSpeed":"1.2"}
+          
+          // 날씨 상태 판단
+          let wType = "sunny";
+          if (rawData.pty === "1" || rawData.pty === "4") wType = "rain";
+          else if (rawData.pty === "2" || rawData.pty === "3") wType = "snow";
+          else if (rawData.sky === "3" || rawData.sky === "4") wType = "cloudy";
+          else wType = "sunny"; // sky가 "1"이면 맑음
+          
+          // 온도를 정수로 변환
+          const tempValue = parseFloat(rawData.temperature);
+          const roundedTemp = Math.round(tempValue);
+          
+          setWeatherData({
+            temp: roundedTemp.toString(),
+            humidity: rawData.humidity || "65",
+            wind: rawData.windSpeed ? `${rawData.windSpeed} m/s` : "2.5 m/s",
+            dust: "보통",      // API에 없어서 기본값
+            fineDust: "좋음",   // API에 없어서 기본값
+            uv: "보통",        // API에 없어서 기본값
+          });
+          setWeatherType(wType);
+        } else {
+          // 데이터가 없을 때 기본값
+          setWeatherData({
+            temp: "20",
+            humidity: "65",
+            wind: "2.5 m/s",
+            dust: "보통",
+            fineDust: "좋음",
+            uv: "보통",
+          });
+          setWeatherType("sunny");
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (!isMounted) return;
+        
+        // 에러 시 기본값 사용
+        setWeatherData({
+          temp: "20",
+          humidity: "65",
+          wind: "2.5 m/s",
+          dust: "보통",
+          fineDust: "좋음",
+          uv: "보통",
+        });
+        setWeatherType("sunny");
+        setLoading(false);
       });
-
-      // 3. 날씨 상태(맑음/비/눈/흐림) 계산
-      const wType = parseWeatherType(obj);
-
-      setWeatherData({
-        temp: obj.TMP || obj.T1H || "-",      // 예보(TMP) or 관측(T1H)
-        humidity: obj.REH || "-",             // 습도
-        wind: obj.WSD ? `${obj.WSD} m/s` : "-",
-        dust: "-",        // 미세먼지(환경부 API 연동시 값)
-        fineDust: "-",    // 초미세먼지
-        uv: "-",          // 자외선
-      });
-      setWeatherType(wType);
-      setLoading(false);
-    }).catch(() => {
-      setWeatherData(null);
-      setLoading(false);
-    });
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const { icon, label } = weatherTypeInfo[weatherType];
@@ -97,4 +135,8 @@ export default function Weather() {
       </div>
     </div>
   );
-}
+});
+
+Weather.displayName = 'Weather';
+
+export default Weather;

@@ -1,7 +1,11 @@
-const PROXY_URL = "http://localhost:4000/api/weather"; // 프록시 서버 주소
+// 백엔드 날씨 API 엔드포인트 - 프록시 사용
+const WEATHER_API_URL = process.env.NODE_ENV === 'development' 
+  ? "/api/weather"  // 프록시 경로
+  : "http://34.64.60.156:8083/api/v1/weather";
 
 
 // 기상청 단기/초단기예보에 맞는 base_date, base_time 생성 함수
+// eslint-disable-next-line no-unused-vars
 function getBaseDateTime() {
   const now = new Date();
   // 기상청 예보 발표 시간 (3시간 간격, 02시 ~ 23시)
@@ -30,18 +34,13 @@ function getBaseDateTime() {
 
 // 실제 API 요청 함수
 
-export async function fetchWeatherData(nx = 68, ny = 107) {
-  const { baseDate, baseTime } = getBaseDateTime();
-
+// 지역명으로 날씨 데이터 요청 (백엔드 API에 맞게 수정)
+export async function fetchWeatherData(region = "서산시") {
   const params = new URLSearchParams({
-    base_date: baseDate,  // YYYYMMDD
-    base_time: baseTime,  // HHMM
-    nx: nx.toString(),    // 격자 X
-    ny: ny.toString(),    // 격자 Y
-    // 필요시 추가 파라미터 입력 (API 엔드포인트에 따라)
+    region: region
   });
 
-  const url = `${PROXY_URL}?${params.toString()}`;
+  const url = `${WEATHER_API_URL}?${params.toString()}`;
 
   try {
     const res = await fetch(url);
@@ -52,14 +51,11 @@ export async function fetchWeatherData(nx = 68, ny = 107) {
       data = JSON.parse(text);
     } catch (jsonError) {
       // 대부분 인증키, 파라미터 에러면 여기서 걸림
-      console.error("JSON 파싱 에러, 원본 응답:", text);
       throw new Error("날씨 API 응답이 JSON이 아닙니다. (에러 메시지: " + text + ")");
     }
 
-    console.log("프론트에서 받은 응답:", data);
     return data;
   } catch (err) {
-    console.error("날씨 정보 요청 실패:", err);
     throw err;
   }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./TodayCard.module.css";
 import Event from "../assets/event.png";
 import ClockIcon from "../assets/clock.png";
@@ -6,24 +6,59 @@ import TrendUpIcon from "../assets/trending-up.png";
 import CardBG from "../assets/TodayCardBG.png";
 import ChainIcon from "../assets/chain.png"; // 링크 아이콘
 
-export default function TodayCard({
-  totalCount = 1432,
-  todayCollected = 18,
-  totalDelta = 12,
-  todayDelta = 7,
-  events = [
+export default function TodayCard() {
+  // API에서 가져올 통계 데이터
+  const [stats, setStats] = useState({
+    totalCount: 503,
+    todayCollected: 0,
+    yesterdayCollected: 2,
+    percentageIncrease: -100.0
+  });
+  const [loading, setLoading] = useState(true);
+  
+  // 이벤트 데이터 (하드코딩)
+  const events = [
     { date: "9월26일(금)", time: "19 : 00", title: "서산해미읍성축제" },
     { date: "10월 중",      time: "미정",     title: "서산어리굴젓 축제" },
     { date: "11월 중",      time: "미정",     title: "서산국화축제" },
-    { date: "11월 중",      time: "미정",     title: "뻘낙지먹물축제" },
-  ],
-}) {
+  ];
+  
+  // API 호출
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/flask/content_stats', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setStats({
+            totalCount: data.total_content_count || 503,
+            todayCollected: data.today_collected_count || 0,
+            yesterdayCollected: data.yesterday_collected_count || 2,
+            percentageIncrease: data.percentage_increase_from_yesterday || 0
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch content stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchStats();
+    // 5분마다 업데이트
+    const interval = setInterval(fetchStats, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
   // 제목 → 공식 페이지 링크 매핑
   const linkByTitle = {
     "서산해미읍성축제": "https://www.seosan.go.kr/tour/contents.do?key=6105",
     "서산어리굴젓 축제": "https://www.seosan.go.kr/tour/contents.do?key=6141",
     "서산국화축제":"https://www.seosan.go.kr/tour/contents.do?key=6138",
-    "뻘낙지먹물축제": "https://www.seosan.go.kr/tour/contents.do?key=6144",
   };
 
   return (
@@ -38,14 +73,29 @@ export default function TodayCard({
             <div className={styles.metricCard} style={{ backgroundImage: `url(${CardBG})` }}>
               <div className={styles.metricCircle}>
                 <div className={styles.metricLabel}>전체 콘텐츠</div>
-                <div className={styles.metricNumber}>{totalCount.toLocaleString()}</div>
+                <div className={styles.metricNumber}>
+                  {loading ? "..." : stats.totalCount.toLocaleString()}
+                </div>
               </div>
               <div className={styles.metricFooter}>
-                <span className={styles.metricSub}>전일 대비 증가</span>
-                <span className={styles.deltaBadge} aria-label={`전일 대비 ${totalDelta}% 증가`}>
-                  <img src={TrendUpIcon} alt="" className={styles.deltaIcon} />
-                  <span>+ {totalDelta}%</span>
+                <span className={styles.metricSub}>
+                  어제 수집: {stats.yesterdayCollected}개
                 </span>
+                {stats.percentageIncrease !== 0 && (
+                  <span 
+                    className={`${styles.deltaBadge} ${stats.percentageIncrease < 0 ? styles.negative : ''}`} 
+                    aria-label={`전일 대비 ${Math.abs(stats.percentageIncrease)}% ${stats.percentageIncrease > 0 ? '증가' : '감소'}`}
+                  >
+                    <img 
+                      src={TrendUpIcon} 
+                      alt="" 
+                      className={`${styles.deltaIcon} ${stats.percentageIncrease < 0 ? styles.iconRotate : ''}`} 
+                    />
+                    <span>
+                      {stats.percentageIncrease > 0 ? '+' : ''} {stats.percentageIncrease.toFixed(1)}%
+                    </span>
+                  </span>
+                )}
               </div>
             </div>
 
@@ -53,13 +103,15 @@ export default function TodayCard({
             <div className={styles.metricCard} style={{ backgroundImage: `url(${CardBG})` }}>
               <div className={styles.metricCircle}>
                 <div className={styles.metricLabel}>오늘의 수집</div>
-                <div className={styles.metricNumber}>{todayCollected.toLocaleString()}</div>
+                <div className={styles.metricNumber}>
+                  {loading ? "..." : stats.todayCollected.toLocaleString()}
+                </div>
               </div>
               <div className={styles.metricFooter}>
-                <span className={styles.metricSub}>전일 대비 증가</span>
-                <span className={styles.deltaBadge} aria-label={`전일 대비 ${todayDelta}% 증가`}>
-                  <img src={TrendUpIcon} alt="" className={styles.deltaIcon} />
-                  <span>+ {todayDelta}%</span>
+                <span className={styles.metricSub}>실시간 업데이트</span>
+                <span className={styles.liveBadge}>
+                  <span className={styles.liveDot}></span>
+                  <span>LIVE</span>
                 </span>
               </div>
             </div>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API 테스트</h1>
+    <button onclick="testAPI()">테스트 실행</button>
+    <div id="result"></div>
+    
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '테스트 중...';
+            
+            try {
+                // 직접 API 호출
+                const response = await fetch('http://34.64.60.156:8083/api/posts?category=WELFARE_SENIOR&region=%EB%8C%80%EC%82%B0%EC%9D%8D&page=0&size=5');
+                const data = await response.json();
+                
+                console.log('API 응답:', data);
+                
+                if (data.content && data.content.length > 0) {
+                    resultDiv.innerHTML = `
+                        <h2>✅ API 정상 작동</h2>
+                        <p>받은 데이터 개수: ${data.content.length}개</p>
+                        <h3>첫 번째 항목:</h3>
+                        <pre>${JSON.stringify(data.content[0], null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '❌ 데이터가 없습니다';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `❌ 오류: ${error.message}`;
+                console.error('API 오류:', error);
+            }
+        }
+        
+        // 페이지 로드 시 자동 실행
+        window.onload = () => testAPI();
+    </script>
+</body>
+</html>

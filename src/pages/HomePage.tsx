@@ -5,7 +5,10 @@ import { LoadingSpinner } from '../components/LoadingStates';
 // @ts-ignore
 const Mainpage = lazy(() => import('../Mainpage/Mainpage.jsx'));
 const MapSection = lazy(() => import('../components/MapSection'));
-const InfoSection = lazy(() => import('../components/InfoSection'));
+// @ts-ignore
+const RecommendInfo = lazy(() => import('../components/RecommendInfo/RecommendInfo.jsx'));
+// @ts-ignore
+const LocalNews = lazy(() => import('../components/LocalNews/LocalNews.jsx'));
 
 const HomePage: React.FC = () => {
   return (
@@ -13,7 +16,8 @@ const HomePage: React.FC = () => {
       <main id="main-content" role="main">
         <Mainpage />
         <MapSection />
-        <InfoSection />
+        <RecommendInfo />
+        <LocalNews />
       </main>
     </Suspense>
   );

@@ -1,0 +1,157 @@
+/* 메인페이지 반응형 최적화 */
+
+/* 대형 데스크톱 (1920px 이상) */
+@media (min-width: 1920px) {
+  .mainpage-container {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+}
+
+/* 중간 크기 조정 (1400px) */
+@media (max-width: 1400px) {
+  .mainpage-container {
+    gap: 40px;
+  }
+  
+  .news-list {
+    width: 92%;
+  }
+}
+
+/* 소형 데스크톱/태블릿 (1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .mainpage-container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .mainpage-left {
+    flex-shrink: 0;
+  }
+  
+  .mainpage-right {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  /* 공지사항 가로 배치 유지 */
+  .news-list {
+    flex-direction: row;
+    gap: 15px;
+    width: calc(100% - 40px);
+    margin-left: 20px;
+  }
+  
+  .news-item {
+    flex: 1;
+    width: calc(50% - 7.5px);
+  }
+}
+
+/* 태블릿 세로 (768px) */
+@media (max-width: 768px) {
+  /* 모든 요소 중앙 정렬 */
+  .mainpage-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .mainpage-left,
+  .mainpage-right {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* 공지사항 세로 배치 */
+  .news-list {
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .news-item {
+    width: 100%;
+  }
+  
+  /* TodayCard 반응형 */
+  .wrap {
+    margin: 0;
+    width: 100%;
+    padding: 0 15px;
+  }
+}
+
+/* 소형 모바일 (480px) */
+@media (max-width: 480px) {
+  .mainpage-container {
+    padding: 10px;
+  }
+  
+  /* 로고 크기 조정 */
+  .main-title-img {
+    max-width: 240px;
+  }
+  
+  /* 카드 크기 조정 */
+  .weather-card,
+  .trending-card {
+    max-width: 300px;
+  }
+  
+  /* 공지사항 패딩 조정 */
+  .news-item {
+    padding: 12px;
+    font-size: 13px;
+  }
+  
+  .news-text {
+    font-size: 13px;
+  }
+}
+
+/* 초소형 모바일 (375px) */
+@media (max-width: 375px) {
+  .mainpage-container {
+    padding: 8px;
+  }
+  
+  /* 로고 크기 조정 */
+  .main-title-img {
+    max-width: 220px;
+  }
+  
+  /* 카드 크기 조정 */
+  .weather-card,
+  .trending-card {
+    max-width: 280px;
+  }
+  
+  /* 텍스트 크기 조정 */
+  .weather-title,
+  .trending-row {
+    font-size: 13px;
+  }
+  
+  .weather-temp {
+    font-size: 32px;
+  }
+}
+
+/* 가로 모드 최적화 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .mainpage-container {
+    padding-top: 10px;
+  }
+  
+  .bgBox {
+    min-height: 300px;
+  }
+  
+  .main-title-img {
+    max-width: 200px;
+    margin-bottom: 10px;
+  }
+}
