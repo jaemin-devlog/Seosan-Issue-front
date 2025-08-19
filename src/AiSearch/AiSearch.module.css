@@ -399,13 +399,19 @@
 .ansTop{ display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .ansTitle{ font-size: 18px; font-weight: 800; color: #222; margin: 0; }
 
-/* ⛔ 제목 앞 아이콘 제거 */
+/*  제목 앞 아이콘 제거 */
 .ansTitle::before,
 .answerTitle::before{
   content: none;
 }
 
-.ansLink img{ width: 22px; height: 22px; display: block; }
+.ansLink img{ 
+  width: 22px;
+   height: 22px; 
+  display: block;
+  position: relative;
+  right: 410px; 
+}
 
 .ansHr{ border: none; border-top: 1px solid #eef1f4; margin: 12px 0; }
 
@@ -576,7 +582,7 @@
   .catCard { width: 100%; min-height: auto; padding: 16px; border-radius: 16px; }
 
   /* 결과 레이아웃 세로 스택 */
-  .aiResultWrap { max-width: 100%; padding: 0 16px; }
+  .aiResultWrap { max-width: 100%; padding: 0 16px; position: relative; min-height: 420px;}
   .resultRow { flex-direction: column; gap: 10px; }
   .resultLogo { width: 44px; height: 44px; margin-top: 0; }
   .resultBubbleWrap { width: 100%; }

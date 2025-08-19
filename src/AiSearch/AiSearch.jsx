@@ -14,7 +14,12 @@ import sadLogo from "../assets/sadLogo.png";
 import happyLogo from "../assets/HappyLogo.png";
 import NewsIcon from "../assets/뉴스.png";
 import chainIcon from "../assets/chain.png";
-import Pencil from "../assets/Pencil.png"; // 연필 아이콘(본문 bullet 전용)
+import Pencil from "../assets/Pencil.png"; 
+import LoaderDotsRing from "../AiSearch/Loading.jsx";
+
+/* ✅ 추가: 최소 로딩 시간 보장 */
+const MIN_LOADING_MS = 7500; // ← 원하는 시간(ms)으로 바꾸세요
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /* ===== 최근 검색 목업 ===== */
 const recentSearchPool = [
@@ -48,7 +53,9 @@ export default function AiSearch() {
     setSearchState("loading");
 
     try {
-      const data = await mockSearch(q);
+      /* ✅ API 호출과 최소 대기시간을 동시에 대기 */
+      const [data] = await Promise.all([mockSearch(q), sleep(MIN_LOADING_MS)]);
+
       if (!data || (data.items?.length ?? 0) === 0) {
         setResult({ items: [] });
         setSearchState("empty");
@@ -59,6 +66,8 @@ export default function AiSearch() {
         setActiveTab("answer");
       }
     } catch {
+      /* 에러여도 최소 대기시간 보장 */
+      await sleep(MIN_LOADING_MS);
       setResult({ items: [] });
       setSearchState("empty");
       setActiveTab("answer");
@@ -115,13 +124,15 @@ export default function AiSearch() {
       {/* ===== 결과 ===== */}
       {searchState !== "idle" && (
         <div className={styles.aiResultWrap}>
+          {/* ✅ 결과 영역 안에서만 덮는 로더 */}
+
           {/* 토스트 */}
           <div className={styles.toastRow}>
             <img
               src={searchState === "empty" ? sadLogo : happyLogo}
               alt="상태 아이콘"
               className={styles.resultLogo}
-            />
+              />
             <span className={styles.toastBubble}>
               {searchState === "loading"
                 ? "검색 중입니다…"
@@ -138,12 +149,12 @@ export default function AiSearch() {
                 type="button"
                 onClick={() => setActiveTab("answer")}
                 className={`${styles.tabBtn} ${activeTab === "answer" ? styles.tabActive : ""}`}
-              >
+                >
                 답변
               </button>
-
             </div>
           )}
+            {searchState === "loading" && <LoaderDotsRing scope="container" theme="light" />}
 
           {/* 본문 */}
           <div className={styles.resultBody}>
@@ -159,7 +170,6 @@ export default function AiSearch() {
                       <div className={styles.ansNum}>{idx + 1}</div>
 
                       <div className={styles.ansCard}>
-                        {/* 제목 + 링크 (제목엔 어떤 아이콘도 넣지 않음) */}
                         <div className={styles.ansTop}>
                           <h3 className={styles.ansTitle}>{it.title}</h3>
                           {it.link && (
@@ -185,12 +195,7 @@ export default function AiSearch() {
                                 src={Pencil}
                                 alt=""
                                 aria-hidden="true"
-                                style={{
-                                  width: 18,
-                                  height: 18,
-                                  verticalAlign: "middle",
-                                  marginRight: 10,
-                                }}
+                                style={{ width: 18, height: 18, verticalAlign: "middle", marginRight: 10 }}
                               />
                               <span>{b}</span>
                             </li>
