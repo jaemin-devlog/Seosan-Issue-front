@@ -38,7 +38,7 @@ const trendingWeekly = [
 const API_BASE =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:8083/api/v1";
 
-// ✅ 결과가 비었는지 유연하게 판별
+// 결과가 비었는지 유연하게 판별
 const hasResults = (data) => {
   if (!data) return false;
   if (Array.isArray(data)) return data.length > 0;
@@ -220,10 +220,10 @@ export default function Mainpage() {
               <span className="History-Bar">|</span>
               <span className="balloon-popular">최근 검색</span>
               <div className="balloon-tags">
-                <span>#맛집</span>
-                <span>#노인복지</span>
-                <span>#서산교통</span>
-                <span>#해미</span>
+                <span>문화 혜택</span>
+                <span>서산 맛집 추천</span>
+                <span>복지 혜택 신청</span>
+                <span>서산 교통편</span>
               </div>
             </div>
 

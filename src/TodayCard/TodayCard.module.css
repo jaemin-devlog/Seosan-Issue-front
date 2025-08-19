@@ -8,7 +8,6 @@
   --shadow-inner:0 10px 26px rgba(17,163,154,.14);
   --shadow-badge:0 8px 18px rgba(0,0,0,.18);
 }
-
 /* ===== 레이아웃 ===== */
 .wrap{
   width:95%;
@@ -22,12 +21,12 @@
 }
 .leftCol, .rightCol { min-width:0; }
 .rightCol .sectionTitle{
-  right: 90px;
+  right: 50px;
   font-size: 25px;
   color: var(--text);
 }
 .leftCol .sectionTitle{
-  right: 280px;
+  right: 220px;
   font-size: 30px;
   color: var(--text);
 }
@@ -57,7 +56,7 @@
   box-shadow:var(--shadow-outer);
   padding:20px 20px 20px;
   width: 100%;
-  right: 50px;
+  right: 20px;
   bottom: 100px;
 }
 .leftCol .panel{
@@ -65,11 +64,13 @@
   z-index:1;
   overflow:hidden;  
   height: 500px;
+  width: 580px;
 }
 .rightCol .panel{
   position:relative;
   z-index:2;
-  width: 340px;
+  width: 290px;
+  left: -10px;
 }
 
 /* ===== 메트릭 카드 ===== */

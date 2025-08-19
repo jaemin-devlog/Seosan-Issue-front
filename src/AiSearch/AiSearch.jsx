@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./AiSearch.module.css";
+
 import LightningIcon from "../assets/Lightning.png";
 import QuestionLogo from "../assets/물음표로고 .png";
 import ChatCircleDots from "../assets/ChatCircleDots.png";
@@ -12,6 +13,8 @@ import SparkleIcon from "../assets/sparkle.png";
 import sadLogo from "../assets/sadLogo.png";
 import happyLogo from "../assets/HappyLogo.png";
 import NewsIcon from "../assets/뉴스.png";
+import chainIcon from "../assets/chain.png";
+import Pencil from "../assets/Pencil.png"; // 연필 아이콘(본문 bullet 전용)
 
 /* ===== 최근 검색 목업 ===== */
 const recentSearchPool = [
@@ -36,36 +39,33 @@ export default function AiSearch() {
 
   // 'idle' | 'loading' | 'empty' | 'ok'
   const [searchState, setSearchState] = useState("idle");
-  const [activeTab, setActiveTab] = useState("answer"); // 'answer' | 'sources'
-  const [result, setResult] = useState({ answerHtml: "", sources: [] });
+  const [activeTab, setActiveTab] = useState("answer");
+  const [result, setResult] = useState({ items: [] });
 
-  // 검색 실행
   const handleAiSearch = async () => {
     const q = inputValue.trim();
     if (!q) return;
+    setSearchState("loading");
 
     try {
-      const data = await mockSearch(q); // ← 실제 API로 교체
-      if (
-        !data ||
-        (!data.answerHtml && (!data.sources || data.sources.length === 0))
-      ) {
-        setResult({ answerHtml: "", sources: [] });
+      const data = await mockSearch(q);
+      if (!data || (data.items?.length ?? 0) === 0) {
+        setResult({ items: [] });
         setSearchState("empty");
+        setActiveTab("answer");
       } else {
         setResult(data);
         setSearchState("ok");
+        setActiveTab("answer");
       }
     } catch {
-      setResult({ answerHtml: "", sources: [] });
+      setResult({ items: [] });
       setSearchState("empty");
+      setActiveTab("answer");
     }
   };
 
-  // 최근 검색 새로고침
-  const handleRefresh = () => {
-    setRecentSearches((prevList) => getRandomList(prevList));
-  };
+  const handleRefresh = () => setRecentSearches((prev) => getRandomList(prev));
 
   return (
     <div className={styles.bg}>
@@ -77,7 +77,7 @@ export default function AiSearch() {
             <div className={styles.balloonContent}>
               <input
                 className={styles.balloonInput}
-                placeholder="찾으시는 소식이 있나요?"
+                placeholder="키워드로 입력하세요"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAiSearch()}
@@ -89,28 +89,16 @@ export default function AiSearch() {
             </div>
           </div>
 
-          <div
-            className={styles.buttonGroup}
-          >
-            {/* ★ 변경: 타이틀 전체를 버튼처럼 동작하게(마우스/키보드) */}
+          <div className={styles.buttonGroup}>
             <div
               className={styles.searchHistoryTitle}
               role="button"
               tabIndex={0}
               title="최근 검색 새로고침"
               onClick={handleRefresh}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") handleRefresh();
-              }}
-              style={{ cursor: "pointer" }}
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleRefresh()}
             >
-              <img
-                src={History}
-                alt="새로고침"
-                className={styles.historyIcon}
-                draggable="false"
-                style={{ cursor: "pointer" }}
-              />
+              <img src={History} alt="새로고침" className={styles.historyIcon} draggable="false" />
               최근 검색
             </div>
 
@@ -124,10 +112,10 @@ export default function AiSearch() {
         <img src={QuestionLogo} alt="logo" className={styles.questionLogo} draggable="false" />
       </div>
 
-      {/* ===== 검색 결과 영역 (검색이 일어나면 초기 화면 숨김) ===== */}
+      {/* ===== 결과 ===== */}
       {searchState !== "idle" && (
         <div className={styles.aiResultWrap}>
-          {/* 1) 토스트 */}
+          {/* 토스트 */}
           <div className={styles.toastRow}>
             <img
               src={searchState === "empty" ? sadLogo : happyLogo}
@@ -143,59 +131,82 @@ export default function AiSearch() {
             </span>
           </div>
 
-          {/* 2) 탭 */}
-          <div className={styles.tabsBar}>
-            <button
-              type="button"
-              onClick={() => setActiveTab("answer")}
-              className={`${styles.tabBtn} ${activeTab === "answer" ? styles.tabActive : ""}`}
-            >
-              답변
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("sources")}
-              className={`${styles.tabBtn} ${activeTab === "sources" ? styles.tabActive : ""}`}
-            >
-              출처
-            </button>
-          </div>
+          {/* (결과 없을 때만 탭 노출) */}
+          {searchState !== "ok" && (
+            <div className={styles.tabsBar}>
+              <button
+                type="button"
+                onClick={() => setActiveTab("answer")}
+                className={`${styles.tabBtn} ${activeTab === "answer" ? styles.tabActive : ""}`}
+              >
+                답변
+              </button>
 
-          {/* 3) 본문 */}
+            </div>
+          )}
+
+          {/* 본문 */}
           <div className={styles.resultBody}>
             {searchState === "loading" ? null : searchState === "empty" ? (
               <div className={styles.noResultBox}>이런, 결과가 없습니다. 다시 시도해보세요.</div>
-            ) : activeTab === "answer" ? (
-              // ====== 여기! 흰 카드로 답변 표시 ======
-              <section className={styles.answerCard}>
-                <div
-                  className={styles.answerBody}
-                  dangerouslySetInnerHTML={{ __html: result.answerHtml }}
-                />
-              </section>
             ) : (
-              <div className={styles.resultCardList}>
-                {result.sources.map((item, idx) => (
-                  <div className={styles.resultCard} key={idx}>
-                    <div className={styles.resultCardTitle}>{item.title}</div>
-                    <div className={styles.resultCardProvider}>{item.provider}</div>
-                    <a
-                      className={styles.resultCardLink}
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      바로가기
-                    </a>
-                  </div>
-                ))}
-              </div>
+              <section className={styles.ansSection}>
+                <div className={styles.ansHeader}>답변</div>
+
+                <ul className={styles.ansList}>
+                  {result.items.map((it, idx) => (
+                    <li key={idx} className={styles.ansItem}>
+                      <div className={styles.ansNum}>{idx + 1}</div>
+
+                      <div className={styles.ansCard}>
+                        {/* 제목 + 링크 (제목엔 어떤 아이콘도 넣지 않음) */}
+                        <div className={styles.ansTop}>
+                          <h3 className={styles.ansTitle}>{it.title}</h3>
+                          {it.link && (
+                            <a
+                              className={styles.ansLink}
+                              href={it.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="원문 보기"
+                            >
+                              <img src={chainIcon} alt="링크" />
+                            </a>
+                          )}
+                        </div>
+
+                        <hr className={styles.ansHr} />
+
+                        {/* 본문 bullets — 각 줄 앞에 연필 아이콘만 표기 */}
+                        <ul className={styles.ansBullets} style={{ marginTop: 6 }}>
+                          {it.bullets?.map((b, bi) => (
+                            <li key={bi} className={styles.ansBullet}>
+                              <img
+                                src={Pencil}
+                                alt=""
+                                aria-hidden="true"
+                                style={{
+                                  width: 18,
+                                  height: 18,
+                                  verticalAlign: "middle",
+                                  marginRight: 10,
+                                }}
+                              />
+                              <span>{b}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             )}
           </div>
         </div>
       )}
 
-      {/* ===== 초기 랜딩(검색 전) ===== */}
+      {/* ===== 초기 랜딩 ===== */}
       {searchState === "idle" && (
         <div className={styles.contentsWrap}>
           <div className={styles.section}>
@@ -258,42 +269,30 @@ export default function AiSearch() {
   );
 }
 
-/* ===== 목업 검색 함수 (나중에 실제 API로 교체) ===== */
+/* ===== 목업 검색 함수 ===== */
 function mockSearch(q) {
   return new Promise((resolve) => {
     setTimeout(() => {
       if (/(없어|노결과|no|zero)/i.test(q)) {
-        resolve({ answerHtml: "", sources: [] });
+        resolve({ items: [] });
         return;
       }
-      const answerHtml = `
-        <h2 class="${styles.answerTitle}">서산시의 노인 복지에 대한 주요 내용은 다음과 같아요.</h2>
-        <hr class="${styles.answerHr}" />
-        <h3 class="${styles.answerH3}">• 주요 복지 정책 및 사업</h3>
-        <p class="${styles.answerP}">
-          <b>노인여가복지시설 지원:</b> 서산시는 경로당, 마을회관 등 관내 440개소의 노인여가복지시설을 대상으로 난방비와 각종 물품을 지원하고 있습니다.
-          또한, 어르신들의 안전을 위해 시설에 대한 종합 보험 가입을 지원하고, 주기적인 소독을 실시하여 전염병을 예방하고 있습니다.
-        </p>
-        <p class="${styles.answerP}">
-          <b>노인 일자리 사업:</b> 어르신들의 경제적 안정과 사회 참여를 돕기 위해 노인 일자리를 제공하고 있습니다.
-        </p>
-        <hr class="${styles.answerHr}" />
-        <h3 class="${styles.answerH3}">• 주요 복지 시설</h3>
-        <p class="${styles.answerP}">
-          <b>서산노인복지센터:</b> 지곡면에 위치한 시설로, 노인 장기요양보험 관련 서비스를 제공합니다.
-        </p>
-        <p class="${styles.answerP}">
-          <b>서산한노인복지센터:</b> 음암면에 위치한 요양시설입니다.
-        </p>
-        <p class="${styles.answerP}">
-          <b>우리들주야간노인복지센터:</b> 수석동에 위치하며 방문목욕, 방문요양, 주·야간 보호 등 다양한 재가노인복지 서비스를 제공합니다.
-        </p>
-      `;
       resolve({
-        answerHtml,
-        sources: [
-          { title: "충청남도 서산시_재가노인 복지시설", link: "#", provider: "충청남도 데이터포털 올담" },
-          { title: "충청남도 서산시_노인의료복지시설", link: "#", provider: "충청남도 데이터포털 올담" },
+        items: [
+          {
+            title: "서산시, 고령 운전자 ‘페달 오조작 방지 장치’ 설치 기원",
+            bullets: [
+              "충남 서산시가 고령 운전자의 교통사고 예방을 위해 페달 오조작 방지 장치 설치를 지원한다고 19일 밝혔으며, 이는 서산경찰서의 추천을 받아 선정되었다.",
+            ],
+            link: "#",
+          },
+          {
+            title: "서산시 ‘시민 참여형 홍보단’ 11기 SNS 서포터스 모집",
+            bullets: [
+              "충남 서산시가 시민이 참여하고 소통하는 공감행정 실현을 위해 ‘제 11기 SNS 서포터스’를 모집한다고 18일 밝혔으며 서산에 대한 애정이 있는 사회 관계망 서비스 계정 운영자라면 누구나, 지역·성별, 관계없이 서포터스가 될 수 있다.",
+            ],
+            link: "#",
+          },
         ],
       });
     }, 400);

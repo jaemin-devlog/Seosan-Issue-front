@@ -308,7 +308,7 @@
 .resultCardTitle { font-weight: 700; }
 .resultCardLink { margin-top: 4px; color: #0096ff; font-size: 0.99em; text-decoration: underline; }
 
-/* ====== 탭/토스트/본문 레이어 ====== */
+/* ====== 토스트/본문 레이어 ====== */
 .toastRow{
   position: relative;
   z-index: 3;
@@ -328,7 +328,7 @@
 }
 .resultLogo{ width: 56px; height: 56px; }
 
-/* 탭 */
+/* ====== 탭 (보이게 복원) ====== */
 .tabsBar{
   position: relative;
   z-index: 2;
@@ -359,17 +359,79 @@
   z-index: 1;
 }
 
-/* 결과 없음 문구 */
+/* ====== 결과 없음 문구: 스샷처럼 왼쪽 정렬 ====== */
 .noResultBox{
-  height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 220px;
+  display: block;
   color: #9aa8a8;
-  font-size: 16px;
+  font-size: 18px;
+  line-height: 1.6;
+  padding: 52px 0 0 140px; /* 왼쪽 여백 */
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
 }
 
-/* 흰 카드 답변 */
+/* ====== 답변: 번호 + 카드 UI ====== */
+.ansSection{ margin-top: 8px; }
+.ansHeader{
+  font-size: 18px;
+  font-weight: 800;
+  color: #222;
+  width: fit-content;
+  border-bottom: 4px solid #222;
+  padding-bottom: 6px;
+  margin: 0 0 14px 6px;
+}
+.ansList{ display: grid; gap: 18px; list-style: none; padding: 0; margin: 0; }
+.ansItem{ display: grid; grid-template-columns: 40px 1fr; align-items: start; gap: 12px; }
+
+.ansNum{
+  width: 32px; height: 32px; border-radius: 999px; display: grid; place-items: center;
+  background: #111; color: #fff; font-weight: 900; font-size: 16px;
+}
+
+.ansCard{
+  background: #fff; border-radius: 14px; box-shadow: 0 10px 20px rgba(0,0,0,.08);
+  padding: 16px 18px;
+}
+
+.ansTop{ display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.ansTitle{ font-size: 18px; font-weight: 800; color: #222; margin: 0; }
+
+/* ⛔ 제목 앞 아이콘 제거 */
+.ansTitle::before,
+.answerTitle::before{
+  content: none;
+}
+
+.ansLink img{ width: 22px; height: 22px; display: block; }
+
+.ansHr{ border: none; border-top: 1px solid #eef1f4; margin: 12px 0; }
+
+/* ✅ 본문 bullet: 연필 아이콘만 표시 (네모 배경 제거) */
+.ansBullets{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+.ansBullet{
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding-left: 0;
+  color: #2b2b2b;
+  line-height: 1.6;
+}
+.ansBullet img{
+  position: relative;
+  left: 10px;
+  top: 5px;
+}
+
+/* ===== 기존 흰 카드 답변 (옵션) ===== */
 .answerCard{
   background: #fff;
   border-radius: 16px;
@@ -521,9 +583,6 @@
   .resultBubbleImg { width: 100%; max-width: 360px; }
   .resultBubbleText { top: 14px; left: 20px; font-size: 1rem; }
 
-  /* 탭/카드 여백 축소 */
-  .tabsBar { gap: 16px; }
-  .tabBtn { font-size: 15px; padding: 10px 2px 10px; }
   .answerCard { padding: 16px; }
 }
 
@@ -549,8 +608,6 @@
   .balloonInput { width: calc(100% - 120px); font-size: 15px; }
   .aiSearchRight { right: 10px; }
 
-  .tabsBar { gap: 12px; }
-  .tabBtn { font-size: 14px; padding: 8px 2px 10px; }
   .answerCard { padding: 14px; border-radius: 14px; }
 }
 

@@ -22,7 +22,7 @@ import sparkleIcon from "../../assets/sparkle.png";
 
 /* ===== 상수 ===== */
 const REGIONS = [
-  "대산읍","지곡면","팔봉면","성연면","음암면","운산면","부춘동",
+  "전체","대산읍","지곡면","팔봉면","성연면","음암면","운산면","부춘동",
   "동문1동","동문2동","수석동","인지면","석남동","부석면","고북면","해미면",
 ];
 
@@ -31,7 +31,7 @@ const TABS = [
   { label: "복지", dropdown: true },
   { label: "문화관광", dropdown: true },
   { label: "서산시청", dropdown: true },
-  { label: "카페", dropdown: false },
+  { label: "카페", dropdown: false },  // ← 카페만 보기→링크로 치환
   { label: "블로그", dropdown: false },
 ];
 
@@ -66,6 +66,16 @@ const MOCK = Array.from({ length: 15 }).map((_, i) => {
 
 const PAGE_SIZE = 5;
 
+/* ✅ 카페 링크(네이버 카페 글 검색) */
+const buildCafeUrl = (region, sub, title) => {
+  const parts = ["서산"];
+  if (region && region !== "전체") parts.push(region);
+  if (sub) parts.push(sub);
+  if (title) parts.push(title);
+  const q = parts.join(" ");
+  return `https://search.naver.com/search.naver?where=article&query=${encodeURIComponent(q)}`;
+};
+
 /* ===== 상세 화면 ===== */
 function DetailView({
   item,
@@ -98,7 +108,6 @@ function DetailView({
     [item?.body]
   );
 
-  /* ✅ 배너 문구 동적 생성 */
   const bannerText = useMemo(() => {
     const title = (item?.title || "").replace(/\s+/g, " ").trim();
     const firstLine = (item?.body || "")
@@ -142,7 +151,6 @@ function DetailView({
       ) : (
         <section className={styles.noticeWrap}>
           <div className={styles.infoPanel}>
-            {/* ✅ 배너 문구가 선택된 글에 따라 바뀜 */}
             <div className={styles.panelBanner}>
               <img src={sparkleIcon} alt="" className={styles.bannerSparkle} />
               <span className={styles.bannerText}>{bannerText}</span>
@@ -191,10 +199,6 @@ function DetailView({
                         ))}
                     </td>
                   </tr>
-                  <tr>
-                    <th className={styles.thCol}>파일</th>
-                    <td className={styles.tdCol}>-</td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -211,40 +215,42 @@ function DetailView({
         <div className={styles.underbar} aria-hidden="true" />
       </div>
 
-      {/* 이전/다음 글 */}
-      <nav className={styles.pnWrap}>
-        <button
-          type="button"
-          className={styles.pnItem}
-          onClick={hasPrev ? onPrev : undefined}
-          disabled={!hasPrev}
-          aria-disabled={!hasPrev}
-        >
-          <span className={styles.pnLeft}>
-            <img src={chevronUp} alt="" className={styles.pnIcon} />
-            <span className={styles.pnLabel}>이전 글</span>
-          </span>
-          <span className={styles.pnTitle}>
-            {prevTitle || "이전 글이 없습니다"}
-          </span>
-        </button>
+      {/* 뉴스만 이전/다음 네비 숨김 */}
+      {!/^뉴스/.test(categoryLabel || "") && (
+        <nav className={styles.pnWrap}>
+          <button
+            type="button"
+            className={styles.pnItem}
+            onClick={hasPrev ? onPrev : undefined}
+            disabled={!hasPrev}
+            aria-disabled={!hasPrev}
+          >
+            <span className={styles.pnLeft}>
+              <img src={chevronUp} alt="" className={styles.pnIcon} />
+              <span className={styles.pnLabel}>이전 글</span>
+            </span>
+            <span className={styles.pnTitle}>
+              {prevTitle || "이전 글이 없습니다"}
+            </span>
+          </button>
 
-        <button
-          type="button"
-          className={styles.pnItem}
-          onClick={hasNext ? onNext : undefined}
-          disabled={!hasNext}
-          aria-disabled={!hasNext}
-        >
-          <span className={styles.pnLeft}>
-            <span className={styles.pnLabel}>다음 글</span>
-            <img src={chevronDown} alt="" className={styles.pnIcon} />
-          </span>
-          <span className={styles.pnTitle}>
-            {nextTitle || "다음 글이 없습니다"}
-          </span>
-        </button>
-      </nav>
+          <button
+            type="button"
+            className={styles.pnItem}
+            onClick={hasNext ? onNext : undefined}
+            disabled={!hasNext}
+            aria-disabled={!hasNext}
+          >
+            <span className={styles.pnLeft}>
+              <span className={styles.pnLabel}>다음 글</span>
+              <img src={chevronDown} alt="" className={styles.pnIcon} />
+            </span>
+            <span className={styles.pnTitle}>
+              {nextTitle || "다음 글이 없습니다"}
+            </span>
+          </button>
+        </nav>
+      )}
     </>
   );
 }
@@ -463,9 +469,7 @@ export default function ExplorePremium() {
                     {DROPDOWN[t.label].map((opt, idx) => (
                       <li
                         key={opt}
-                        className={`${styles.ddItem} ${
-                          activeSub === opt ? styles.ddItemActive : ""
-                        }`}
+                        className={`${styles.ddItem} ${activeSub === opt ? styles.ddItemActive : ""}`}
                         style={{ animationDelay: `${idx * 50}ms` }}
                         onClick={() => handleSubSelect(opt)}
                       >
@@ -500,7 +504,6 @@ export default function ExplorePremium() {
           </aside>
 
           <main className={styles.main}>
-            {/* 브레드크럼 */}
             {activeSub ? (
               <div className={styles.filterCrumb}>
                 <span>{activeTab}</span>
@@ -509,7 +512,6 @@ export default function ExplorePremium() {
               </div>
             ) : null}
 
-            {/* 결과 바 */}
             <div className={styles.countBar}>
               <span className={styles.countIconWrap}>
                 <img src={listMagnifier} alt="" />
@@ -524,12 +526,36 @@ export default function ExplorePremium() {
                   <div className={styles.divider} />
                   <p className={styles.cardBody}>{item.body}</p>
                   <div className={styles.cardFooter}>
-                    <button type="button" className={styles.viewLink} onClick={() => openDetail(item.id)}>
-                      보기
-                    </button>
-                    <button type="button" className={styles.circleIcon} aria-label="상세 보기" onClick={() => openDetail(item.id)}>
-                      <img className={styles.noticeIcon} src={noteIcon} alt="" />
-                    </button>
+                    {/* 카페 탭일 때만: '보기' 대신 링크(체인 아이콘)만 */}
+                    {activeTab === "카페" ? (
+                      <a
+                        href={buildCafeUrl(activeRegion, activeSub, item.title)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.circleIcon}
+                        aria-label="카페로 이동(새 창)"
+                      >
+                        <img className={styles.noticeIcon} src={chainIcon} alt="" />
+                      </a>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          className={styles.viewLink}
+                          onClick={() => openDetail(item.id)}
+                        >
+                          보기
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.circleIcon}
+                          aria-label="상세 보기"
+                          onClick={() => openDetail(item.id)}
+                        >
+                          <img className={styles.noticeIcon} src={noteIcon} alt="" />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </article>
               ))}
