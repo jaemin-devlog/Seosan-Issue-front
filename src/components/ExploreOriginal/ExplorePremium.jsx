@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "./ExplorePremium.module.css";
+import { welfareAPI, seosanAPI, cultureAPI, naverSearchAPI } from "../../api/backend.api.js";
 
 /* ===== 이미지 ===== */
 import newslogo from "../../assets/newslogo.png";
@@ -274,11 +275,15 @@ export default function ExplorePremium() {
   const [selectedId, setSelectedId] = useState(idFromUrl || null);
 
   const [page, setPage] = useState(!isNaN(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1);
-  const totalPages = Math.max(1, Math.ceil(MOCK.length / PAGE_SIZE));
+  const [apiData, setApiData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  
   const pagedItems = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
-    return MOCK.slice(start, start + PAGE_SIZE);
-  }, [page]);
+    // 모든 탭에서 API 데이터 사용
+    return apiData;
+  }, [apiData]);
 
   const pageNumbers = useMemo(() => {
     const win = 5;
@@ -308,6 +313,186 @@ export default function ExplorePremium() {
   }, [page, totalPages]);
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
+  
+  // API 호출 함수
+  const fetchData = useCallback(async () => {
+    console.log('fetchData 호출됨:', { activeTab, activeSub, activeRegion, page });
+    
+    console.log('API 호출 시작:', { activeTab, activeSub, activeRegion, page });
+    
+    setIsLoading(true);
+    try {
+      let response = null;
+      const pageParam = page - 1; // API는 0부터 시작
+      
+      // 뉴스, 카페, 블로그 - 네이버 API 사용
+      if (activeTab === "뉴스") {
+        const searchResult = await naverSearchAPI.search(activeRegion, 'news', 20);
+        console.log('뉴스 API 응답:', searchResult);
+        response = {
+          content: searchResult.map((item, idx) => ({
+            id: `news-${idx}`,
+            title: item.title.replace(/<[^>]*>/g, ''), // HTML 태그 제거
+            description: item.description?.replace(/<[^>]*>/g, '') || '',
+            link: item.link,
+            pubDate: new Date().toLocaleDateString('ko-KR').replace(/\. /g, '.').replace(/\.$/, '')
+          })),
+          totalPages: 1,
+          totalElements: searchResult.length
+        };
+      }
+      else if (activeTab === "카페") {
+        const searchResult = await naverSearchAPI.search(activeRegion, 'cafearticle', 20);
+        console.log('카페 API 응답:', searchResult);
+        response = {
+          content: searchResult.map((item, idx) => ({
+            id: `cafe-${idx}`,
+            title: item.title.replace(/<[^>]*>/g, ''),
+            description: item.description?.replace(/<[^>]*>/g, '') || '',
+            link: item.link,
+            pubDate: new Date().toLocaleDateString('ko-KR').replace(/\. /g, '.').replace(/\.$/, '')
+          })),
+          totalPages: 1,
+          totalElements: searchResult.length
+        };
+      }
+      else if (activeTab === "블로그") {
+        const searchResult = await naverSearchAPI.search(activeRegion, 'blog', 20);
+        console.log('블로그 API 응답:', searchResult);
+        response = {
+          content: searchResult.map((item, idx) => ({
+            id: `blog-${idx}`,
+            title: item.title.replace(/<[^>]*>/g, ''),
+            description: item.description?.replace(/<[^>]*>/g, '') || '',
+            link: item.link,
+            pubDate: new Date().toLocaleDateString('ko-KR').replace(/\. /g, '.').replace(/\.$/, '')
+          })),
+          totalPages: 1,
+          totalElements: searchResult.length
+        };
+      }
+      // 복지 카테고리
+      else if (activeTab === "복지") {
+        switch (activeSub) {
+          case "어르신":
+            response = await welfareAPI.getElderly(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          case "장애인":
+            response = await welfareAPI.getDisabled(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          case "여성 / 가족":
+            response = await welfareAPI.getWomenFamily(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          case "아동 / 청소년":
+            response = await welfareAPI.getChildYouth(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          case "청년":
+            response = await welfareAPI.getYouth(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          default:
+            response = await welfareAPI.getElderly(activeRegion, pageParam, PAGE_SIZE);
+            break;
+        }
+      }
+      // 문화관광 카테고리
+      else if (activeTab === "문화관광") {
+        switch (activeSub) {
+          case "문화소식":
+            response = await cultureAPI.getCultureNews(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          case "시티투어":
+            response = await cultureAPI.getCityTour(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          case "관광 / 안내":
+            response = await cultureAPI.getTourGuide(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          default:
+            response = await cultureAPI.getCultureNews(activeRegion, pageParam, PAGE_SIZE);
+            break;
+        }
+      }
+      // 서산시청 카테고리
+      else if (activeTab === "서산시청") {
+        switch (activeSub) {
+          case "보건/건강":
+            response = await seosanAPI.getHealth(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          case "공지사항":
+            response = await seosanAPI.getNotices(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          case "보도자료":
+            response = await seosanAPI.getPressRelease(activeRegion, pageParam, PAGE_SIZE);
+            break;
+          default:
+            response = await seosanAPI.getNotices(activeRegion, pageParam, PAGE_SIZE);
+            break;
+        }
+      }
+      
+      console.log('API 응답:', response);
+      
+      if (response && response.content) {
+        let transformedData;
+        
+        // 뉴스, 카페, 블로그는 네이버 API 데이터 사용
+        if (activeTab === "뉴스" || activeTab === "카페" || activeTab === "블로그") {
+          transformedData = response.content.map((item) => ({
+            id: item.id,
+            title: item.title,
+            body: item.description || `${item.title}에 대한 내용입니다.`,
+            date: item.pubDate,
+            categoryPath: `${activeTab} > ${activeRegion}`,
+            link: item.link
+          }));
+        } else {
+          // 복지, 문화관광, 서산시청은 기존 방식대로 상세 정보 가져오기
+          const detailPromises = response.content.map(item => 
+            fetch(`/api/posts/${item.id}`)
+              .then(res => res.json())
+              .catch(err => {
+                console.error(`상세 정보 가져오기 실패 (ID: ${item.id}):`, err);
+                return item; // 실패 시 기본 정보 사용
+              })
+          );
+          
+          const detailedItems = await Promise.all(detailPromises);
+          console.log('상세 데이터:', detailedItems);
+          
+          transformedData = detailedItems.map((item) => ({
+            id: item.id,
+            title: item.title,
+            body: item.content || `${item.title}에 대한 상세 내용입니다. (지역: ${item.region})`,
+            date: item.pubDate,
+            categoryPath: `${activeTab} > ${activeSub || '전체'}`
+          }));
+        }
+        
+        console.log('변환된 데이터:', transformedData);
+        
+        setApiData(transformedData);
+        setTotalPages(response.totalPages || 1);
+        setTotalElements(response.totalElements || 0);
+      } else {
+        console.log('응답에 content가 없음');
+        setApiData([]);
+        setTotalPages(1);
+        setTotalElements(0);
+      }
+    } catch (error) {
+      console.error('API 호출 실패:', error, error.stack);
+      setApiData([]);
+      setTotalPages(1);
+      setTotalElements(0);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [activeTab, activeSub, activeRegion, page]);
+  
+  // 탭, 서브카테고리, 지역, 페이지가 변경될 때마다 데이터 다시 가져오기
+  useEffect(() => {
+    console.log('useEffect 트리거 - fetchData 호출 예정');
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     const close = (e) => {
@@ -346,14 +531,31 @@ export default function ExplorePremium() {
       setActiveTab(nextActive);
       setPage(1);
 
+      // 복지, 문화관광, 서산시청 탭은 자동으로 첫 번째 서브카테고리 선택
+      let defaultSub = "";
+      if (nextActive === "복지") {
+        defaultSub = "어르신";
+      } else if (nextActive === "문화관광") {
+        defaultSub = "문화소식";
+      } else if (nextActive === "서산시청") {
+        defaultSub = "보건/건강";
+      }
+
       const next = new URLSearchParams(searchParams);
       next.set("view", "list");
       next.set("page", "1");
       next.set("region", activeRegion);
       next.set("tab", nextActive);
       next.delete("id");
-      next.delete("sub");
-      setActiveSub("");
+      
+      if (defaultSub) {
+        next.set("sub", defaultSub);
+        setActiveSub(defaultSub);
+      } else {
+        next.delete("sub");
+        setActiveSub("");
+      }
+      
       setSearchParams(next);
 
       if (tab.dropdown) setOpenMenu((prev) => (prev === nextActive ? null : nextActive));
@@ -436,7 +638,9 @@ export default function ExplorePremium() {
     if (currentIndex < MOCK.length - 1) openDetail(MOCK[currentIndex + 1].id);
   }, [currentIndex, openDetail]);
 
-  const countText = useMemo(() => `결과 ${MOCK.length.toLocaleString()}개`, []);
+  const countText = useMemo(() => {
+    return `결과 ${totalElements.toLocaleString()}개`;
+  }, [totalElements]);
 
   return (
     <div className={styles.page}>
@@ -518,8 +722,17 @@ export default function ExplorePremium() {
             </div>
 
             <section className={`${styles.list} ${isTransitioning ? styles.transitioning : ""}`}>
-              {pagedItems.map((item, index) => (
-                <article key={item.id} className={styles.card} style={{ animationDelay: `${index * 80}ms` }}>
+              {isLoading ? (
+                <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                  데이터를 불러오는 중입니다...
+                </div>
+              ) : pagedItems.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                  해당 카테고리에 데이터가 없습니다.
+                </div>
+              ) : (
+                pagedItems.map((item, index) => (
+                  <article key={item.id} className={styles.card} style={{ animationDelay: `${index * 80}ms` }}>
                   <h3 className={styles.cardTitle}>{item.title}</h3>
                   <div className={styles.divider} />
                   <p className={styles.cardBody}>{item.body}</p>
@@ -532,7 +745,8 @@ export default function ExplorePremium() {
                     </button>
                   </div>
                 </article>
-              ))}
+                ))
+              )}
             </section>
 
             <nav className={styles.paginationWrap} aria-label="페이지네이션">
