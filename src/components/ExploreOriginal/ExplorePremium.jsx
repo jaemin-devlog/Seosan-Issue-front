@@ -217,38 +217,42 @@ function DetailView({
                   filter: "drop-shadow(0 6px 12px rgba(0,0,0,.08))",
                 }}
               />
-              <table className={styles.detailTable}>
-                <tbody>
-                  <tr>
-                    <th className={styles.thCol}>카테고리</th>
-                    <td className={styles.tdCol}>{item?.categoryPath || categoryLabel}</td>
-                  </tr>
-                  <tr>
-                    <th className={styles.thCol}>등록일</th>
-                    <td className={styles.tdCol}>{dateToShow}</td>
-                  </tr>
-                  <tr>
-                    <th className={styles.thCol}>제목</th>
-                    <td className={styles.tdCol}>{item?.title || "-"}</td>
-                  </tr>
-                  <tr>
-                    <th className={styles.thCol}>내용</th>
-                    <td className={styles.tdCol}>
-                      {String(item?.body || "-")
-                        .split("\n")
-                        .map((line, i) => (
-                          <p key={i} style={{ margin: i ? "6px 0 0" : 0 }}>
-                            {line}
-                          </p>
-                        ))}
-                    </td>
-                  </tr>
-                  <tr>
-                   <th className={styles.thCol}>파일</th>
-                    <td className={styles.tdCol}></td>
-                  </tr>
-                </tbody>
-              </table>
+              {/* 👇 추가: 테이블만 둥근 모서리로 클리핑하여 모서리 튀어나옴 방지 */}
+              <div style={{ borderRadius: 24, overflow: "hidden", background: "#fff" }}>
+                <table className={styles.detailTable}>
+                  <tbody>
+                    <tr>
+                      <th className={styles.thCol}>카테고리</th>
+                      <td className={styles.tdCol}>{item?.categoryPath || categoryLabel}</td>
+                    </tr>
+                    <tr>
+                      <th className={styles.thCol}>등록일</th>
+                      <td className={styles.tdCol}>{dateToShow}</td>
+                    </tr>
+                    <tr>
+                      <th className={styles.thCol}>제목</th>
+                      <td className={styles.tdCol}>{item?.title || "-"}</td>
+                    </tr>
+                    <tr>
+                      <th className={styles.thCol}>내용</th>
+                      <td className={styles.tdCol}>
+                        {String(item?.body || "-")
+                          .split("\n")
+                          .map((line, i) => (
+                            <p key={i} style={{ margin: i ? "6px 0 0" : 0 }}>
+                              {line}
+                            </p>
+                          ))}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className={styles.thCol}>파일</th>
+                      <td className={styles.tdCol}></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              {/* 👆 추가 끝 */}
             </div>
           </div>
         </section>

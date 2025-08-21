@@ -295,7 +295,7 @@ export default function AiSearch() {
               {[
                 { tag: "민원", text: "서산시청 민원 어떻게 넣어요?" },
                 { tag: "민원", text: "서산시청 민원 어떻게 넣어요?" },
-                { tag: "행사", text: " 서산에서 개최되는 축제 뭐 있어?" },
+                { tag: "축제", text: " 서산에서 개최되는 축제 뭐 있어?" },
                 { tag: "행사", text: "오늘 서산에 열리는 행사 뭐 있어?" },
               ].map((q, i) => (
                 <div key={i} className={styles.card}>

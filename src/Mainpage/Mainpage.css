@@ -284,7 +284,7 @@ body {
   font-family: inherit;
 }
 .balloon-tags span {
-  font-weight: 700;
+  font-weight: 400;
   color: #c1c1c1;
   letter-spacing: -0.5px;
   transition: all 0.3s ease;
