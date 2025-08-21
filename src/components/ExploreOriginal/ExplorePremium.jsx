@@ -77,6 +77,10 @@ const buildCafeUrl = (region, sub, title) => {
   return `https://search.naver.com/search.naver?where=article&query=${encodeURIComponent(q)}`;
 };
 
+/* ✅ 백엔드 요약 요청 엔드포인트 */
+const API_BASE = process.env.REACT_APP_API_BASE_URL || "";
+const SUMMARY_ENDPOINT = `${API_BASE}/api/summary`;
+
 /* ===== 상세 화면 ===== */
 function DetailView({
   item,
@@ -119,6 +123,37 @@ function DetailView({
     return src.length > 160 ? src.slice(0, 160) + "…" : src;
   }, [item?.title, item?.body]);
 
+  /* ✅ AI 요약 보내기: 뱃지 클릭 시 item 내용을 POST */
+  const [sending, setSending] = useState(false);
+  const handleSendNews = useCallback(async () => {
+    if (!isNews || sending) return;
+    try {
+      setSending(true);
+      const payload = {
+        category: categoryLabel,
+        title: item?.title || "",
+        body: item?.body || "",
+        date: dateToShow,
+      };
+      const res = await fetch(SUMMARY_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      // 응답을 사용하고 싶으면 여기서 처리
+      // const data = await res.json();
+      if (!res.ok) {
+        console.error("요약 전송 실패", res.status);
+      } else {
+        console.log("요약 전송 완료");
+      }
+    } catch (e) {
+      console.error("요약 전송 에러", e);
+    } finally {
+      setSending(false);
+    }
+  }, [isNews, sending, categoryLabel, item, dateToShow]);
+
   return (
     <>
       <div className={styles.breadcrumb}>{categoryLabel}</div>
@@ -135,10 +170,18 @@ function DetailView({
         <section className={styles.newsWrap}>
           <img src={newslogo} alt="" aria-hidden="true" className={styles.newsMascot} />
           <div className={styles.newsSummary}>
-            <div className={styles.newsBadge}>
+            {/* ⬇️ 클릭 가능하도록 버튼으로 변경 (스타일은 그대로 class 사용) */}
+            <button
+              type="button"
+              className={styles.newsBadge}
+              onClick={handleSendNews}
+              disabled={sending}
+              aria-disabled={sending}
+              title={sending ? "전송 중..." : "AI 요약 요청 보내기"}
+            >
               <img src={sparkleIcon} alt="" />
               <span>AI 요약 완료</span>
-            </div>
+            </button>
             <p className={styles.newsLead}>
               {(item?.title || "해당 뉴스") + "에 대한 주요 내용은 다음과 같아요."}
             </p>
