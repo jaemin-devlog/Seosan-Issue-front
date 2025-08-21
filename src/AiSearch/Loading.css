@@ -1,43 +1,18 @@
-.progress {
-  position: relative;
-  left: 410px;
-  width: var(--size, 50px);
-  height: var(--size, 50px);
+.spinner {
+    position: relative;
+    left: 420px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  border: var(--thickness, 5.8px) solid var(--color, #3dc5b6);
-  box-sizing: content-box;
+  background:
+    radial-gradient(farthest-side, #3dc5b6 94%, #0000) top / 9px 9px no-repeat,
+    conic-gradient(#0000 30%, #3dc5b6);
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 9px), #000 0);
+  animation: spinner-c7wet2 1s infinite linear;
 }
 
-.progress::before,
-.progress::after {
-  content: "";
-  position: absolute;
-  width: var(--thickness, 5.8px);
-  left: calc(var(--size, 115.2px) / 2 - var(--thickness, 5.8px) / 2);
-  background: var(--color, #3dc5b6);
-  border-radius: calc(var(--thickness, 5.8px) / 2);
-  animation: progress-rot linear infinite;
-}
-
-.progress::before {
-  height: calc(var(--size, 115.2px) * (49 / 115.2));
-  top: calc(var(--size, 115.2px) * (11.5 / 115.2));
-  transform-origin:
-    calc(var(--thickness, 5.8px) / 2)
-    calc(var(--size, 115.2px) * (47.5 / 115.2));
-  animation-duration: 1.6s;
-}
-
-.progress::after {
-  height: calc(var(--size, 115.2px) * (31.7 / 115.2));
-  top: calc(var(--size, 115.2px) * (28.8 / 115.2));
-  transform-origin:
-    calc(var(--thickness, 5.8px) / 2)
-    calc(var(--size, 115.2px) * (30.2 / 115.2));
-  animation-duration: 9.6s;
-}
-
-@keyframes progress-rot {
-  0%   { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+@keyframes spinner-c7wet2 {
+  100% {
+    transform: rotate(1turn);
+  }
 }

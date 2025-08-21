@@ -21,7 +21,7 @@
 }
 .leftCol, .rightCol { min-width:0; }
 .rightCol .sectionTitle{
-  right: 50px;
+  right: 53px;
   font-size: 25px;
   color: var(--text);
 }
@@ -39,7 +39,7 @@
   position: relative;
   right: 200px;
   bottom: 90px;
-  gap: 70px;
+  gap: 80px;
 }
 .party img{
   position: relative;
@@ -56,7 +56,7 @@
   box-shadow:var(--shadow-outer);
   padding:20px 20px 20px;
   width: 100%;
-  right: 20px;
+  right: 10px;
   bottom: 100px;
 }
 .leftCol .panel{
@@ -64,7 +64,8 @@
   z-index:1;
   overflow:hidden;  
   height: 500px;
-  width: 580px;
+  width: 600px;
+  
 }
 .rightCol .panel{
   position:relative;
@@ -79,7 +80,7 @@
   position:relative;
   background:linear-gradient(rgba(65, 216, 199, 0.1)),
     url('../assets/TodayCardBG.png') no-repeat;
-  overflow:hidden;
+    overflow:hidden;
   border-radius:30px;
   /* 변경 핵심 */
   width:100%;
@@ -88,9 +89,9 @@
   aspect-ratio: 10 / 11;       /* ← 카드 비율 고정 (오른쪽 샷 기준) */
   min-height:320px;
   background-repeat:no-repeat;
-  background-size:150% 150%;
-  background-position:30% 42%;
-  box-shadow:0 6px 18px rgba(17,163,154,.12);
+  background-size:140% 110%;
+  background-position:45% 170%;
+  box-shadow:0 6px 20px rgba(17,163,154,.30);
   display:flex; 
   align-items:center; 
   justify-content:center;
@@ -123,7 +124,7 @@
 
   background:radial-gradient(ellipse at center,
     rgba(255,255,255,.96) 0%, rgba(255,255,255,.92) 58%, rgba(255,255,255,.70) 100%);
-  box-shadow:0 8px 22px rgba(17,163,154,.10);
+  box-shadow:0 8px 22px rgba(17,163,154,.30);
   text-align:center;
 }
 

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+// src/AiSearch/AiSearch.jsx
+import React, { useState, useEffect } from "react";
 import styles from "./AiSearch.module.css";
-
 import LightningIcon from "../assets/Lightning.png";
 import QuestionLogo from "../assets/물음표로고 .png";
 import ChatCircleDots from "../assets/ChatCircleDots.png";
@@ -14,7 +14,7 @@ import sadLogo from "../assets/sadLogo.png";
 import happyLogo from "../assets/HappyLogo.png";
 import NewsIcon from "../assets/뉴스.png";
 import chainIcon from "../assets/chain.png";
-import Pencil from "../assets/Pencil.png"; 
+import Pencil from "../assets/Pencil.png";
 import LoaderDotsRing from "../AiSearch/Loading.jsx";
 
 /* ✅ 추가: 최소 로딩 시간 보장 */
@@ -23,24 +23,17 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /* ===== 최근 검색 목업 ===== */
 const recentSearchPool = [
-  ["문화혜택", "서산 맛집 추천", "복지 혜택 신청"],
+  ["문화혜택", "서산 맛집 추천", "복지 혜택 신청"], // 띄어쓰기 포함
   ["교통정보", "서산시 행사", "서산 카페"],
   ["서산 명소", "전통시장", "주말 이벤트"],
   ["공원 위치", "체육시설", "노인복지관"],
   ["가족 여행지", "아이와 갈만한 곳", "주차장 위치"],
 ];
-function getRandomList(prevList) {
-  const candidates = recentSearchPool.filter(
-    (arr) => arr.join("|") !== prevList.join("|")
-  );
-  if (candidates.length === 0) return prevList;
-  const i = Math.floor(Math.random() * candidates.length);
-  return candidates[i];
-}
 
 export default function AiSearch() {
   const [inputValue, setInputValue] = useState("");
-  const [recentSearches, setRecentSearches] = useState(recentSearchPool[0]);
+  // 변경: 리스트 대신 인덱스만 보관
+  const [recentIndex, setRecentIndex] = useState(0);
 
   // 'idle' | 'loading' | 'empty' | 'ok'
   const [searchState, setSearchState] = useState("idle");
@@ -74,7 +67,54 @@ export default function AiSearch() {
     }
   };
 
-  const handleRefresh = () => setRecentSearches((prev) => getRandomList(prev));
+  /* 변경: History 아이콘/텍스트 클릭 시 다음 세트로 순환 */
+  const handleRefresh = () => {
+    setRecentIndex((i) => (i + 3) % recentSearchPool.length);
+  };
+
+  /* ✅ 프리뷰 모드: ?preview=empty|loading|ok|idle + 자동검색(q, autorun) */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    // 디자인 상태 즉시 보기
+    const pv = params.get("preview");
+    if (pv) {
+      setActiveTab("answer");
+      if (pv === "empty") {
+        setSearchState("empty");
+        setResult({ items: [] });
+        return;
+      }
+      if (pv === "loading") {
+        setSearchState("loading");
+        setResult({ items: [] });
+        return;
+      }
+      if (pv === "ok") {
+        setSearchState("ok");
+        setResult({
+          items: [
+            { title: "프리뷰용 더미 결과 1", bullets: ["설명 문구 1", "설명 문구 2"], link: "#" },
+            { title: "프리뷰용 더미 결과 2", bullets: ["설명 문구 A", "설명 문구 B"], link: "#" },
+          ],
+        });
+        return;
+      }
+      if (pv === "idle") {
+        setSearchState("idle");
+        return;
+      }
+    }
+
+    // 실제 검색 자동 실행 (예: ?q=없어&autorun=1)
+    const q = params.get("q");
+    const autorun = params.get("autorun") === "1";
+    if (q && autorun) {
+      setInputValue(q);
+      handleAiSearch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={styles.bg}>
@@ -86,7 +126,7 @@ export default function AiSearch() {
             <div className={styles.balloonContent}>
               <input
                 className={styles.balloonInput}
-                placeholder="키워드로 입력하세요"
+                placeholder="찾으시는 소식이 있나요?"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAiSearch()}
@@ -107,11 +147,33 @@ export default function AiSearch() {
               onClick={handleRefresh}
               onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleRefresh()}
             >
-              <img src={History} alt="새로고침" className={styles.historyIcon} draggable="false" />
+              {/* 아이콘 직접 클릭 가능 */}
+              <img
+                src={History}
+                alt="새로고침"
+                className={styles.historyIcon}
+                draggable="false"
+                style={{ cursor: "pointer" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRefresh();
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleRefresh();
+                  }
+                }}
+                tabIndex={0}
+                aria-label="최근 검색 새로고침"
+                title="최근 검색 새로고침"
+              />
               최근 검색
             </div>
 
-            {recentSearches.map((item, idx) => (
+            {/* 변경: 인덱스로 바로 렌더 */}
+            {recentSearchPool[recentIndex].map((item, idx) => (
               <button key={item + idx} className={styles.pillBtn}>
                 {item}
               </button>
@@ -132,13 +194,21 @@ export default function AiSearch() {
               src={searchState === "empty" ? sadLogo : happyLogo}
               alt="상태 아이콘"
               className={styles.resultLogo}
-              />
+            />
             <span className={styles.toastBubble}>
-              {searchState === "loading"
-                ? "검색 중입니다…"
-                : searchState === "empty"
-                ? "AI 답변이 불가능합니다 ✨"
-                : "AI 답변이 완료되었습니다 ✨"}
+              {searchState === "loading" ? (
+                "검색 중입니다…"
+              ) : (
+                <>
+                  {searchState === "empty" ? "AI 답변이 불가능합니다" : "AI 답변이 완료되었습니다"}
+                  <img
+                    src={SparkleIcon}
+                    alt=""
+                    aria-hidden="true"
+                    className={styles.inlineSparkle}
+                  />
+                </>
+              )}
             </span>
           </div>
 
@@ -149,17 +219,19 @@ export default function AiSearch() {
                 type="button"
                 onClick={() => setActiveTab("answer")}
                 className={`${styles.tabBtn} ${activeTab === "answer" ? styles.tabActive : ""}`}
-                >
+              >
                 답변
               </button>
             </div>
           )}
-            {searchState === "loading" && <LoaderDotsRing scope="container" theme="light" />}
+          {searchState === "loading" && <LoaderDotsRing scope="container" theme="light" />}
 
-          {/* 본문 */}
+          {/* ====== ▶ 여기 '본문' 영역만 수정됨 ◀ ====== */}
           <div className={styles.resultBody}>
             {searchState === "loading" ? null : searchState === "empty" ? (
-              <div className={styles.noResultBox}>이런, 결과가 없습니다. 다시 시도해보세요.</div>
+              <div className={styles.noResultBox} role="status" aria-live="polite">
+                이런, 결과가 없습니다. 다시 시도해보세요.
+              </div>
             ) : (
               <section className={styles.ansSection}>
                 <div className={styles.ansHeader}>답변</div>
@@ -223,7 +295,7 @@ export default function AiSearch() {
               {[
                 { tag: "민원", text: "서산시청 민원 어떻게 넣어요?" },
                 { tag: "민원", text: "서산시청 민원 어떻게 넣어요?" },
-                { tag: "행사", text: "오늘 서산에 열리는 행사 뭐 있어?" },
+                { tag: "행사", text: " 서산에서 개최되는 축제 뭐 있어?" },
                 { tag: "행사", text: "오늘 서산에 열리는 행사 뭐 있어?" },
               ].map((q, i) => (
                 <div key={i} className={styles.card}>

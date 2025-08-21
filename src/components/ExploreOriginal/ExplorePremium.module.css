@@ -80,7 +80,7 @@
   position:relative; 
   border:none; 
   background:transparent; 
-  font-weight:700; 
+  font-weight:800; 
   color:#7C8B8B;
   padding:10px 16px; 
   cursor:pointer; 
@@ -96,7 +96,7 @@
   transition:all .3s ease; transform:translateX(-50%);
 }
 .tabBtnActive{ color:var(--mint); }
-.tabBtnActive::after{ width:80%; }
+.tabBtnActive::after{ width:75%; }
 .caret{ font-size:12px; transform:translateY(1px); color:#7C8B8B; transition:transform .18s ease; }
 .caretUp{ transform:rotate(180deg) translateY(-1px); }
 
@@ -130,17 +130,21 @@
 }
 .filterCrumb,
 .countBar{
+  position: relative;
   width: min(100%, var(--rail-max));
-  max-width: none !important;              /* fit-content 해제 */
+  max-width: none;              /* fit-content 해제 */
   margin: 0 auto;                          /* 중앙 레일 위에 얹기 */
   padding-left: calc(var(--rail-pad) + var(--card-pad));
   padding-right: var(--rail-pad);
-  text-align: left !important;             /* 상위 center 무력화 */
+  text-align: left;             /* 상위 center 무력화 */
   align-self: flex-start;                  /* grid/flex 부모 대비 */
   display: block;
-color: #6a8b8a;
-font-size: 17px;
-font-family: 'Pretendard', sans-serif;
+  color: #737373;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Pretendard', sans-serif;
+  left: 30px;
+
 }
 .countBar img{
   width: 26.73px;
@@ -274,7 +278,10 @@ font-family: 'Pretendard', sans-serif;
   position:relative;
   margin-top:8px;
 }
-.infoPanel{ position:relative; }
+.infoPanel{ 
+  position:relative; 
+  overflow: visible; 
+}
 
 .panelMascot{
   position:absolute;
@@ -307,6 +314,7 @@ font-family: 'Pretendard', sans-serif;
   box-shadow:0 8px 24px rgba(0,0,0,.06);
   overflow:visible;
   margin-top:90px;
+  overflow: hidden;
 }
 .tableWrap::after{
   content:"";
@@ -318,8 +326,8 @@ font-family: 'Pretendard', sans-serif;
 }
 .detailTable{ 
   position:relative; 
-  border-radius: 30px;
-  z-index:3; }
+  border-radius: 10px;
+  z-index:4; }
 .detailTable caption,
 .detailTable thead{ display:none; }
 
@@ -332,8 +340,8 @@ font-family: 'Pretendard', sans-serif;
   text-align:left;
   border-right:1px solid #E5EEEB;
 }
-.tdCol{ padding:14px 18px; color:#183534; }
-.detailTable tr + tr .thCol, .detailTable tr + tr .tdCol{ border-top:1px solid #E5EEEB; }
+.tdCol{ padding:14px 18px; color:#183534;}
+.detailTable tr + tr .thCol, .detailTable tr + tr .tdCol{ border-top:1px solid #E5EEEB; border-top-left-radius: 17px; border-bottom-left-radius: 10px; }
 
 /* ================= 링크 안내 바 ================= */
 .linkBar{

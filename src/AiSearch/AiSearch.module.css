@@ -248,6 +248,7 @@
   font-size: 15px; 
   margin-left: 3px; 
   bottom: 400px; 
+ 
 }
 .historyIcon { 
   width: 15.63px; 
@@ -255,7 +256,13 @@
   opacity: 0.85; 
   margin-right: 1px; 
 }
-
+.inlineSparkle{
+  position: relative;
+  left: 5px;
+  top: 2px;
+  width: 18px;
+  height: 18px;
+}
 .pillBtn {
   background: #fff;
   border-radius: 20px;
@@ -678,7 +685,7 @@
     border: 0; 
     outline: 0; 
     box-shadow: none;
-    -webkit-appearance: none;
+    
     -webkit-tap-highlight-color: transparent;
   }
   .aiSearchRight *, 
@@ -687,7 +694,6 @@
     border: 0; 
     outline: 0; 
     box-shadow: none;
-    -webkit-appearance: none;
     -webkit-tap-highlight-color: transparent;
   }
 

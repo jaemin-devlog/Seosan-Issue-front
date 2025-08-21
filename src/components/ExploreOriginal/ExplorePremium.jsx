@@ -31,7 +31,7 @@ const TABS = [
   { label: "복지", dropdown: true },
   { label: "문화관광", dropdown: true },
   { label: "서산시청", dropdown: true },
-  { label: "카페", dropdown: false },  // ← 카페만 보기→링크로 치환
+  { label: "카페", dropdown: false },
   { label: "블로그", dropdown: false },
 ];
 
@@ -61,12 +61,13 @@ const MOCK = Array.from({ length: 15 }).map((_, i) => {
     categoryPath: isRSV
       ? "서산 안내> 서산의자랑> 농특산물 품질인증마크"
       : undefined,
+    // region / category / subcategory / source 등은 실데이터 들어오면 사용
   };
 });
 
 const PAGE_SIZE = 5;
 
-/* ✅ 카페 링크(네이버 카페 글 검색) */
+/* ✅ 외부 검색 링크(네이버 카페만) */
 const buildCafeUrl = (region, sub, title) => {
   const parts = ["서산"];
   if (region && region !== "전체") parts.push(region);
@@ -199,6 +200,10 @@ function DetailView({
                         ))}
                     </td>
                   </tr>
+                  <tr>
+                   <th className={styles.thCol}>파일</th>
+                    <td className={styles.tdCol}></td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -260,14 +265,15 @@ export default function ExplorePremium() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const regionFromUrl = searchParams.get("region");
-  const viewFromUrl = searchParams.get("view");
+  const viewFromUrl = searchParams.get("view"); // ← 오타 수정 완료
   const idFromUrl = Number(searchParams.get("id"));
   const pageFromUrl = Number(searchParams.get("page") || "1");
   const tabFromUrl = searchParams.get("tab");
   const subFromUrl = searchParams.get("sub");
 
+  // ✅ 기본값만 "전체"로 변경
   const [activeRegion, setActiveRegion] = useState(
-    regionFromUrl && REGIONS.includes(regionFromUrl) ? regionFromUrl : "대산읍"
+    regionFromUrl && REGIONS.includes(regionFromUrl) ? regionFromUrl : "전체"
   );
   const [activeTab, setActiveTab] = useState(
     tabFromUrl && TABS.some((t) => t.label === tabFromUrl) ? tabFromUrl : "뉴스"
@@ -279,12 +285,24 @@ export default function ExplorePremium() {
   const [mode, setMode] = useState(viewFromUrl === "detail" ? "detail" : "list");
   const [selectedId, setSelectedId] = useState(idFromUrl || null);
 
+  const isAllRegion = activeRegion === "전체";
+
+  /* ====== 필터링(+전체 무시 규칙) → 페이지네이션 ====== */
+  const filteredItems = useMemo(() => {
+    let items = MOCK;
+    if (isAllRegion) return items;
+    items = items.filter((it) => !it.region || it.region === activeRegion);
+    if (activeTab) items = items.filter((it) => !it.category || it.category === activeTab);
+    if (activeSub) items = items.filter((it) => !it.subcategory || it.subcategory === activeSub);
+    return items;
+  }, [activeRegion, activeTab, activeSub, isAllRegion]);
+
   const [page, setPage] = useState(!isNaN(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1);
-  const totalPages = Math.max(1, Math.ceil(MOCK.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / PAGE_SIZE));
   const pagedItems = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
-    return MOCK.slice(start, start + PAGE_SIZE);
-  }, [page]);
+    return filteredItems.slice(start, start + PAGE_SIZE);
+  }, [page, filteredItems]);
 
   const pageNumbers = useMemo(() => {
     const win = 5;
@@ -298,6 +316,8 @@ export default function ExplorePremium() {
 
   useEffect(() => {
     if (regionFromUrl && REGIONS.includes(regionFromUrl)) setActiveRegion(regionFromUrl);
+    else setActiveRegion("전체");
+
     if (tabFromUrl && TABS.some((t) => t.label === tabFromUrl)) setActiveTab(tabFromUrl);
     setActiveSub(subFromUrl || "");
     setMode(viewFromUrl === "detail" ? "detail" : "list");
@@ -442,7 +462,11 @@ export default function ExplorePremium() {
     if (currentIndex < MOCK.length - 1) openDetail(MOCK[currentIndex + 1].id);
   }, [currentIndex, openDetail]);
 
-  const countText = useMemo(() => `결과 ${MOCK.length.toLocaleString()}개`, []);
+  /* ✅ 카운트 텍스트도 필터 결과 기준 */
+  const countText = useMemo(() => `결과 ${filteredItems.length.toLocaleString()}개`, [filteredItems.length]);
+
+  /* ✅ 카페 탭만 외부 링크(블로그는 내부 보기) */
+  const isCafeMode = activeTab === "카페";
 
   return (
     <div className={styles.page}>
@@ -504,13 +528,15 @@ export default function ExplorePremium() {
           </aside>
 
           <main className={styles.main}>
-            {activeSub ? (
-              <div className={styles.filterCrumb}>
-                <span>{activeTab}</span>
-                <span className={styles.crumbSep}>›</span>
-                <span>{activeSub}</span>
-              </div>
-            ) : null}
+            <div className={styles.filterCrumb}>
+              <span>{activeTab}</span>
+              {activeSub && (
+                <>
+                  <span className={styles.crumbSep}>›</span>
+                  <span>{activeSub}</span>
+                </>
+              )}
+            </div>
 
             <div className={styles.countBar}>
               <span className={styles.countIconWrap}>
@@ -526,8 +552,8 @@ export default function ExplorePremium() {
                   <div className={styles.divider} />
                   <p className={styles.cardBody}>{item.body}</p>
                   <div className={styles.cardFooter}>
-                    {/* 카페 탭일 때만: '보기' 대신 링크(체인 아이콘)만 */}
-                    {activeTab === "카페" ? (
+                    {/* ✅ 카페는 외부 링크, 블로그/그 외는 내부 상세 보기 */}
+                    {isCafeMode ? (
                       <a
                         href={buildCafeUrl(activeRegion, activeSub, item.title)}
                         target="_blank"
