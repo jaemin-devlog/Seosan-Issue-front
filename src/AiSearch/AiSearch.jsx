@@ -289,7 +289,7 @@ export default function AiSearch() {
           <div className={styles.section}>
             <div className={styles.sectionTitle}>
               <img src={LightbulbIcon} alt="" className={styles.titleIcon} />
-              인기 질문
+              인기 키워드
             </div>
             <div className={styles.grid}>
               {[

@@ -257,6 +257,25 @@
   opacity: 0.85; 
   margin-right: 1px;
   cursor: pointer; 
+  transform-origin: 50% 50%;     /* 회전 중심 */
+  will-change: transform;        /* 성능 힌트 */
+}
+.historyIcon:hover { 
+  animation: rotate360 .9s linear infinite;  /* 호버 시 계속 회전 */
+}
+.historyIcon:active { 
+  animation: rotate360 .55s linear 1;        /* 클릭 시 한 바퀴 */
+}
+/* 접근성: 모션 최소화 설정 존중 */
+@media (prefers-reduced-motion: reduce) {
+  .historyIcon,
+  .historyIcon:hover,
+  .historyIcon:active { animation: none }
+}
+/* ⬆️⬆️ 수정 끝 */
+
+@keyframes rotate360 {
+  to { transform: rotate(360deg); }
 }
 .inlineSparkle{
   position: relative;

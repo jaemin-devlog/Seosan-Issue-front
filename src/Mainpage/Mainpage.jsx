@@ -64,7 +64,7 @@ export default function Mainpage() {
   const [inputValue, setInputValue] = useState("");
   const [period, setPeriod] = useState("daily"); // "daily" | "weekly"
   const [aiLoading, setAiLoading] = useState(false);
-  const [recentIndex, setRecentIndex] = useState(0); // ✅ 최근검색 세트 인덱스
+  const [recentIndex, setRecentIndex] = useState(0); // 최근검색 세트 인덱스
   const navigate = useNavigate();
 
   const topics = period === "daily" ? trendingDaily : trendingWeekly;
@@ -128,7 +128,7 @@ export default function Mainpage() {
   const toWeekly = () => setPeriod("weekly");
   const togglePeriod = () => setPeriod((p) => (p === "daily" ? "weekly" : "daily"));
 
-  // ✅ 최근검색: History 아이콘 클릭 시 다음 세트로
+  //  최근검색: History 아이콘 클릭 시 다음 세트로
   const handleRecentRefresh = () =>
     setRecentIndex((i) => (i + 1) % recentSearchPool.length);
 
@@ -138,7 +138,6 @@ export default function Mainpage() {
         <div className="mainpage-left">
           <img src={logo1} alt="오늘 서산에 무슨일 issue?" className="main-title-img" />
           <Weather />
-
           {/* ------- 트렌딩 토픽 ------- */}
           <div className="trending-card-wrap">
             <div className="trending-tab-img">
@@ -201,7 +200,7 @@ export default function Mainpage() {
               <div className="balloonContent">
                 <input
                   className="balloonInput"
-                  placeholder="찾으시는 소식이 있나요?"
+                  placeholder="키워드로 검색해주새요"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={(e) => {
@@ -247,7 +246,7 @@ export default function Mainpage() {
                 style={{ cursor: "pointer" }}
               />
               <span className="History-Bar">|</span>
-              <span className="balloon-popular">최근 검색</span>
+              <span className="balloon-popular">인기 검색어</span>
               <div className="balloon-tags">
                 {recentSearchPool[recentIndex].map((tag, idx) => (
                   <span key={tag + idx}>{tag}</span>
