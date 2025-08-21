@@ -246,7 +246,7 @@ export default function Mainpage() {
                 style={{ cursor: "pointer" }}
               />
               <span className="History-Bar">|</span>
-              <span className="balloon-popular">인기 검색어</span>
+              <span className="balloon-popular">추천 검색</span>
               <div className="balloon-tags">
                 {recentSearchPool[recentIndex].map((tag, idx) => (
                   <span key={tag + idx}>{tag}</span>

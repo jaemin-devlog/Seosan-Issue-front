@@ -226,7 +226,19 @@
   height: 52px; 
   margin-top: 14px; 
 }
-.arrowIcon { position: absolute; right: 15px; bottom: 15px; width: 28px; height: 28px; }
+.arrowIcon { 
+  position: absolute;
+   right: 15px; 
+   bottom: 15px; 
+   width: 28px; 
+   height: 28px; 
+
+  }
+  .arrowIcon:hover{
+     opacity: 2;
+  filter: brightness(1) invert(3);
+  transform: translateX(1px);
+}
 
 /* 최근 검색 */
 .buttonGroup {

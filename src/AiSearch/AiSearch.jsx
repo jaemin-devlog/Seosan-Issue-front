@@ -1,5 +1,6 @@
 // src/AiSearch/AiSearch.jsx
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom"; // ✅ 추가
 import styles from "./AiSearch.module.css";
 import LightningIcon from "../assets/Lightning.png";
 import QuestionLogo from "../assets/물음표로고 .png";
@@ -126,7 +127,7 @@ export default function AiSearch() {
             <div className={styles.balloonContent}>
               <input
                 className={styles.balloonInput}
-                placeholder="찾으시는 소식이 있나요?"
+                placeholder="키워드로 검색해주세요"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAiSearch()}
@@ -324,8 +325,16 @@ export default function AiSearch() {
                   </div>
                 </div>
                 <img src={NewsIcon} alt="뉴스" className={styles.catImg} />
-                <img src={BlackCircle} alt="arrow" className={styles.arrowIcon} />
+                {/* ✅ 화살표: 탐색 뉴스 탭으로 이동 */}
+                <Link
+                  to="/explore?tab=뉴스"
+                  aria-label="탐색 페이지 뉴스 카테고리로 이동"
+                  title="뉴스 바로가기"
+                >
+                  <img src={BlackCircle} alt="바로가기" className={styles.arrowIcon} />
+                </Link>
               </div>
+
               <div className={styles.catCard}>
                 <div>
                   <div className={styles.catTitle}>복지</div>
@@ -336,7 +345,14 @@ export default function AiSearch() {
                   </div>
                 </div>
                 <img src={HealthIcon} alt="복지" className={styles.catImg} />
-                <img src={BlackCircle} alt="arrow" className={styles.arrowIcon} />
+                {/* 화살표: 탐색 복지 탭으로 이동 */}
+                <Link
+                  to="/explore?tab=복지"
+                  aria-label="탐색 페이지 복지 카테고리로 이동"
+                  title="복지 바로가기"
+                >
+                  <img src={BlackCircle} alt="바로가기" className={styles.arrowIcon} />
+                </Link>
               </div>
             </div>
           </div>

@@ -78,7 +78,7 @@
 /* 비율 고정 + 내부는 퍼센트 배치 -> 화면비가 같으면 항상 같은 모양 */
 .metricCard{
   position:relative;
-  background:linear-gradient(rgba(65, 216, 199, 0.1)),
+  background:#C3E9E5, 
     url('../assets/TodayCardBG.png') no-repeat;
     overflow:hidden;
   border-radius:30px;
