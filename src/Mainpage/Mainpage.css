@@ -248,6 +248,7 @@ body {
   position: relative;
   top: -100px;
   left: 100px;
+  z-index: 5; pointer-events: auto;
 }
 .History-Bar {
   position: absolute;
@@ -263,6 +264,7 @@ body {
   position: absolute;
   left: -10px;
   top: 8px;
+  cursor: pointer;
 }
 .balloon-popular {
   color: #a7b7bb;

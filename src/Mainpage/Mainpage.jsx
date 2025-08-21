@@ -34,6 +34,13 @@ const trendingWeekly = [
   { title: "서산 맛집" },
 ];
 
+// ✅ 최근 검색 키워드 세트 (아이콘 클릭 시 순환)
+const recentSearchPool = [
+  ["문화 혜택", "서산 맛집 추천", "복지 혜택 신청", "서산 교통편"],
+  ["교통정보", "서산시 행사", "서산 카페", "전통시장"],
+  ["서산 명소", "주말 이벤트", "체육시설", "노인복지관"],
+];
+
 // 환경변수 기반 API 베이스 URL (없으면 로컬 기본값)
 const API_BASE =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:8083/api/v1";
@@ -57,6 +64,7 @@ export default function Mainpage() {
   const [inputValue, setInputValue] = useState("");
   const [period, setPeriod] = useState("daily"); // "daily" | "weekly"
   const [aiLoading, setAiLoading] = useState(false);
+  const [recentIndex, setRecentIndex] = useState(0); // ✅ 최근검색 세트 인덱스
   const navigate = useNavigate();
 
   const topics = period === "daily" ? trendingDaily : trendingWeekly;
@@ -119,6 +127,10 @@ export default function Mainpage() {
   const toDaily = () => setPeriod("daily");
   const toWeekly = () => setPeriod("weekly");
   const togglePeriod = () => setPeriod((p) => (p === "daily" ? "weekly" : "daily"));
+
+  // ✅ 최근검색: History 아이콘 클릭 시 다음 세트로
+  const handleRecentRefresh = () =>
+    setRecentIndex((i) => (i + 1) % recentSearchPool.length);
 
   return (
     <div className="mainpage-bg">
@@ -215,15 +227,31 @@ export default function Mainpage() {
               </div>
             </div>
 
+            {/* ✅ 최근 검색: 아이콘 클릭 시 새로고침 */}
             <div className="balloon-keywords">
-              <img src={History} alr="" className="History-Icon" />
+              <img
+                src={History}
+                alt="최근 검색 새로고침"
+                className="History-Icon"
+                role="button"
+                tabIndex={0}
+                aria-label="최근 검색 새로고침"
+                title="최근 검색 새로고침"
+                onClick={handleRecentRefresh}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleRecentRefresh();
+                  }
+                }}
+                style={{ cursor: "pointer" }}
+              />
               <span className="History-Bar">|</span>
               <span className="balloon-popular">최근 검색</span>
               <div className="balloon-tags">
-                <span>문화 혜택</span>
-                <span>서산 맛집 추천</span>
-                <span>복지 혜택 신청</span>
-                <span>서산 교통편</span>
+                {recentSearchPool[recentIndex].map((tag, idx) => (
+                  <span key={tag + idx}>{tag}</span>
+                ))}
               </div>
             </div>
 

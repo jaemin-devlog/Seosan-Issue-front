@@ -238,6 +238,7 @@
   top: -100px;
   left: 180px;
   position: relative;
+  z-index: 5; pointer-events: auto;
 }
 .searchHistoryTitle { 
   display: flex; 
@@ -254,7 +255,8 @@
   width: 15.63px; 
   height: 15px; 
   opacity: 0.85; 
-  margin-right: 1px; 
+  margin-right: 1px;
+  cursor: pointer; 
 }
 .inlineSparkle{
   position: relative;
