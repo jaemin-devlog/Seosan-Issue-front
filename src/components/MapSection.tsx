@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from '
 import { useNavigate } from 'react-router-dom';
 import './MapSection.css';
 import './PremiumMinimalMap.css';
-import { MapPin, Calendar, Users, Mountain, Waves, Sparkles, Trees, ChevronLeft, ChevronRight,Tent, Landmark} from 'lucide-react';
+import { MapPin, Calendar, Users, Mountain, Waves, Sparkles, Trees, ChevronLeft, ChevronRight, Tent, Landmark, Link as LinkIcon } from 'lucide-react';
 
 interface Festival {
   readonly month: string;
@@ -46,6 +46,65 @@ interface Experience {
 interface MapSectionProps {
   readonly className?: string;
 }
+
+/* =========================
+   🔗 공식 링크 매핑 (제목 → URL)
+   빈 문자열("")이면 아이콘이 표시되지 않습니다.
+   ========================= */
+const OFFICIAL_LINKS: Record<string, string> = {
+   '서산 경주김씨 고택': 'https://blog.naver.com/gyeam',
+  '서산 유기방가옥': 'http://xn--o39am5bv7vomeopa05vdxb.gajagaja.co.kr/',
+  '중리어촌체험마을': 'http://중리어촌체험마을.kr',
+  '웅도어촌체험휴양마을': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=6189&bbsNo=1744&nttNo=243759&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=1&integrDeptCode=',
+  '방길동마을': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=970&bbsNo=475&nttNo=129332&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=1&integrDeptCode=',
+  '별마을': 'http://café.naver.com/seosanstar',
+  '한다리전통체험마을': '	https://handari.weebly.com/',
+  '초록꿈틀마을': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=970&bbsNo=475&nttNo=242553&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=1&integrDeptCode=',
+  '난사랑방': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=969&bbsNo=476&nttNo=110638&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=2&integrDeptCode=',
+  '과학딸기농장': 'http://www.winesb.co.kr',
+  '꼼방울': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=969&bbsNo=476&nttNo=191278&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=2&integrDeptCode=',
+  '나눔농장': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=969&bbsNo=476&nttNo=191280&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=2&integrDeptCode=',
+  '나무테크 나무야': '	https://blog.naver.com/leejeel',
+  '부석사 템플스테이': 'https://www.seosan.go.kr/tour/contents.do?key=6148',
+  '서광사 템플스테이': 'http://www.seogwangsa.or.kr/'
+};
+
+const getOfficialLink = (name: string) => OFFICIAL_LINKS[name] || '';
+
+/* 카드/마커용 링크 버튼 */
+const ExternalLinkBtn: React.FC<{ href: string; label: string; size?: number }> = ({ href, label, size = 18 }) => {
+  if (!href) return null;
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      title={label}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 28,
+        height: 28,
+        borderRadius: 9999,
+        background: '#fff',
+        boxShadow: '0 4px 12px rgba(0,0,0,.12)',
+        transition: 'transform .15s ease, box-shadow .15s ease'
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(-1px) scale(1.03)';
+        (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 6px 18px rgba(0,0,0,.16)';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.transform = '';
+        (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 4px 12px rgba(0,0,0,.12)';
+      }}
+    >
+      <LinkIcon size={size} />
+    </a>
+  );
+};
 
 const FESTIVALS: ReadonlyArray<Festival> = [
   {
@@ -132,7 +191,7 @@ const FESTIVALS: ReadonlyArray<Festival> = [
     details: [
       { icon: Calendar, text: '매년 10월경' },
       { icon: MapPin, text: '서산시 부석면 간월도항 일원' },
-      { icon: Users, text: '갯벌 체험, 맨손물고기 잡기, 등' }
+      { icon: Users, text: '갯벌 체험, 맨손 물고기 잡기, 등' }
     ],
     location: { x: '63%', y: '70%' }
   },
@@ -176,7 +235,7 @@ const EXPERIENCES: ReadonlyArray<Experience> = [
     position: { x: '25%', y: '35%' }
   },
   {
-    icon:  Waves,
+    icon: Waves,
     title: '중리어촌체험마을',
     description: '서해 갯벌에서 조개캐기·맨손 물고기잡기 등 바다 놀이를 즐기는 가족형 어촌 체험 마을',
     location: '충청남도 서산시 지곡면 어름들2길 66',
@@ -189,78 +248,78 @@ const EXPERIENCES: ReadonlyArray<Experience> = [
     location: '충청남도 서산시 대산읍 웅도1길 28',
     position: { x: '75%', y: '70%' }
   },
-   {
+  {
     icon: Tent,
     title: '방길동마을',
     description: '마을 해설과 자연·농사 체험으로 로컬 일상을 만나는 곳',
     location: '팔봉면 팔봉산로 122',
     position: { x: '75%', y: '70%' }
   },
- {
+  {
     icon: Tent,
     title: '별마을',
     description: '빛 공해 적은 하늘 아래 별 관측과 야간 체험이 매력적인 마을',
     location: '해미면 오학별마을길 30-2',
     position: { x: '75%', y: '70%' }
   },
-   {
+  {
     icon: Tent,
     title: '한다리전통체험마을',
     description: '다도·전통놀이·한지공예 등 옛 생활문화를 손끝으로 배우는 공간',
     location: '	서산시 음암면 한다리길 34',
     position: { x: '70%', y: '70%' }
   },
-   {
-    icon:  Tent,
+  {
+    icon: Tent,
     title: '초록꿈틀마을',
     description: '친환경 텃밭·곤충 생태 등 자연과 가까워지는 체험 마을',
     location: '충남 서산시 음암면 두치로 371',
     position: { x: '70%', y: '70%' }
   },
-     {
-    icon:  Tent,
+  {
+    icon: Tent,
     title: '난사랑방',
     description: '난(蘭) 전시·분갈이·관리 노하우를 나누는 교류의 사랑방',
     location: '충남 서산시 인지면 화수리',
     position: { x: '70%', y: '70%' }
   },
-    {
-    icon:  Tent,
+  {
+    icon: Tent,
     title: '과학딸기농장',
     description: '스마트팜 견학과 딸기 수확 체험을 함께 즐기는 농장',
     location: '충남 서산시 인지면 화수리',
     position: { x: '70%', y: '70%' }
   },
-   {
-    icon:  Tent,
+  {
+    icon: Tent,
     title: '꼼방울',
     description: '로컬 재료로 만드는 수제 디저트·공방형 클래스가 있는 공간',
     location: '충남 서산시 인지면 산저 1길 132',
     position: { x: '70%', y: '70%' }
   },
-    {
-    icon:  Tent,
+  {
+    icon: Tent,
     title: '나눔농장',
     description: '함께 가꾸고 수확을 나누는 도시농부 봉사·체험 농장',
     location: '충남 서산시 인지면 차리구억말길62-6',
     position: { x: '70%', y: '70%' }
   },
-    {
-    icon:  Tent,
+  {
+    icon: Tent,
     title: '나무테크 나무야',
     description: '목공·우드버닝 원데이 클래스로 나만의 우드 굿즈를 만드는 곳',
     location: '서산시 성연면 가재미길 37-6',
     position: { x: '70%', y: '70%' }
   },
-   {
-    icon:  Landmark,
+  {
+    icon: Landmark,
     title: '부석사 템플스테이',
     description: '산사에서 명상·예불·발우공양으로 마음을 쉬게 하는 체험',
     location: '충청남도 서산시 부석면 부석사길 243',
     position: { x: '70%', y: '70%' }
   },
-    {
-    icon:  Landmark,
+  {
+    icon: Landmark,
     title: '서광사 템플스테이',
     description: '고요한 도량에서 수행 프로그램으로 일상의 쉼표를 찍는 시간',
     location: '충청남도 서산시 부춘산1로 44',
@@ -745,13 +804,22 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                   <div className="experience-cards-final">
                     {pagedExperiences.map((exp, index) => {
                       const Icon = exp.icon;
+                      const link = getOfficialLink(exp.title); // 🔗 공식 링크
                       return (
                         <div key={`exp-card-${currentExpPage}-${index}`} className="exp-card-final">
                           <div className="exp-icon-final">
                             <Icon size={24} aria-hidden="true" />
                           </div>
+
+                          {/* ⬇️ 제목 왼쪽 / 링크 아이콘 오른쪽 끝 */}
                           <div className="exp-content-final">
-                            <h3>{exp.title}</h3>
+                            <div className="exp-card-header" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <h3 style={{ margin: 0 }}>{exp.title}</h3>
+                              <div style={{ marginLeft: 'auto' }}>
+                                <ExternalLinkBtn href={link} label={`${exp.title} 공식 사이트`} />
+                              </div>
+                            </div>
+
                             <p>{exp.description}</p>
                             <span className="exp-location-tag">{exp.location}</span>
                           </div>
@@ -912,7 +980,7 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                   );
                 })}
 
-                {/* ⭐ Experience Markers: 현재 페이지 3개만 */}
+                {/* ⭐ Experience Markers: 현재 페이지 3개만 + 링크 아이콘 옆으로 */}
                 {activeTab === 'experience' && pagedExperiences.map((exp, index) => {
                   const Icon = exp.icon;
                   const globalIndex = currentExpPage * EXP_PAGE_SIZE + index;
@@ -920,29 +988,58 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                   const isHovered = hoveredMarkerId === markerId;
                   const isFocused = focusedMarkerId === markerId;
                   const shouldShowLabel = isHovered || isFocused;
+                  const link = getOfficialLink(exp.title);
 
                   return (
-                    <button
-                      key={markerId}
-                      className={`final-exp-marker ${isHovered ? 'hovered' : ''} ${isFocused ? 'focused' : ''}`}
-                      style={{
-                        left: exp.position.x,
-                        top: exp.position.y,
-                        zIndex: (isHovered || isFocused) ? 30 : 15
-                      }}
-                      onMouseEnter={() => handleMarkerMouseEnter(markerId)}
-                      onMouseLeave={handleMarkerMouseLeave}
-                      onFocus={() => handleMarkerFocus(markerId)}
-                      onBlur={handleMarkerBlur}
-                      aria-label={`${exp.title} - ${exp.location}`}
-                    >
-                      <div className="exp-marker-icon">
-                        <Icon size={16} aria-hidden="true" />
-                      </div>
-                      <span className={`exp-marker-name ${shouldShowLabel ? 'visible' : 'hidden'}`}>
-                        {exp.location}
-                      </span>
-                    </button>
+                    <React.Fragment key={markerId}>
+                      <button
+                        className={`final-exp-marker ${isHovered ? 'hovered' : ''} ${isFocused ? 'focused' : ''}`}
+                        style={{
+                          left: exp.position.x,
+                          top: exp.position.y,
+                          zIndex: (isHovered || isFocused) ? 30 : 15
+                        }}
+                        onMouseEnter={() => handleMarkerMouseEnter(markerId)}
+                        onMouseLeave={handleMarkerMouseLeave}
+                        onFocus={() => handleMarkerFocus(markerId)}
+                        onBlur={handleMarkerBlur}
+                        aria-label={`${exp.title} - ${exp.location}`}
+                      >
+                        <div className="exp-marker-icon">
+                          <Icon size={16} aria-hidden="true" />
+                        </div>
+                        <span className={`exp-marker-name ${shouldShowLabel ? 'visible' : 'hidden'}`}>
+                          {exp.location}
+                        </span>
+                      </button>
+
+                      {link && (
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${exp.title} 공식 사이트`}
+                          title={`${exp.title} 공식 사이트`}
+                          style={{
+                            position: 'absolute',
+                            left: exp.position.x,
+                            top: exp.position.y,
+                            // ⬇️ 위가 아니라 "옆으로" 이동
+                            transform: 'translate(26px, 0px)',
+                            display: shouldShowLabel ? 'inline-flex' : 'none',
+                            width: 22,
+                            height: 22,
+                            borderRadius: 9999,
+                            background: '#fff',
+                            boxShadow: '0 4px 12px rgba(0,0,0,.18)',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <LinkIcon size={16} />
+                        </a>
+                      )}
+                    </React.Fragment>
                   );
                 })}
               </div>
