@@ -49,24 +49,36 @@ interface MapSectionProps {
 
 /* =========================
    🔗 공식 링크 매핑 (제목 → URL)
-   빈 문자열("")이면 아이콘이 표시되지 않습니다.
+   빈 문자열("")이면 아이콘/링크가 표시되지 않습니다.
    ========================= */
 const OFFICIAL_LINKS: Record<string, string> = {
-   '서산 경주김씨 고택': 'https://blog.naver.com/gyeam',
+  // ✅ 체험
+  '서산 경주김씨 고택': 'https://blog.naver.com/gyeam',
   '서산 유기방가옥': 'http://xn--o39am5bv7vomeopa05vdxb.gajagaja.co.kr/',
   '중리어촌체험마을': 'http://중리어촌체험마을.kr',
   '웅도어촌체험휴양마을': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=6189&bbsNo=1744&nttNo=243759&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=1&integrDeptCode=',
   '방길동마을': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=970&bbsNo=475&nttNo=129332&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=1&integrDeptCode=',
-  '별마을': 'http://café.naver.com/seosanstar',
-  '한다리전통체험마을': '	https://handari.weebly.com/',
+  '별마을': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=970&bbsNo=475&nttNo=129333&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=1&integrDeptCode=',
+  '한다리전통체험마을': 'https://handari.weebly.com/',
   '초록꿈틀마을': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=970&bbsNo=475&nttNo=242553&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=1&integrDeptCode=',
   '난사랑방': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=969&bbsNo=476&nttNo=110638&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=2&integrDeptCode=',
   '과학딸기농장': 'http://www.winesb.co.kr',
   '꼼방울': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=969&bbsNo=476&nttNo=191278&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=2&integrDeptCode=',
   '나눔농장': 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=969&bbsNo=476&nttNo=191280&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=2&integrDeptCode=',
-  '나무테크 나무야': '	https://blog.naver.com/leejeel',
+  '나무테크 나무야': 'https://blog.naver.com/leejeel',
   '부석사 템플스테이': 'https://www.seosan.go.kr/tour/contents.do?key=6148',
-  '서광사 템플스테이': 'http://www.seogwangsa.or.kr/'
+  '서광사 템플스테이': 'http://www.seogwangsa.or.kr/',
+  // 축제 
+  '해미 벚꽃 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6086',
+  '류방택별 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6093',
+  '서산 해미읍성축제': 'https://www.seosan.go.kr/tour/contents.do?key=6105',
+  '지곡 왕산포 서산갯마을 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6089',
+  '팔봉산 감자 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6096',
+  '서산 6쪽마늘 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6099',
+  '삼길포 우럭 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6102',
+  '어리굴젓 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6141',
+  '서산 국화 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6138',
+  '서산 뻘낙지먹물축제': 'https://www.seosan.go.kr/tour/contents.do?key=6144'
 };
 
 const getOfficialLink = (name: string) => OFFICIAL_LINKS[name] || '';
@@ -109,7 +121,7 @@ const ExternalLinkBtn: React.FC<{ href: string; label: string; size?: number }> 
 const FESTIVALS: ReadonlyArray<Festival> = [
   {
     month: '4월',
-    name: '해미벚꽃축제',
+    name: '해미 벚꽃 축제',
     description: '해미천을 따라 흐드러진 벚꽃과 다리가 어우러진 풍경으로 오작교를 떠올리게 하는 낭만을 자아냅니다.',
     details: [
       { icon: Calendar, text: '매년 4월경' },
@@ -120,7 +132,7 @@ const FESTIVALS: ReadonlyArray<Festival> = [
   },
   {
     month: '5월',
-    name: '류방택별축제',
+    name: '류방택별 축제',
     description: '해미천을 따라 흐드러진 벚꽃과 다리가 어우러진 풍경으로 오작교를 떠올리게 하는 낭만을 자아냅니다.',
     details: [
       { icon: Calendar, text: '매년 5월경' },
@@ -131,7 +143,7 @@ const FESTIVALS: ReadonlyArray<Festival> = [
   },
   {
     month: '6월',
-    name: '서산해미읍성축제',
+    name: '서산 해미읍성 축제',
     description: '조선시대 군사 요충지였던 해미읍성에서 펼쳐지는 역사문화축제로, 전통 무예 시연과 다양한 체험 프로그램이 진행됩니다.',
     details: [
       { icon: Calendar, text: '매년 6월경' },
@@ -153,7 +165,7 @@ const FESTIVALS: ReadonlyArray<Festival> = [
   },
   {
     month: '6월',
-    name: '팔봉산 감자축제',
+    name: '팔봉산 감자 축제',
     description: '조선시대 군사 요충지였던 해미읍성에서 펼쳐지는 역사문화축제로, 전통 무예 시연과 다양한 체험 프로그램이 진행됩니다.',
     details: [
       { icon: Calendar, text: '매년 6월경' },
@@ -175,7 +187,7 @@ const FESTIVALS: ReadonlyArray<Festival> = [
   },
   {
     month: '8월',
-    name: '삼길포 우럭축제',
+    name: '삼길포 우럭 축제',
     description: '조선시대 군사 요충지였던 해미읍성에서 펼쳐지는 역사문화축제로, 전통 무예 시연과 다양한 체험 프로그램이 진행됩니다.',
     details: [
       { icon: Calendar, text: '8/23~8/24' },
@@ -186,7 +198,7 @@ const FESTIVALS: ReadonlyArray<Festival> = [
   },
   {
     month: '10월',
-    name: '서산 어리굴젓 축제',
+    name: '어리굴젓 축제',
     description: '조선시대 군사 요충지였던 해미읍성에서 펼쳐지는 역사문화축제로, 전통 무예 시연과 다양한 체험 프로그램이 진행됩니다.',
     details: [
       { icon: Calendar, text: '매년 10월경' },
@@ -197,7 +209,7 @@ const FESTIVALS: ReadonlyArray<Festival> = [
   },
   {
     month: '11월',
-    name: '서산국화축제',
+    name: '서산 국화 축제',
     description: '가을의 정취를 만끽할 수 있는 서산국화축제는 다양한 국화 전시와 함께 문화공연이 펼쳐집니다.',
     details: [
       { icon: Calendar, text: '매년 11월경' },
@@ -266,7 +278,7 @@ const EXPERIENCES: ReadonlyArray<Experience> = [
     icon: Tent,
     title: '한다리전통체험마을',
     description: '다도·전통놀이·한지공예 등 옛 생활문화를 손끝으로 배우는 공간',
-    location: '	서산시 음암면 한다리길 34',
+    location: '서산시 음암면 한다리길 34',
     position: { x: '70%', y: '70%' }
   },
   {
@@ -698,6 +710,14 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
     };
   }, []);
 
+  // 🔗 축제 링크 도우미
+  const festLink = getOfficialLink(currentFestival.name);
+  const festOpen = () => { if (festLink) window.open(festLink, '_blank', 'noopener'); };
+  const festKeyOpen: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (!festLink) return;
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); festOpen(); }
+  };
+
   return (
     <section className={`map-section-final ${isVisible ? 'visible' : ''}`} ref={sectionRef} aria-label="서산 축제 및 체험 지도">
       {/* Wave Background */}
@@ -736,13 +756,26 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
             <div className="final-info-panel">
               {activeTab === 'festival' && (
                 <div className="festival-panel-content">
-                  {/* Festival Image */}
-                  <div className="festival-image-container">
+                  {/* Festival Image (클릭/엔터로 새 탭) */}
+                  <div
+                    className="festival-image-container"
+                    onClick={festOpen}
+                    onKeyDown={festKeyOpen}
+                    role={festLink ? 'link' : undefined}
+                    tabIndex={festLink ? 0 : -1}
+                    aria-label={festLink ? `${currentFestival.name} 공식 사이트로 이동` : undefined}
+                    title={festLink ? `${currentFestival.name} 공식 사이트` : undefined}
+                    style={festLink ? { cursor: 'pointer' } : undefined}
+                  >
                     <img src="/images/벚꽃.png" alt="해미벚꽃축제 풍경" className="festival-main-image" />
                   </div>
 
-                  <div className="festival-badge-container">
+                  {/* 제목 배지 + 링크 아이콘 오른쪽 */}
+                  <div className="festival-badge-container" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span className="festival-title-badge">{currentFestival.month} {currentFestival.name}</span>
+                    <div style={{ marginLeft: 'auto' }}>
+                      <ExternalLinkBtn href={festLink} label={`${currentFestival.name} 공식 사이트`} />
+                    </div>
                   </div>
 
                   <p className="festival-description-final">
@@ -800,22 +833,50 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                     <span className="title-highlight"> 특별한 여행</span>
                   </h2>
 
-                  {/* ⭐ 체험 카드: 3개 페이징 */}
+                  {/* ⭐ 체험 카드: 3개 페이징 (카드/제목/아이콘 모두 링크) */}
                   <div className="experience-cards-final">
                     {pagedExperiences.map((exp, index) => {
                       const Icon = exp.icon;
                       const link = getOfficialLink(exp.title); // 🔗 공식 링크
+
+                      const openLink = () => { if (link) window.open(link, '_blank', 'noopener'); };
+                      const onKeyOpen: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+                        if (!link) return;
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLink(); }
+                      };
+
                       return (
-                        <div key={`exp-card-${currentExpPage}-${index}`} className="exp-card-final">
+                        <div
+                          key={`exp-card-${currentExpPage}-${index}`}
+                          className="exp-card-final"
+                          style={link ? { cursor: 'pointer' } : undefined}
+                          onClick={openLink}
+                          onKeyDown={onKeyOpen}
+                          role={link ? 'link' : undefined}
+                          tabIndex={link ? 0 : -1}
+                          aria-label={link ? `${exp.title} 공식 사이트로 이동` : undefined}
+                        >
                           <div className="exp-icon-final">
                             <Icon size={24} aria-hidden="true" />
                           </div>
 
-                          {/* ⬇️ 제목 왼쪽 / 링크 아이콘 오른쪽 끝 */}
                           <div className="exp-content-final">
                             <div className="exp-card-header" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <h3 style={{ margin: 0 }}>{exp.title}</h3>
-                              <div style={{ marginLeft: 'auto' }}>
+                              {link ? (
+                                <a
+                                  href={link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{ color: 'inherit', textDecoration: 'none' }}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <h3 style={{ margin: 0 }}>{exp.title}</h3>
+                                </a>
+                              ) : (
+                                <h3 style={{ margin: 0 }}>{exp.title}</h3>
+                              )}
+
+                              <div style={{ marginLeft: 'auto' }} onClick={(e) => e.stopPropagation()}>
                                 <ExternalLinkBtn href={link} label={`${exp.title} 공식 사이트`} />
                               </div>
                             </div>
@@ -913,40 +974,70 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                   <Trees className="tree-icon" style={{ top: '60%', right: '20%' }} />
                 </div>
 
-                {/* Festival Markers */}
+                {/* Festival Markers + 링크 아이콘(옆) */}
                 {activeTab === 'festival' && FESTIVALS.map((festival, index) => {
                   const markerId = `festival-${index}`;
                   const isActive = index === currentFestivalIndex;
                   const isHovered = hoveredMarkerId === markerId;
                   const isFocused = focusedMarkerId === markerId;
                   const shouldShowLabel = isActive || isHovered || isFocused;
+                  const link = getOfficialLink(festival.name);
+                  const showLink = !!link && shouldShowLabel;
 
                   return (
-                    <button
-                      key={markerId}
-                      className={`final-marker ${isActive ? 'active' : ''} ${isHovered ? 'hovered' : ''} ${isFocused ? 'focused' : ''}`}
-                      style={{
-                        left: festival.location.x,
-                        top: festival.location.y,
-                        zIndex: isActive ? 100 : (isHovered || isFocused) ? 50 : 10
-                      }}
-                      onClick={() => handleFestivalDotClick(index)}
-                      onMouseEnter={() => handleMarkerMouseEnter(markerId)}
-                      onMouseLeave={handleMarkerMouseLeave}
-                      onFocus={() => handleMarkerFocus(markerId)}
-                      onBlur={handleMarkerBlur}
-                      aria-label={`${festival.name} (${festival.month}) 마커`}
-                      aria-pressed={isActive}
-                    >
-                      <div className="marker-pin">
-                        <div className="pin-head" />
-                        <div className="pin-center" />
-                      </div>
-                      <div className={`marker-label-final ${shouldShowLabel ? 'visible' : 'hidden'}`}>
-                        <div className="festival-name">{festival.name}</div>
-                        <div className="festival-month">{festival.month}</div>
-                      </div>
-                    </button>
+                    <React.Fragment key={markerId}>
+                      <button
+                        className={`final-marker ${isActive ? 'active' : ''} ${isHovered ? 'hovered' : ''} ${isFocused ? 'focused' : ''}`}
+                        style={{
+                          left: festival.location.x,
+                          top: festival.location.y,
+                          zIndex: isActive ? 100 : (isHovered || isFocused) ? 50 : 10
+                        }}
+                        onClick={() => handleFestivalDotClick(index)}
+                        onMouseEnter={() => handleMarkerMouseEnter(markerId)}
+                        onMouseLeave={handleMarkerMouseLeave}
+                        onFocus={() => handleMarkerFocus(markerId)}
+                        onBlur={handleMarkerBlur}
+                        aria-label={`${festival.name} (${festival.month}) 마커`}
+                        aria-pressed={isActive}
+                      >
+                        <div className="marker-pin">
+                          <div className="pin-head" />
+                          <div className="pin-center" />
+                        </div>
+                        <div className={`marker-label-final ${shouldShowLabel ? 'visible' : 'hidden'}`}>
+                          <div className="festival-name">{festival.name}</div>
+                          <div className="festival-month">{festival.month}</div>
+                        </div>
+                      </button>
+
+                      {showLink && (
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${festival.name} 공식 사이트`}
+                          title={`${festival.name} 공식 사이트`}
+                          style={{
+                            position: 'absolute',
+                            left: festival.location.x,
+                            top: festival.location.y,
+                            transform: 'translate(26px, 0)',
+                            display: 'inline-flex',
+                            width: 22,
+                            height: 22,
+                            borderRadius: 9999,
+                            background: '#fff',
+                            boxShadow: '0 4px 12px rgba(0,0,0,.18)',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: isActive ? 110 : 60
+                          }}
+                        >
+                          <LinkIcon size={16} />
+                        </a>
+                      )}
+                    </React.Fragment>
                   );
                 })}
 
@@ -1024,7 +1115,6 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                             position: 'absolute',
                             left: exp.position.x,
                             top: exp.position.y,
-                            // ⬇️ 위가 아니라 "옆으로" 이동
                             transform: 'translate(26px, 0px)',
                             display: shouldShowLabel ? 'inline-flex' : 'none',
                             width: 22,
