@@ -1,7 +1,7 @@
 // 프록시를 통해 CORS 우회
 const API_BASE_URL = process.env.NODE_ENV === 'development' 
   ? '/api'  // 개발 환경: 프록시가 /api를 /api/v1로 변환
-  : 'http://34.64.60.156:8083/api/v1';
+  : 'https://seosan-issue.shop/api/v1';
 
 // 카테고리 상수 정의
 export const POST_CATEGORIES = {
@@ -67,18 +67,44 @@ export const naverSearchAPI = {
 export const aiSearchAPI = {
   // AI 검색 간략 - 수정된 엔드포인트
   searchBrief: async (query) => {
-    return fetchAPI('/ai-search', {
-      method: 'POST',
-      body: JSON.stringify({ query })
-    });
+    // fetchAPI 함수 사용하여 프록시 거쳐서 호출
+    try {
+      console.log('AI 간략 검색 API 호출, query:', query);
+      const data = await fetchAPI('/ai-search', {
+        method: 'POST',
+        body: JSON.stringify({ query })
+      });
+      console.log('AI 간략 검색 응답:', data);
+      return data;
+    } catch (error) {
+      console.error('AI 간략 검색 API 호출 실패:', error);
+      // 에러 발생 시 빈 응답 반환
+      return { 
+        summary: "검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", 
+        sources: [] 
+      };
+    }
   },
   
   // AI 검색 상세 - 수정된 엔드포인트
   searchDetail: async (query) => {
-    return fetchAPI('/ai-search/detail', {
-      method: 'POST',
-      body: JSON.stringify({ query })
-    });
+    // fetchAPI 함수 사용하여 프록시 거쳐서 호출
+    try {
+      console.log('AI 상세 검색 API 호출, query:', query);
+      const data = await fetchAPI('/ai-search/detail', {
+        method: 'POST',
+        body: JSON.stringify({ query })
+      });
+      console.log('AI 상세 검색 응답:', data);
+      return data;
+    } catch (error) {
+      console.error('AI 상세 검색 API 호출 실패:', error);
+      // 에러 발생 시 에러 메시지 반환
+      return { 
+        summary: "검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", 
+        sources: [] 
+      };
+    }
   },
   
   // 요약 AI - Flask 엔드포인트 사용 (프록시 경유)
@@ -112,8 +138,8 @@ export const postsAPI = {
   getDetail: async (postId) => {
     // 주의: /api 없이 직접 호출
     const url = process.env.NODE_ENV === 'development'
-      ? `http://34.64.60.156:8083/api/posts/${postId}`
-      : `http://34.64.60.156:8083/api/posts/${postId}`;
+      ? `https://seosan-issue.shop/api/posts/${postId}`
+      : `https://seosan-issue.shop/api/posts/${postId}`;
     
     try {
       const response = await fetch(url);
@@ -135,7 +161,7 @@ export const postsAPI = {
     // 프록시를 통해 CORS 우회
     const url = process.env.NODE_ENV === 'development' 
       ? '/api/posts'  // 개발 환경: 프록시 사용
-      : 'http://34.64.60.156:8083/api/posts';
+      : 'https://seosan-issue.shop/api/posts';
       
     const params = new URLSearchParams({
       category,
@@ -169,9 +195,11 @@ export const weatherAPI = {
 
 // 콘텐츠 통계 API
 export const statsAPI = {
-  // 콘텐츠 통계 조회 - Flask 엔드포인트 (프록시 경유)
+  // 콘텐츠 통계 조회 - Flask 엔드포인트
   getContentStats: async () => {
-    const url = '/api/flask/content_stats';
+    const url = process.env.NODE_ENV === 'development' 
+      ? '/api/flask/content_stats'  // 개발 환경: 프록시 사용
+      : 'https://seosan-issue.shop/flask/content_stats';  // 프로덕션: 직접 호출
     try {
       const response = await fetch(url, {
         method: 'GET',

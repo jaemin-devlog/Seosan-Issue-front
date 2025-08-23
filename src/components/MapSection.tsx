@@ -18,6 +18,7 @@ interface Festival {
     readonly x: string;
     readonly y: string;
   };
+  readonly link?: string;
 }
 
 interface Region {
@@ -44,6 +45,7 @@ interface Experience {
     readonly x: string;
     readonly y: string;
   };
+  readonly link?: string;
 }
 
 interface MapSectionProps {
@@ -61,7 +63,20 @@ const FESTIVALS: ReadonlyArray<Festival> = [
       { icon: MapPin, text: '서산시 해미면 해미천 일원' },
       { icon: Users, text: '찾아가는 거리음악회, 농특산물 판매, 야간공연 등' }
     ],
-    location: { x: '65%', y: '55%' }
+    location: { x: '65%', y: '55%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6086'
+  },
+  {
+    month: '5월',
+    name: '류방택별축제',
+    description: '천문과학을 주제로 한 별빛 축제로 별자리 관측과 천문 체험이 가능합니다.',
+    details: [
+      { icon: Calendar, text: '매년 5월경' },
+      { icon: MapPin, text: '서산 류방택천문기상과학관' },
+      { icon: Sparkles, text: '별자리 관측, 천문 체험, 과학 프로그램' }
+    ],
+    location: { x: '50%', y: '45%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6093'
   },
   {
     month: '6월',
@@ -72,7 +87,68 @@ const FESTIVALS: ReadonlyArray<Festival> = [
       { icon: MapPin, text: '서산시 해미읍성 일원' },
       { icon: Users, text: '전통 무예 시연, 역사 체험, 먹거리 장터' }
     ],
-    location: { x: '63%', y: '70%' }  // 해미면 위치와 가깝게 조정
+    location: { x: '63%', y: '70%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6105'
+  },
+  {
+    month: '7월',
+    name: '지곡왕산포서산갯마을축제',
+    description: '서산의 갯마을 문화와 해산물을 즐길 수 있는 여름 축제입니다.',
+    details: [
+      { icon: Calendar, text: '매년 7월경' },
+      { icon: MapPin, text: '서산시 지곡면 왕산포' },
+      { icon: Waves, text: '갯마을 체험, 해산물 시식, 어촌 문화' }
+    ],
+    location: { x: '45%', y: '36%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6089'
+  },
+  {
+    month: '7월',
+    name: '팔봉산감자축제',
+    description: '팔봉산 자락에서 재배한 햇감자를 주제로 한 농촌 축제입니다.',
+    details: [
+      { icon: Calendar, text: '매년 7월경' },
+      { icon: MapPin, text: '서산시 팔봉면' },
+      { icon: Mountain, text: '감자 수확 체험, 농산물 판매, 시골 장터' }
+    ],
+    location: { x: '32%', y: '48%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6096'
+  },
+  {
+    month: '8월',
+    name: '서산6쪽마늘축제',
+    description: '전국 최고의 품질을 자랑하는 서산 6쪽마늘을 주제로 한 축제입니다.',
+    details: [
+      { icon: Calendar, text: '매년 8월경' },
+      { icon: MapPin, text: '서산시 해미면' },
+      { icon: Users, text: '마늘 요리 시식, 농산물 판매, 문화공연' }
+    ],
+    location: { x: '63%', y: '72%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6099'
+  },
+  {
+    month: '9월',
+    name: '삼길포우럭축제',
+    description: '서산의 대표 수산물인 우럭을 주제로 한 미식 축제입니다.',
+    details: [
+      { icon: Calendar, text: '매년 9월경' },
+      { icon: MapPin, text: '서산시 대산읍 삼길포' },
+      { icon: Waves, text: '우럭 요리 시식, 낚시 체험, 수산물 판매' }
+    ],
+    location: { x: '42%', y: '16%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6102'
+  },
+  {
+    month: '10월',
+    name: '어리굴젓축제',
+    description: '서산의 특산물 어리굴젓과 새우젓을 만나는 전통 발효 음식 축제입니다.',
+    details: [
+      { icon: Calendar, text: '매년 10월경' },
+      { icon: MapPin, text: '서산시 부석면' },
+      { icon: Users, text: '젓갈 시식, 전통 음식 체험, 특산물 판매' }
+    ],
+    location: { x: '35%', y: '80%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6141'
   },
   {
     month: '10월',
@@ -83,11 +159,144 @@ const FESTIVALS: ReadonlyArray<Festival> = [
       { icon: MapPin, text: '서산시 음암면 탑곡리' },
       { icon: Sparkles, text: '국화 전시, 문화공연, 체험 프로그램' }
     ],
-    location: { x: '45%', y: '40%' }
+    location: { x: '60%', y: '50%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6138'
+  },
+  {
+    month: '11월',
+    name: '서산뻘낙지먹물축제',
+    description: '서산 갯벌의 명물 뻘낙지를 주제로 한 이색 먹거리 축제입니다.',
+    details: [
+      { icon: Calendar, text: '매년 11월경' },
+      { icon: MapPin, text: '서산시 부석면' },
+      { icon: Waves, text: '뻘낙지 시식, 갯벌 체험, 먹물 요리' }
+    ],
+    location: { x: '35%', y: '80%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6144'
   }
 ] as const;
 
 const EXPERIENCES: ReadonlyArray<Experience> = [
+  {
+    icon: Mountain,
+    title: '서산 경주김씨 고택',
+    description: '전통 한옥의 아름다움을 간직한 고택 체험',
+    location: '해미면',
+    position: { x: '63%', y: '72%' },
+    link: 'https://blog.naver.com/gyeam'
+  },
+  {
+    icon: Mountain,
+    title: '서산 유기방가옥',
+    description: '조선시대 전통 가옥 체험',
+    location: '운산면',
+    position: { x: '68%', y: '58%' },
+    link: 'http://xn--o39am5bv7vomeopa05vdxb.gajagaja.co.kr/'
+  },
+  {
+    icon: Waves,
+    title: '중리어촌체험마을',
+    description: '어촌 생활과 해양 생태 체험',
+    location: '지곡면',
+    position: { x: '45%', y: '36%' },
+    link: 'http://중리어촌체험마을.kr'
+  },
+  {
+    icon: Waves,
+    title: '웅도어촌체험휴양마을',
+    description: '서해 어촌의 일상을 체험하는 휴양마을',
+    location: '대산읍',
+    position: { x: '42%', y: '16%' },
+    link: 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=6189&bbsNo=1744&nttNo=243759'
+  },
+  {
+    icon: Trees,
+    title: '방길동마을',
+    description: '농촌 체험과 전통 문화가 살아있는 마을',
+    location: '성연면',
+    position: { x: '48%', y: '47%' },
+    link: 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=970&bbsNo=475&nttNo=129332'
+  },
+  {
+    icon: Sparkles,
+    title: '별마을',
+    description: '별빛 가득한 천문 관측 체험마을',
+    location: '인지면',
+    position: { x: '42%', y: '66%' },
+    link: 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=970&bbsNo=475&nttNo=129333'
+  },
+  {
+    icon: Mountain,
+    title: '한다리전통체험마을',
+    description: '전통 문화와 농촌 체험이 어우러진 마을',
+    location: '고북면',
+    position: { x: '55%', y: '86%' },
+    link: 'https://handari.weebly.com/'
+  },
+  {
+    icon: Trees,
+    title: '초록꿈틀마을',
+    description: '친환경 농업과 자연 생태 체험',
+    location: '팔봉면',
+    position: { x: '32%', y: '48%' },
+    link: 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=970&bbsNo=475&nttNo=242553'
+  },
+  {
+    icon: TreePalm,
+    title: '난사랑방',
+    description: '난초 재배와 원예 체험',
+    location: '음암면',
+    position: { x: '60%', y: '50%' },
+    link: 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=969&bbsNo=476&nttNo=110638'
+  },
+  {
+    icon: Trees,
+    title: '과학딸기농장',
+    description: '첨단 농법으로 재배하는 딸기 체험',
+    location: '성연면',
+    position: { x: '50%', y: '45%' },
+    link: 'http://www.winesb.co.kr'
+  },
+  {
+    icon: Trees,
+    title: '꼼방울',
+    description: '전통 발효 식품 만들기 체험',
+    location: '부석면',
+    position: { x: '35%', y: '80%' },
+    link: 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=969&bbsNo=476&nttNo=191278'
+  },
+  {
+    icon: Trees,
+    title: '나눔농장',
+    description: '유기농 채소 수확 체험',
+    location: '동문동',
+    position: { x: '49%', y: '52%' },
+    link: 'https://www.seosan.go.kr/tour/selectBbsNttView.do?key=969&bbsNo=476&nttNo=191280'
+  },
+  {
+    icon: Trees,
+    title: '나무테크 나무야',
+    description: '목공예와 나무 공방 체험',
+    location: '수석동',
+    position: { x: '52%', y: '58%' },
+    link: 'https://blog.naver.com/leejeel'
+  },
+  {
+    icon: Mountain,
+    title: '부석사 템플스테이',
+    description: '천년고찰에서의 사찰 문화 체험',
+    location: '부석면',
+    position: { x: '33%', y: '78%' },
+    link: 'https://www.seosan.go.kr/tour/contents.do?key=6148'
+  },
+  {
+    icon: Mountain,
+    title: '서광사 템플스테이',
+    description: '명상과 참선으로 마음의 평화를 찾는 시간',
+    location: '석남동',
+    position: { x: '48%', y: '66%' },
+    link: 'http://www.seogwangsa.or.kr/'
+  },
   {
     icon: Mountain,
     title: '용현리 마애여래삼존상',
@@ -142,6 +351,7 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'festival' | 'experience'>('festival');
   const [currentFestivalIndex, setCurrentFestivalIndex] = useState(0);
+  const [currentExperienceIndex, setCurrentExperienceIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -204,6 +414,26 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
     setCurrentFestivalIndex((prev: number) => (prev + 1) % FESTIVALS.length);
   }, []);
 
+  const handlePrevExperience = useCallback(() => {
+    setCurrentExperienceIndex((prev: number) => {
+      if (prev > 0) {
+        return prev - 4; // 4개씩 이동
+      }
+      // 마지막 페이지로 이동
+      const totalPages = Math.ceil(EXPERIENCES.length / 4);
+      return (totalPages - 1) * 4;
+    });
+  }, []);
+
+  const handleNextExperience = useCallback(() => {
+    setCurrentExperienceIndex((prev: number) => {
+      const nextIndex = prev + 4; // 4개씩 이동
+      if (nextIndex >= EXPERIENCES.length) {
+        return 0; // 처음으로 돌아가기
+      }
+      return nextIndex;
+    });
+  }, []);
 
   const handleFestivalDotClick = useCallback((index: number) => {
     if (index !== currentFestivalIndex) {
@@ -319,10 +549,17 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
   // Auto-slide with proper cleanup
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentFestivalIndex((prev: number) => (prev + 1) % FESTIVALS.length);
+      if (activeTab === 'festival') {
+        setCurrentFestivalIndex((prev: number) => (prev + 1) % FESTIVALS.length);
+      } else if (activeTab === 'experience') {
+        setCurrentExperienceIndex((prev: number) => {
+          const nextIndex = prev + 4;
+          return nextIndex >= EXPERIENCES.length ? 0 : nextIndex;
+        });
+      }
     }, 8000);
     return () => clearInterval(interval);
-  }, []);
+  }, [activeTab]);
 
   // Optimized parallax effect with debouncing
   useEffect(() => {
@@ -407,6 +644,11 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
             parsedState.currentFestivalIndex < FESTIVALS.length) {
           setCurrentFestivalIndex(parsedState.currentFestivalIndex);
         }
+        if (typeof parsedState.currentExperienceIndex === 'number' && 
+            parsedState.currentExperienceIndex >= 0 && 
+            parsedState.currentExperienceIndex < EXPERIENCES.length) {
+          setCurrentExperienceIndex(parsedState.currentExperienceIndex);
+        }
       }
     } catch (error) {
       console.warn('Failed to load saved map state:', error);
@@ -420,6 +662,7 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
         const stateToSave = {
           activeTab,
           currentFestivalIndex,
+          currentExperienceIndex,
           timestamp: Date.now()
         };
         localStorage.setItem('seosan-map-state', JSON.stringify(stateToSave));
@@ -427,7 +670,7 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
         console.warn('Failed to save map state:', error);
       }
     }
-  }, [activeTab, currentFestivalIndex, isInitialized]);
+  }, [activeTab, currentFestivalIndex, currentExperienceIndex, isInitialized]);
 
   // Advanced keyboard navigation
   useEffect(() => {
@@ -437,15 +680,19 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
       
       switch (e.key) {
         case 'ArrowLeft':
+          e.preventDefault();
           if (activeTab === 'festival') {
-            e.preventDefault();
             handlePrevFestival();
+          } else if (activeTab === 'experience') {
+            handlePrevExperience();
           }
           break;
         case 'ArrowRight':
+          e.preventDefault();
           if (activeTab === 'festival') {
-            e.preventDefault();
             handleNextFestival();
+          } else if (activeTab === 'experience') {
+            handleNextExperience();
           }
           break;
         case 'Tab':
@@ -471,7 +718,7 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isVisible, activeTab, handlePrevFestival, handleNextFestival, handleTabChange, handleFestivalDotClick]);
+  }, [isVisible, activeTab, handlePrevFestival, handleNextFestival, handlePrevExperience, handleNextExperience, handleTabChange, handleFestivalDotClick]);
 
   // 모바일 감지
   useEffect(() => {
@@ -589,7 +836,9 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
               {activeTab === 'festival' && (
                 <div className="festival-panel-content">
                   <div className="festival-badge-container">
-                    <span className="festival-title-badge">{currentFestival.month} {currentFestival.name}</span>
+                    <span className="festival-title-badge">
+                      {currentFestival.month} {currentFestival.name}
+                    </span>
                   </div>
                   
                   <p className="festival-description-final">
@@ -610,6 +859,21 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                       );
                     })}
                   </div>
+
+                  {/* Link Button */}
+                  {currentFestival.link && (
+                    <div className="festival-link-container">
+                      <a 
+                        href={currentFestival.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="festival-detail-link"
+                      >
+                        자세히 보기
+                        <span className="link-arrow">→</span>
+                      </a>
+                    </div>
+                  )}
 
                   {/* Navigation */}
                   <div className="festival-nav-final">
@@ -644,21 +908,58 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                   </h2>
                   
                   <div className="experience-cards-final">
-                    {EXPERIENCES.map((exp, index) => {
+                    {EXPERIENCES.slice(currentExperienceIndex, currentExperienceIndex + 4).map((exp, index) => {
                       const Icon = exp.icon;
                       return (
-                        <div key={`exp-card-${index}`} className="exp-card-final">
+                        <div 
+                          key={`exp-card-${currentExperienceIndex + index}`} 
+                          className="exp-card-final"
+                          style={{ cursor: exp.link ? 'pointer' : 'default' }}
+                          onClick={() => {
+                            if (exp.link) {
+                              window.open(exp.link, '_blank');
+                            }
+                          }}
+                        >
                           <div className="exp-icon-final">
                             <Icon size={24} aria-hidden="true" />
                           </div>
                           <div className="exp-content-final">
                             <h3>{exp.title}</h3>
                             <p>{exp.description}</p>
-                            <span className="exp-location-tag">{exp.location}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <span className="exp-location-tag">{exp.location}</span>
+                              {exp.link && (
+                                <span style={{ 
+                                  fontSize: '12px', 
+                                  color: '#26d0ce',
+                                  fontWeight: '600'
+                                }}>
+                                  클릭 →
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       );
                     })}
+                  </div>
+
+                  {/* Navigation for Experience */}
+                  <div className="festival-nav-final" style={{ marginTop: '20px' }}>
+                    <div className="nav-controls">
+                      <button className="nav-arrow prev" onClick={handlePrevExperience} aria-label="이전 체험 보기">
+                        <ChevronLeft size={20} />
+                      </button>
+                      <div className="nav-counter">
+                        <span className="current">{Math.floor(currentExperienceIndex / 4) + 1}</span>
+                        <span className="divider">/</span>
+                        <span className="total">{Math.ceil(EXPERIENCES.length / 4)}</span>
+                      </div>
+                      <button className="nav-arrow next" onClick={handleNextExperience} aria-label="다음 체험 보기">
+                        <ChevronRight size={20} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -721,14 +1022,16 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                 </div>
                 
                 
-                {/* Map Decorations */}
-                <div className="map-tree-icons">
-                  <Trees className="tree-icon" style={{ top: '20%', left: '30%' }} />
-                  <Mountain className="mountain-icon" style={{ top: '15%', right: '25%' }} />
-                  <Trees className="tree-icon" style={{ bottom: '30%', left: '15%' }} />
-                  <Mountain className="mountain-icon" style={{ bottom: '40%', right: '35%' }} />
-                  <Trees className="tree-icon" style={{ top: '60%', right: '20%' }} />
-                </div>
+                {/* Map Decorations - 축제 탭에서만 표시 */}
+                {activeTab === 'festival' && (
+                  <div className="map-tree-icons">
+                    <Trees className="tree-icon" style={{ top: '20%', left: '30%' }} />
+                    <Mountain className="mountain-icon" style={{ top: '15%', right: '25%' }} />
+                    <Trees className="tree-icon" style={{ bottom: '30%', left: '15%' }} />
+                    <Mountain className="mountain-icon" style={{ bottom: '40%', right: '35%' }} />
+                    <Trees className="tree-icon" style={{ top: '60%', right: '20%' }} />
+                  </div>
+                )}
                 
                 {/* Festival Markers */}
                 {activeTab === 'festival' && FESTIVALS.map((festival, index) => {
@@ -797,38 +1100,7 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                   );
                 })}
                 
-                {/* Experience Markers */}
-                {activeTab === 'experience' && EXPERIENCES.map((exp, index) => {
-                  const Icon = exp.icon;
-                  const markerId = `experience-${index}`;
-                  const isHovered = hoveredMarkerId === markerId;
-                  const isFocused = focusedMarkerId === markerId;
-                  const shouldShowLabel = isHovered || isFocused;
-                  
-                  return (
-                    <button 
-                      key={markerId}
-                      className={`final-exp-marker ${isHovered ? 'hovered' : ''} ${isFocused ? 'focused' : ''}`}
-                      style={{ 
-                        left: exp.position.x, 
-                        top: exp.position.y,
-                        zIndex: (isHovered || isFocused) ? 30 : 15
-                      }}
-                      onMouseEnter={() => handleMarkerMouseEnter(markerId)}
-                      onMouseLeave={handleMarkerMouseLeave}
-                      onFocus={() => handleMarkerFocus(markerId)}
-                      onBlur={handleMarkerBlur}
-                      aria-label={`${exp.title} - ${exp.location}`}
-                    >
-                      <div className="exp-marker-icon">
-                        <Icon size={16} aria-hidden="true" />
-                      </div>
-                      <span className={`exp-marker-name ${shouldShowLabel ? 'visible' : 'hidden'}`}>
-                        {exp.location}
-                      </span>
-                    </button>
-                  );
-                })}
+                {/* Experience Markers - 제거됨 */}
               </div>
             </div>
           </div>

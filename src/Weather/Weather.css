@@ -1,134 +1,232 @@
-/* --------- 날씨 부분 --------- */
-.card.weather-card {
+/* ===== 카드 컨테이너 (예시 그대로의 스케일) ===== */
+.wx-card{
   position: relative;
-  background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  padding: 32px 40px 32px 36px;
-  max-width: 370px;
-  min-width: 300px;
-  max-height: 241px;
-  font-family: 'Pretendard', sans-serif;
+  width: 100%;
+  max-width: 380px;
+  min-height: 260px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(32, 56, 85, 0.06);
+  padding: 25px 25px 20px 25px;
+  overflow: hidden;
+  font-family: 'Pretendard', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  display: grid;
+  grid-template-columns: 1fr;
+  margin: 20px 0;
+  box-sizing: border-box;
+}
+
+/* 내부 레이아웃: 왼쪽 텍스트 / 오른쪽 위치·시간 */
+.wx-content{
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 40px;
+  height: 100%;
+}
+
+/* ===== 왼쪽 (온도/상태/보조) ===== */
+.wx-left{
+  display: grid;
+  align-content: start;
+  row-gap: 10px;
+  z-index: 1;
+  text-align: left;
+}
+.wx-temp{
+  position: relative;
+  font-size: 58px;
+  font-weight: 600;
+  line-height: 1;
+  color: #111;
+  margin: 0;
+  text-align: left;
+}
+.wx-cond{
+  position: relative;
+  margin-top: -2px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+  text-align: left;
+}
+.wx-meta{
+  margin-top: 4cqb;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: flex-start;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+  color: #80868b;
+  line-height: 1.3;
+}
+.wx-meta > div + div{
+  margin-top: 8px;         /* 두 줄 사이 간격 */
+}
+
+/* ===== 오른쪽 상단 (지역/시간) ===== */
+.wx-right{
+  text-align: right;
+  align-self: start;
+  z-index: 1;
+  white-space: nowrap;
+}
+.wx-loc{
+  font-size: 26px;
+  font-weight: 500;
+  color: #111;
+  letter-spacing: -0.2px;
+}
+.wx-time{
+  margin-top: 6px;
+  font-size: 15px;
+  color: #9aa0a6;
+}
+
+/* ===== 좌/우 원형 네비 버튼 ===== */
+.wx-nav{
+  position: absolute;
+  top: 55%;
+  transform: translateY(-50%);
+  width: 32px; 
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  display: grid; 
+  place-items: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform .15s ease, opacity .15s ease, box-shadow .15s ease;
+}
+.wx-navIcon{ width: 20px; height: 20px; }
+.wx-prev{ 
+  left: 10px; 
+  background: #e9ecef; 
+  color: #111; 
+}
+.wx-next{ 
+  right: 10px; 
+  background: #111;   
+  color: #fff; 
+}
+.wx-nav:hover:not(.disabled){ 
+  transform: translateY(-50%) scale(1.05); 
+  box-shadow: 0 6px 14px rgba(0,0,0,.18); 
+}
+.wx-nav.disabled{ 
+  opacity: .35; 
+  cursor: not-allowed; 
+  box-shadow: none; 
+}
+
+/* ===== 우하단 날씨 아이콘 ===== */
+.wx-hero{
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 16px rgba(0,0,0,.18));
+  z-index: 0;
+}
+.wx-hero.wx-sunny  { 
+  width: 260px; 
+  right: 5px; 
+  bottom: -17px; 
+}
+.wx-hero.wx-cloudy { 
+  width: 260px; 
+  right: 5px; 
+  bottom: -17px; 
+}
+.wx-hero.wx-rain   { 
+  width: 260px; 
+  right: 5px; 
+  bottom: -17px; 
+}
+.wx-hero.wx-snow   { 
+  width: 260px; 
+  right: 15px; 
+  bottom: -17px; 
+}
+
+/* ===== 로딩 ===== */
+.wx-loading{
+  display: grid; 
+  place-items: center;
+  width: 100%; 
+  height: 100%;
+  color: #6b6b6b; 
+  font-size: 16px;
+}
+
+/* ===== 반응형 디자인 ===== */
+@media (max-width: 768px) {
+  .wx-card {
+    width: 100%;
+    max-width: 370px;
+    margin: 20px auto;
+  }
+  
+  .wx-nav {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .wx-prev { left: 10px; }
+  .wx-next { right: 10px; }
+}
+
+@media (max-width: 480px) {
+  .wx-card {
+    padding: 20px 24px;
+    min-height: 200px;
+  }
+  
+  .wx-temp {
+    font-size: 48px;
+  }
+  
+  .wx-cond {
+    font-size: 24px;
+  }
+  
+  .wx-loc {
+    font-size: 24px;
+  }
+  
+  .wx-meta {
+    font-size: 14px;
+  }
+  
+  .wx-time {
+    font-size: 13px;
+  }
+  
+  .wx-hero.wx-sunny { width: 160px; }
+  .wx-hero.wx-cloudy { width: 180px; }
+  .wx-hero.wx-rain { width: 180px; }
+  .wx-hero.wx-snow { width: 150px; }
+}
+
+/* 기존 스타일과의 호환성을 위한 추가 */
+.card.weather-card {
+  /* 기존 card 클래스가 있다면 이를 오버라이드 */
+  all: unset;
+  display: none;
 }
 
 .weather-card {
-  position: relative;
-  width: 100%;
-  max-width: 300px;
-  top: 0px;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 4px 16px rgba(32, 56, 85, 0.06);
-  padding: 18px 18px 25px 18px;
-  min-height: 135px;
-  overflow: visible;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  animation: slideInLeft 0.8s ease-out 0.2s backwards;
-  z-index: 100 !important;
-  margin-bottom: 30px;
-  margin-top: 144px; /* 오늘의 서산과 정확한 수평 정렬 */
-}
-.weather-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(32, 56, 85, 0.12);
-}
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-.weather-title {
-    position: relative;
-  font-size: 18px;
-  font-weight: 700;
-  color: #23272a;
-  margin-bottom: 0px;
-  bottom: 70px;
-}
-.weather-content {
-  display: flex;
-  position: relative;
-}
-.weather-texts {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  z-index: 1;
-}
-.weather-temp {
-    position: relative;
-  font-size: 40px;
-  font-weight: 700;
-  color: #23272a;
-  margin-bottom: 0px;
-  bottom: 50px;
-  transition: all 0.3s ease;
-}
-.weather-card:hover .weather-temp {
-  color: #1976d2;
-}
-.weather-detail {
-    position: relative;
-  font-size: 14px;
-  color: #6b6b6b;
-  margin-bottom: 0px;
-  bottom: 50px;
-}
-.divider {
-  margin: 0 6px;
-  color: #b0b0b0;
-}
-.weather-status {
-    position: relative;
-  font-size: 16px;
-  font-weight: 700;
-  color: #23272a;
-  margin-bottom: 4px;
-  bottom: 40px;
-}
-.weather-index {
-    position: relative;
-  font-size: 13px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  bottom: 20px;
-}
-.weather-index > div {
-  display: flex;
-  justify-content: space-between;
-  width: 120px;
-}
-.weather-index-value {
-  color: #1976d2;
-  font-weight: 500;
-  margin-left: 10px;
-}
-.weather-index-value.good {
-  color: #23ad38;
+  /* 기존 weather-card 클래스가 있다면 이를 오버라이드 */
+  all: unset;
+  display: none;
 }
 
-.weather-icon{
-  position: absolute;
-  left: 130px;
-  top: 45px;
-  bottom: -7px;
-  width: 201.91px;
-  height: 141.18px;
-  z-index: 0;
-  pointer-events: none;
-  animation: floatWeather 3s ease-in-out infinite;
-}
-@keyframes floatWeather {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-5px) rotate(2deg); }
+/* 메인페이지에서 사용할 때 위치 조정 */
+.mainpage-left .wx-card {
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 380px;
 }

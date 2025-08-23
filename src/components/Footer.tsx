@@ -19,7 +19,6 @@ const Footer: React.FC = () => {
               loading="lazy"
               decoding="async"
             />
-            <p className="footer-tagline">함께 만들어가는 더 나은 서산</p>
           </div>
 
           <div className="footer-info-grid">

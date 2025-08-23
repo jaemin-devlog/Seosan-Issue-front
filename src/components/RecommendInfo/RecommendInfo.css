@@ -191,7 +191,7 @@
   flex: 0 0 320px;
   background: linear-gradient(145deg, #ffffff 0%, #fafafa 100%);
   border-radius: 24px;
-  padding: 32px 28px 60px;
+  padding: 24px 28px 60px;  /* padding-top을 32px에서 24px로 줄임 */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
   cursor: pointer;
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -225,7 +225,7 @@
 .recommend-tag-wrapper {
   position: relative;
   width: fit-content;
-  margin-bottom: 20px;
+  margin-bottom: 10px;  /* 20px에서 10px로 줄여서 위로 올림 */
   animation: fadeInDown 0.5s ease-out;
 }
 
@@ -238,7 +238,7 @@
 
 .tag-text {
   position: absolute;
-  top: 50%;
+  top: 42%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: #2ad0c9;
@@ -267,7 +267,7 @@
   color: #2ad0c9;
   font-size: 14px;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 10px;  /* 20px에서 10px로 줄여서 위로 올림 */
   width: fit-content;
   position: relative;
   border-radius: 0 20px 20px 20px;

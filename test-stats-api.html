@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stats API Module Test</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-result {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .success {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>statsAPI.getContentStats() 테스트</h1>
+    <div id="result"></div>
+
+    <script type="module">
+        // API 모듈 import
+        import { statsAPI } from './src/api/backend.api.js';
+        
+        const resultDiv = document.getElementById('result');
+        
+        async function testStatsAPI() {
+            resultDiv.innerHTML = '<div class="test-result">테스트 중...</div>';
+            
+            try {
+                console.log('statsAPI.getContentStats() 호출 시작');
+                const data = await statsAPI.getContentStats();
+                console.log('성공:', data);
+                
+                resultDiv.innerHTML = `
+                    <div class="test-result success">
+                        <h3>✅ API 호출 성공!</h3>
+                        <h4>응답 데이터:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                        
+                        <h4>파싱된 정보:</h4>
+                        <ul>
+                            <li>전체 콘텐츠: ${data.total_content_count}개</li>
+                            <li>오늘 수집: ${data.today_collected_count}개</li>
+                            <li>어제 수집: ${data.yesterday_collected_count}개</li>
+                            <li>증가율: ${data.percentage_increase_from_yesterday}%</li>
+                        </ul>
+                    </div>
+                `;
+            } catch(error) {
+                console.error('에러:', error);
+                resultDiv.innerHTML = `
+                    <div class="test-result error">
+                        <h3>❌ API 호출 실패</h3>
+                        <p>에러: ${error.message}</p>
+                        <pre>${error.stack}</pre>
+                    </div>
+                `;
+            }
+        }
+        
+        // 테스트 실행
+        testStatsAPI();
+    </script>
+</body>
+</html>

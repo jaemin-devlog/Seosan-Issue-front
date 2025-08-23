@@ -1,6 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './RecommendInfo.css';
+import { seosanAPI, welfareAPI, cultureAPI, naverSearchAPI } from '../../api/backend.api';
+
 // 이미지 파일들 - 없을 경우 대체 처리
 let BalloonImage, ArrowImage, LeftArrowImage, RightArrowImage;
 try {
@@ -19,60 +21,223 @@ try {
 const RecommendInfo = () => {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [recommendations, setRecommendations] = useState([]);
+  const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null);
 
-  // 추천 정보 데이터
-  const recommendations = [
-    {
-      id: 1,
-      tag: '복지',
-      title: '2025년 장기요양기관 종사자 역량강화 교육 지방보조금 지원계획',
-      date: '접수기간: 2025. 2. 17.(월) - 3. 4.(화)',
-      link: '/explore?tab=복지'
-    },
-    {
-      id: 2,
-      tag: '서산시청',
-      title: '[주간] 홈케어, 이점으로 건강하기키기 기초반',
-      date: '교육기간: 2025. 8. 21.(목) - 12. 11.(목)',
-      link: '/explore?tab=시청'
-    },
-    {
-      id: 3,
-      tag: '뉴스',
-      title: '계도 기간 종료, 7월 이후 풍천저수지 낚시 금지 어기 공원으로 조성 중',
-      date: '현재 공사 진행중 - 통해 8월 준공 예정',
-      link: '/explore?tab=뉴스'
-    },
-    {
-      id: 4,
-      tag: '문화소식',
-      title: '지역아동센터 (공부방) 지역사회 저소득 아동의 보호·교육 종합적 서비스 제공',
-      date: '방과후 돌봄을 필요로 하는 18세미만의 아동',
-      link: '/explore?tab=문화'
-    },
-    {
-      id: 5,
-      tag: '블로그',
-      title: '시설대관 어린이 도서관 [찾아가는 도서관]',
-      date: '예약접수: 2025. 07. 14 온라인 예약 / 선착순',
-      link: '/explore?tab=블로그'
-    },
-    {
-      id: 6,
-      tag: '카페',
-      title: '서산 해미읍성 근처 분위기 좋은 카페 추천',
-      date: '지역 주민들이 추천하는 핫플레이스',
-      link: '/explore?tab=카페'
-    },
-    {
-      id: 7,
-      tag: '관광',
-      title: '서산 해미읍성 축제 2025 안내',
-      date: '축제기간: 2025. 6. 10 - 6. 12',
-      link: '/explore?tab=문화'
-    }
-  ];
+  // 실제 탐색 페이지의 데이터를 가져오는 함수
+  useEffect(() => {
+    const fetchRealData = async () => {
+      setLoading(true);
+      const allData = [];
+      
+      try {
+        // 1. 뉴스 데이터 가져오기 (최신 2개)
+        try {
+          const newsResult = await naverSearchAPI.search('서산시', 'news', 2);
+          if (newsResult && Array.isArray(newsResult)) {
+            newsResult.slice(0, 2).forEach((item, idx) => {
+              allData.push({
+                id: `news-${idx}`,
+                tag: '뉴스',
+                title: item.title
+                  ?.replace(/<[^>]*>/g, '')
+                  ?.replace(/&quot;/g, '"')
+                  ?.replace(/&amp;/g, '&')
+                  ?.replace(/&lt;/g, '<')
+                  ?.replace(/&gt;/g, '>')
+                  ?.replace(/&#39;/g, "'") || '제목 없음',
+                date: item.date || item.pubDate || new Date().toLocaleDateString('ko-KR'),
+                description: item.description
+                  ?.replace(/<[^>]*>/g, '')
+                  ?.replace(/&quot;/g, '"')
+                  ?.replace(/&amp;/g, '&')
+                  ?.substring(0, 100) || '',
+                link: item.link,
+                originalData: item
+              });
+            });
+          }
+        } catch (e) {
+          console.error('뉴스 데이터 가져오기 실패:', e);
+        }
+
+        // 2. 복지 데이터 가져오기 (최신 2개)
+        try {
+          const welfareData = await welfareAPI.getElderly(null, 0, 2);
+          if (welfareData && Array.isArray(welfareData)) {
+            welfareData.slice(0, 2).forEach((item, idx) => {
+              allData.push({
+                id: item.id || `welfare-${idx}`,
+                tag: '복지',
+                title: item.title || '제목 없음',
+                date: item.pubDate || item.date || new Date().toLocaleDateString('ko-KR'),
+                description: item.description || '',
+                originalData: item
+              });
+            });
+          }
+        } catch (e) {
+          console.error('복지 데이터 가져오기 실패:', e);
+        }
+
+        // 3. 서산시청 공지사항 가져오기 (최신 2개)
+        try {
+          const noticeData = await seosanAPI.getNotices(null, 0, 2);
+          if (noticeData && Array.isArray(noticeData)) {
+            noticeData.slice(0, 2).forEach((item, idx) => {
+              allData.push({
+                id: item.id || `notice-${idx}`,
+                tag: '서산시청',
+                title: item.title || '제목 없음',
+                date: item.pubDate || item.date || new Date().toLocaleDateString('ko-KR'),
+                description: item.description || '',
+                originalData: item
+              });
+            });
+          }
+        } catch (e) {
+          console.error('서산시청 데이터 가져오기 실패:', e);
+        }
+
+        // 4. 문화관광 데이터 가져오기 (최신 2개)
+        try {
+          const cultureData = await cultureAPI.getCultureNews(null, 0, 2);
+          if (cultureData && Array.isArray(cultureData)) {
+            cultureData.slice(0, 2).forEach((item, idx) => {
+              allData.push({
+                id: item.id || `culture-${idx}`,
+                tag: '문화관광',
+                title: item.title || '제목 없음',
+                date: item.pubDate || item.date || new Date().toLocaleDateString('ko-KR'),
+                description: item.description || '',
+                originalData: item
+              });
+            });
+          }
+        } catch (e) {
+          console.error('문화관광 데이터 가져오기 실패:', e);
+        }
+
+        // 5. 카페 데이터 가져오기 (최신 1개)
+        try {
+          const cafeResult = await naverSearchAPI.search('서산시', 'cafearticle', 1);
+          if (cafeResult && Array.isArray(cafeResult)) {
+            cafeResult.slice(0, 1).forEach((item, idx) => {
+              allData.push({
+                id: `cafe-${idx}`,
+                tag: '카페',
+                title: item.title
+                  ?.replace(/<[^>]*>/g, '')
+                  ?.replace(/&quot;/g, '"')
+                  ?.replace(/&amp;/g, '&')
+                  ?.replace(/&lt;/g, '<')
+                  ?.replace(/&gt;/g, '>')
+                  ?.replace(/&#39;/g, "'") || '제목 없음',
+                date: item.date || item.postdate || new Date().toLocaleDateString('ko-KR'),
+                description: item.description
+                  ?.replace(/<[^>]*>/g, '')
+                  ?.replace(/&quot;/g, '"')
+                  ?.replace(/&amp;/g, '&')
+                  ?.substring(0, 100) || '',
+                link: item.link,
+                cafename: item.cafename,
+                originalData: item
+              });
+            });
+          }
+        } catch (e) {
+          console.error('카페 데이터 가져오기 실패:', e);
+        }
+
+        // 6. 블로그 데이터 가져오기 (최신 1개)
+        try {
+          const blogResult = await naverSearchAPI.search('서산시', 'blog', 1);
+          if (blogResult && Array.isArray(blogResult)) {
+            blogResult.slice(0, 1).forEach((item, idx) => {
+              allData.push({
+                id: `blog-${idx}`,
+                tag: '블로그',
+                title: item.title
+                  ?.replace(/<[^>]*>/g, '')
+                  ?.replace(/&quot;/g, '"')
+                  ?.replace(/&amp;/g, '&')
+                  ?.replace(/&lt;/g, '<')
+                  ?.replace(/&gt;/g, '>')
+                  ?.replace(/&#39;/g, "'") || '제목 없음',
+                date: item.date || item.postdate || new Date().toLocaleDateString('ko-KR'),
+                description: item.description
+                  ?.replace(/<[^>]*>/g, '')
+                  ?.replace(/&quot;/g, '"')
+                  ?.replace(/&amp;/g, '&')
+                  ?.substring(0, 100) || '',
+                link: item.link,
+                bloggername: item.bloggername,
+                originalData: item
+              });
+            });
+          }
+        } catch (e) {
+          console.error('블로그 데이터 가져오기 실패:', e);
+        }
+
+        // 데이터가 있으면 설정, 없으면 기본 데이터 사용
+        if (allData.length > 0) {
+          // 최대 10개만 표시
+          setRecommendations(allData.slice(0, 10));
+        } else {
+          // 기본 데이터
+          setRecommendations([
+            {
+              id: 'default-1',
+              tag: '복지',
+              title: '2025년 장기요양기관 종사자 역량강화 교육 지방보조금 지원계획',
+              date: '접수기간: 2025. 2. 17.(월) - 3. 4.(화)'
+            },
+            {
+              id: 'default-2',
+              tag: '서산시청',
+              title: '[주간] 홈케어, 이점으로 건강하기키기 기초반',
+              date: '교육기간: 2025. 8. 21.(목) - 12. 11.(목)'
+            },
+            {
+              id: 'default-3',
+              tag: '뉴스',
+              title: '계도 기간 종료, 7월 이후 풍천저수지 낚시 금지 어기 공원으로 조성 중',
+              date: '현재 공사 진행중 - 통해 8월 준공 예정'
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error('데이터 가져오기 전체 실패:', error);
+        // 에러 시 기본 데이터 사용
+        setRecommendations([
+          {
+            id: 'default-1',
+            tag: '복지',
+            title: '2025년 장기요양기관 종사자 역량강화 교육 지방보조금 지원계획',
+            date: '접수기간: 2025. 2. 17.(월) - 3. 4.(화)'
+          },
+          {
+            id: 'default-2',
+            tag: '서산시청',
+            title: '[주간] 홈케어, 이점으로 건강하기키기 기초반',
+            date: '교육기간: 2025. 8. 21.(목) - 12. 11.(목)'
+          },
+          {
+            id: 'default-3',
+            tag: '뉴스',
+            title: '계도 기간 종료, 7월 이후 풍천저수지 낚시 금지 어기 공원으로 조성 중',
+            date: '현재 공사 진행중 - 통해 8월 준공 예정'
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRealData();
+  }, []);
 
   const handleScroll = (direction) => {
     if (!scrollContainerRef.current) return;
@@ -92,18 +257,33 @@ const RecommendInfo = () => {
 
   const handleCardClick = (item) => {
     // Explore 페이지로 이동하면서 상세보기 모드로 설정
+    const tabMapping = {
+      '뉴스': '뉴스',
+      '복지': '복지',
+      '서산시청': '서산시청',
+      '문화관광': '문화관광',
+      '카페': '카페',
+      '블로그': '블로그'
+    };
+    
+    const tab = tabMapping[item.tag] || item.tag;
+    
     navigate('/explore', { 
       state: { 
         selectedItem: {
           id: item.id,
           title: item.title,
-          content: item.date,
+          content: item.description || item.date,
+          body: item.description || item.date,
           tag: item.tag,
-          date: new Date().toISOString(),
-          type: item.tag
+          date: item.date || new Date().toISOString(),
+          type: item.tag,
+          link: item.link,
+          originalData: item.originalData
         },
-        tab: item.tag,
-        view: 'detail'
+        tab: tab,
+        view: 'detail',
+        scrollToTop: true
       }
     });
   };
@@ -129,11 +309,16 @@ const RecommendInfo = () => {
         </button>
 
         <div className="recommend-cards-container">
-          <div 
-            className="recommend-cards-scroll" 
-            ref={scrollContainerRef}
-          >
-            {recommendations.map((item) => (
+          {loading ? (
+            <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+              우리동네 소식을 불러오는 중...
+            </div>
+          ) : (
+            <div 
+              className="recommend-cards-scroll" 
+              ref={scrollContainerRef}
+            >
+              {recommendations.map((item) => (
               <div 
                 key={item.id} 
                 className="recommend-card"
@@ -175,8 +360,9 @@ const RecommendInfo = () => {
                   )}
                 </div>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <button 

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Content Stats API Test</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .stat-card {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+        .stat-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .increase {
+            color: #26d0ce;
+        }
+        .decrease {
+            color: #ff4444;
+        }
+        button {
+            background: #26d0ce;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #20b5b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>콘텐츠 통계 API 테스트</h1>
+    <button onclick="fetchStats()">통계 불러오기</button>
+    
+    <div id="result"></div>
+
+    <script>
+        async function fetchStats() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '로딩 중...';
+            
+            try {
+                // 프록시를 통한 API 호출
+                const response = await fetch('http://localhost:3000/api/flask/content_stats', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                console.log('응답 상태:', response.status);
+                const data = await response.json();
+                console.log('통계 데이터:', data);
+                
+                // 증가율 계산
+                const percentChange = data.percentage_increase_from_yesterday || 0;
+                const changeClass = percentChange > 0 ? 'increase' : percentChange < 0 ? 'decrease' : '';
+                const changeSymbol = percentChange > 0 ? '▲' : percentChange < 0 ? '▼' : '→';
+                
+                resultDiv.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-title">전체 콘텐츠 수</div>
+                        <div class="stat-value">${data.total_content_count?.toLocaleString() || 0}</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">오늘 수집된 콘텐츠</div>
+                        <div class="stat-value">${data.today_collected_count?.toLocaleString() || 0}</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">어제 수집된 콘텐츠</div>
+                        <div class="stat-value">${data.yesterday_collected_count?.toLocaleString() || 0}</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">전일 대비 증가율</div>
+                        <div class="stat-value ${changeClass}">
+                            ${changeSymbol} ${Math.abs(percentChange).toFixed(1)}%
+                        </div>
+                    </div>
+                `;
+            } catch(error) {
+                console.error('에러:', error);
+                resultDiv.innerHTML = `
+                    <div style="color: red;">
+                        <h3>에러 발생</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 페이지 로드 시 자동으로 통계 불러오기
+        fetchStats();
+    </script>
+</body>
+</html>

@@ -206,13 +206,14 @@
   justify-content: space-between;
   gap: 50px;
   margin-top: 60px;
-  padding: 0 30px;
+  padding: 0 5px;  /* 탭 버튼과 동일한 정렬 */
 }
 
 .left-panel {
   position: relative;
   z-index: 10;
   flex: 0 0 360px;
+  padding-left: 0;  /* 왼쪽 정렬 */
 }
 
 .center-map {
@@ -245,6 +246,7 @@
     width: 100%;
     max-width: 500px;
     order: 2;
+    padding-left: 0;  /* 모바일에서는 정렬 제거 */
   }
   
   .center-map {
@@ -303,22 +305,22 @@
 
 /* Info Panel - Clean Design */
 .final-info-panel {
-  background: rgba(255, 255, 255, 0.98);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 252, 254, 0.98) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 24px;
   padding: 32px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
   position: relative;
   overflow: visible;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(226, 232, 240, 0.5);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .final-info-panel:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12), 0 6px 20px rgba(0, 0, 0, 0.08);
-  border-color: rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-color: rgba(226, 232, 240, 0.7);
 }
 
 .festival-image-container {
@@ -362,67 +364,74 @@
 
 /* Festival Panel Content */
 .festival-panel-content {
-  padding-top: 20px;
+  padding-top: 10px;
   position: relative;
 }
 
 .festival-badge-container {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .festival-title-badge {
   display: inline-flex;
   align-items: center;
-  padding: 10px 20px;
-  background: rgba(0, 0, 0, 0.9);
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #26d0ce 0%, #20b5b3 100%);
   color: white;
-  border-radius: 25px;
-  font-size: 14px;
+  border-radius: 20px;
+  font-size: 13px;
   font-weight: 600;
   margin-bottom: 20px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(38, 208, 206, 0.3);
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   position: relative;
   white-space: nowrap;
 }
 
 .festival-title-badge:hover {
   transform: translateY(-2px);
-  background: rgba(0, 0, 0, 0.95);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(135deg, #20b5b3 0%, #1a9997 100%);
+  box-shadow: 0 4px 12px rgba(38, 208, 206, 0.4);
 }
 
 
 .festival-description-final {
-  font-size: 15px;
-  line-height: 1.8;
-  color: #4B5563;
-  margin-bottom: 28px;
-  letter-spacing: -0.01em;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #374151;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+  font-weight: 500;
 }
 
 /* Festival Details */
 .festival-details-final {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   margin-bottom: 24px;
-  padding: 0;
-  background: transparent;
-  border-radius: 0;
-  border: none;
+  padding: 20px;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.5);
 }
 
 .detail-row-final {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 6px 0;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
   background: transparent;
   border-radius: 0;
   border: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+}
+
+.detail-row-final:last-child {
+  border-bottom: none;
 }
 
 .detail-row-final:hover {
@@ -465,24 +474,80 @@
 .detail-content-final {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .detail-label-final {
-  font-size: 12px;
-  font-weight: 600;
-  color: #6B7280;
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
   text-transform: none;
   letter-spacing: -0.01em;
-  margin-right: 0;
+  min-width: 45px;
+  flex-shrink: 0;
 }
 
 .detail-value-final {
   font-size: 14px;
-  color: #374151;
-  font-weight: 400;
+  color: #1e293b;
+  font-weight: 500;
   line-height: 1.5;
+  flex: 1;
+}
+
+/* Festival Link Button */
+.festival-link-container {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.festival-detail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #26d0ce 0%, #20b5b3 100%);
+  color: white;
+  border-radius: 25px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 4px 12px rgba(38, 208, 206, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.festival-detail-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.festival-detail-link:hover::before {
+  left: 100%;
+}
+
+.festival-detail-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(38, 208, 206, 0.4);
+  background: linear-gradient(135deg, #20b5b3 0%, #1a9997 100%);
+}
+
+.link-arrow {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-size: 16px;
+}
+
+.festival-detail-link:hover .link-arrow {
+  transform: translateX(3px);
 }
 
 /* Navigation */
@@ -499,19 +564,20 @@
 
 .nav-controls {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   align-items: center;
-  background: #FFFFFF;
-  padding: 12px 20px;
-  border-radius: 28px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 212, 181, 0.1);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  padding: 8px 16px;
+  border-radius: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(226, 232, 240, 0.5);
+  backdrop-filter: blur(10px);
 }
 
 .nav-arrow {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border: none;
-  background: #F0FAF8;
+  background: linear-gradient(135deg, #f0fdf9 0%, #e6fffc 100%);
   border-radius: 50%;
   cursor: pointer;
   padding: 0;
@@ -519,7 +585,8 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
-  box-shadow: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(38, 208, 206, 0.15);
 }
 
 .nav-arrow svg {
@@ -542,35 +609,41 @@
 }
 
 .nav-arrow:hover {
-  transform: scale(1.08);
-  background: #00D4B5;
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #26d0ce 0%, #20b5b3 100%);
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(38, 208, 206, 0.3);
 }
 
 /* Navigation Counter */
 .nav-counter {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 16px;
+  gap: 6px;
+  font-size: 15px;
   font-weight: 500;
-  color: #64748B;
+  color: #475569;
   user-select: none;
+  padding: 0 8px;
 }
 
 .nav-counter .current {
-  color: #00BFA5;
+  color: #26d0ce;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 17px;
+  text-shadow: 0 1px 2px rgba(38, 208, 206, 0.15);
 }
 
 .nav-counter .divider {
-  color: #CBD5E1;
+  color: #cbd5e1;
   font-weight: 300;
+  margin: 0 2px;
 }
 
 .nav-counter .total {
-  color: #94A3B8;
-  font-weight: 400;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 14px;
 }
 
 /* Panel Decoration */
@@ -1708,6 +1781,7 @@
     width: 100%;
     max-width: 500px;
     order: 2;
+    padding-left: 0;  /* 왼쪽 정렬 */
   }
   
   .center-map {
@@ -1854,6 +1928,7 @@
     width: 100%;
     max-width: 100%;
     flex: none;
+    padding-left: 0;  /* 모바일에서는 정렬 제거 */
   }
   
   .final-info-panel {

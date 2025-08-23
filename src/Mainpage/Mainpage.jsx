@@ -121,7 +121,12 @@ const Mainpage = memo(() => {
       <div className="mainpage-container">
         <div className="mainpage-left">
           <img src={logo1} alt="오늘 서산에 무슨일 issue?" className="main-title-img" />
-          <Weather />
+          
+          {/* 날씨 섹션 */}
+          <div className="weather-section">
+            <h2 className="weather-title">날씨</h2>
+            <Weather />
+          </div>
 
           {/* ------- 트렌딩 토픽 ------- */}
           <div className="trending-card-wrap">

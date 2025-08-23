@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI 검색 테스트</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>AI 검색 API 테스트</h1>
+    <input type="text" id="query" placeholder="검색어 입력" value="서산시 복지">
+    <button onclick="testSearch()">검색 테스트</button>
+    <div id="result"></div>
+
+    <script>
+        async function testSearch() {
+            const query = document.getElementById('query').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '검색 중...';
+            
+            try {
+                console.log('검색 시작:', query);
+                
+                // 프록시를 통한 API 호출
+                const response = await fetch('http://localhost:3000/api/ai-search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query })
+                });
+                
+                console.log('응답 상태:', response.status);
+                const text = await response.text();
+                console.log('응답 텍스트:', text);
+                
+                try {
+                    const data = JSON.parse(text);
+                    resultDiv.innerHTML = `
+                        <h3>성공!</h3>
+                        <p><strong>요약:</strong> ${data.summary || data.result || '없음'}</p>
+                        <p><strong>출처:</strong> ${JSON.stringify(data.sources || [])}</p>
+                    `;
+                } catch(e) {
+                    resultDiv.innerHTML = `
+                        <h3>JSON 파싱 실패</h3>
+                        <pre>${text}</pre>
+                    `;
+                }
+            } catch(error) {
+                console.error('에러:', error);
+                resultDiv.innerHTML = `
+                    <h3>에러 발생</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -13,7 +13,7 @@
 .wrap{
   width:95%;
   max-width:1200px;
-  margin:0px 0px 0px 30px;
+  margin:-5px 0px 0px 50px;
   display:grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   position:relative;
@@ -22,33 +22,25 @@
   align-items: start;
 }
 .leftCol, .rightCol { min-width:0; }
-.rightCol .sectionTitle{
-  font-size: 18px;
-  color: var(--text);
-  font-weight: 700;
-}
-.leftCol .sectionTitle{
-  font-size: 18px;
-  color: var(--text);
-  font-weight: 700;
-}
 .sectionTitle{
-  font-size:30px;
-  font-weight:600;
+  font-size:22px;
+  font-weight:700;
   color:var(--text);
-  margin:0 0 20px;
-  letter-spacing:-0.9px;
+  margin:0 0 10px 0;
+  letter-spacing:-0.5px;
   position: relative;
-  right: 200px;
-  bottom: 20px;
-  gap: 70px;
+  right: 0;
+  bottom: 0;
+  text-align: left;
+  padding-left: 5px;
 }
 .party img{
   position: relative;
-  width: 30px;
-  height: 30px;
-  bottom: -5px;
-  right: 1px;
+  width: 24px;
+  height: 24px;
+  bottom: 0px;
+  right: 0px;
+  margin-left: 5px;
 }
 
 /* ===== 공통 패널 ===== */
@@ -64,14 +56,14 @@
   position:relative;
   z-index:1;
   overflow:hidden;          /* 패널 밖으로 못 나가게 */
-  min-height: 400px;         /* 다가오는 이벤트와 동일한 높이 */
-  height: 400px;
+  min-height: 380px;         /* 다가오는 이벤트와 동일한 높이 */
+  height: 380px;
 }
 .rightCol .panel{
   position:relative;
   z-index:2;
   width: 300px;
-  min-height: 400px; /* 오늘의 서산과 동일한 높이 */
+  min-height: 380px; /* 오늘의 서산과 동일한 높이 */
   display: flex;
   flex-direction: column;
 }
@@ -87,8 +79,8 @@
   /* 변경 핵심 */
   width:100%;
   max-width:none;              /* 고정폭 제거 */
-  height: 360px;               /* 패널 내부에 맞게 조정 */
-  min-height:360px;
+  height: 340px;               /* 패널 내부에 맞게 조정 */
+  min-height:340px;
   background-repeat:no-repeat;
   background-size:150% 150%;
   background-position:30% 42%;
@@ -96,7 +88,7 @@
   display:flex; 
   align-items:center; 
   justify-content:center;
-  padding:40px 24px 40px;
+  padding:0;
   isolation:isolate;
 }
 
@@ -104,23 +96,27 @@
 .statsGrid{
   display:grid;
   grid-template-columns: repeat(2, 1fr);
-  gap:5px;
+  gap:15px;
   align-items: stretch;
   grid-auto-rows: 1fr;
+  height: 100%;
+  width: 100%;
 }
 
 /* 원: 카드 안에서 퍼센트로 위치/크기 결정(항상 같은 비율) */
 .metricCircle{
   position:absolute;
-  inset: 7% 14% 24%;           /* top, right, bottom, left % */
-  aspect-ratio:1/1;
-  width: 210px;
-  right: 20px; 
-  height: 210px;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 190px;
+  height: 190px;
   border-radius:9999px;
-  display:grid;
-  place-items:center;
-  gap:10px;
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
 
   background:radial-gradient(ellipse at center,
     rgba(255,255,255,.96) 0%, rgba(255,255,255,.92) 58%, rgba(255,255,255,.70) 100%);
@@ -130,14 +126,13 @@
 
 /* 텍스트: 픽셀 오프셋 제거 → 원 안 중앙 정렬 */
 .metricLabel{
-  position: relative;
-  top: 30px;
-  font-size:25px;
-  font-weight:800;
+  font-size:21px;
+  font-weight:700;
   color:var(--text);
-  opacity:.9;
-  letter-spacing:-0.2px;
+  opacity:.85;
+  letter-spacing:-0.3px;
   transition: all 0.3s ease;
+  margin-bottom: 12px;
 }
 .metricCard:hover .metricLabel {
   opacity: 1;
@@ -145,14 +140,12 @@
 }
 
 .metricNumber{
-  font-size:40px;
+  font-size:46px;
   line-height:1;
-  position: relative;
-  font-weight:400;
-  letter-spacing:-0.5px;
+  font-weight:700;
+  letter-spacing:-1px;
   color:var(--text);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  top: -40px;
 }
 .metricCard:hover .metricNumber {
   transform: scale(1.1);
@@ -161,25 +154,34 @@
 
 /* 하단 영역: 퍼센트 기준으로 위치 고정 */
 .metricFooter{
-  position:absolute; left:0; right:0; bottom:6%;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:8px; text-align:center;
+  position:absolute; 
+  left:50%; 
+  bottom:32px;
+  transform: translateX(-50%);
+  display:flex; 
+  flex-direction:column; 
+  align-items:center; 
+  justify-content:center;
+  gap:10px; 
+  text-align:center;
 }
 .metricSub{ 
-  position: relative;
-  top: 10px;
-  font-size:15px;
-  color:var(--muted); 
+  font-size:14px;
+  color:var(--text); 
+  font-weight: 600;
+  opacity: 0.7;
+  letter-spacing: -0.2px;
 }
 
 .deltaBadge{
-  display:inline-flex; align-items:center; gap:8px;
-  background:#0E0E0E; color:#fff; font-weight:800;
-  padding:8px 14px;
+  display:inline-flex; align-items:center; gap:7px;
+  background:#0E0E0E; color:#fff; font-weight:700;
+  padding:8px 20px;
   border-radius:999px;
   box-shadow: var(--shadow-badge);
   transform: translateY(1px);
   transition: all 0.3s ease;
+  font-size: 15px;
 }
 .metricCard:hover .deltaBadge {
   background: var(--mint);
@@ -202,8 +204,8 @@
 .eventItem{
   background:#E9F5F4;
   border-radius:16px;
-  padding:16px 18px 14px;
-  box-shadow: 0 14px 36px rgba(31,104,98,.12);
+  padding:14px 16px 12px;
+  box-shadow: 0 8px 20px rgba(31,104,98,.08);
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
   flex-direction: nowrap;
@@ -214,12 +216,12 @@
   background: linear-gradient(145deg, #fff, #f8fdfd);
 }
 .eventTop{
-  display:flex; align-items:center; gap:10px;
-  margin-bottom:10px;
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:8px;
 }
-.clock{ width:20px; height:20px; opacity:.9; }
-.eventDate{ font-size:18px; color:var(--text); font-weight:800; }
-.eventTime{ font-size:14px; color:var(--muted); letter-spacing:.03em; margin-left:8px; }
+.clock{ width:18px; height:18px; opacity:.9; }
+.eventDate{ font-size:16px; color:var(--text); font-weight:700; }
+.eventTime{ font-size:13px; color:var(--muted); letter-spacing:.03em; margin-left:6px; }
 
 .eventDivider{
   height:2px; background: var(--mint); opacity:.5;
@@ -244,7 +246,8 @@
 .eventTitle{
   text-decoration:none;
   color:var(--text);
-  font-size:16px;
+  font-size:15px;
+  font-weight:600;
   letter-spacing:-.2px;
   display:inline-block;
   max-width:calc(100% - 34px); /* 아이콘 자리 */
@@ -260,12 +263,12 @@
   align-items:flex-end;
   justify-content: flex-end;
   position: relative;
-  width:30px;
-  height:30px;
-  left: 30px;
+  width:24px;
+  height:24px;
+  left: 25px;
   padding:2px;
   border-radius:6px;
-  opacity:.9;
+  opacity:.8;
   transition: transform .18s ease, opacity .18s ease, background .18s ease;
 }
 .eventLink:hover{
@@ -283,12 +286,12 @@
 .liveBadge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   padding: 4px 10px;
   background: rgba(255, 59, 48, 0.1);
   border-radius: 20px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: #ff3b30;
   letter-spacing: 0.5px;
 }

@@ -1,98 +1,172 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LocalNews.css';
+import { naverSearchAPI } from '../../api/backend.api';
 
 // 이미지 파일들
 let TitleImage, ArrowImage;
 try {
   TitleImage = require('../../assets/우리동네소식이궁금하다면.png');
-  ArrowImage = require('../../assets/우리동네화살표.png');
 } catch (e) {
   TitleImage = null;
+}
+try {
+  ArrowImage = require('../../assets/우리동네소식화살표.png');
+} catch (e) {
   ArrowImage = null;
 }
 
 const LocalNews = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0);
+  const [newsItems, setNewsItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null);
 
-  const newsItems = [
-    {
-      id: 1,
-      tag: '카페',
-      title: '가까운 서산 맛집 추천할게요 처돌믿으세요..여기는진짜 찐맛집...',
-      date: '2025. 07. 31',
-      source: '어쩌고저쩌고내용',
-      footer: '내용 최대 2줄',
-      link: '/explore?tab=카페'
-    },
-    {
-      id: 2,
-      tag: '블로그',
-      title: '가까운 서산 맛집 추천할게요 처돌믿으세요..여기는진짜 찐맛집...',
-      date: '2025. 07. 31',
-      source: '어쩌고저쩌고내용',
-      footer: '내용 최대 2줄',
-      link: '/explore?tab=블로그'
-    },
-    {
-      id: 3,
-      tag: '카페',
-      title: '오늘 예천동 뜸냄새!!!!',
-      date: '2025. 07. 31',
-      source: '어쩌고저쩌고내용',
-      footer: '내용 최대 2줄',
-      link: '/explore?tab=카페'
-    },
-    {
-      id: 4,
-      tag: '블로그',
-      title: '오늘 예천동 뜸냄새!!!!',
-      date: '2025. 07. 31',
-      source: '어쩌고저쩌고내용',
-      footer: '내용 최대 2줄',
-      link: '/explore?tab=블로그'
-    },
-    {
-      id: 5,
-      tag: '카페',
-      title: '서산 해미읍성 축제 후기',
-      date: '2025. 07. 30',
-      source: '어쩌고저쩌고내용',
-      footer: '내용 최대 2줄',
-      link: '/explore?tab=카페'
-    },
-    {
-      id: 6,
-      tag: '블로그',
-      title: '서산 맛집 투어 일주일 도전',
-      date: '2025. 07. 30',
-      source: '어쩌고저쩌고내용',
-      footer: '내용 최대 2줄',
-      link: '/explore?tab=블로그'
-    }
-  ];
+  // 실제 카페/블로그 데이터 가져오기
+  useEffect(() => {
+    const fetchLocalNews = async () => {
+      setLoading(true);
+      const combinedItems = [];
+      
+      try {
+        // 카페 데이터 가져오기 (3개)
+        try {
+          const cafeResult = await naverSearchAPI.search('서산시', 'cafearticle', 3);
+          if (cafeResult && Array.isArray(cafeResult)) {
+            cafeResult.forEach((item, idx) => {
+              const description = item.description
+                ?.replace(/<[^>]*>/g, '')
+                ?.replace(/&quot;/g, '"')
+                ?.replace(/&amp;/g, '&')
+                ?.replace(/&lt;/g, '<')
+                ?.replace(/&gt;/g, '>')
+                ?.replace(/&#39;/g, "'") || '';
+              
+              combinedItems.push({
+                id: `cafe-${idx}`,
+                tag: '카페',
+                title: item.title
+                  ?.replace(/<[^>]*>/g, '')
+                  ?.replace(/&quot;/g, '"')
+                  ?.replace(/&amp;/g, '&')
+                  ?.replace(/&lt;/g, '<')
+                  ?.replace(/&gt;/g, '>')
+                  ?.replace(/&#39;/g, "'") || '제목 없음',
+                date: item.date || item.postdate || new Date().toLocaleDateString('ko-KR'),
+                source: description.substring(0, 50) + (description.length > 50 ? '...' : ''),
+                footer: item.cafename ? `카페: ${item.cafename}` : '',
+                link: item.link,
+                originalData: item
+              });
+            });
+          }
+        } catch (e) {
+          console.error('카페 데이터 가져오기 실패:', e);
+        }
+
+        // 블로그 데이터 가져오기 (3개)
+        try {
+          const blogResult = await naverSearchAPI.search('서산시', 'blog', 3);
+          if (blogResult && Array.isArray(blogResult)) {
+            blogResult.forEach((item, idx) => {
+              const description = item.description
+                ?.replace(/<[^>]*>/g, '')
+                ?.replace(/&quot;/g, '"')
+                ?.replace(/&amp;/g, '&')
+                ?.replace(/&lt;/g, '<')
+                ?.replace(/&gt;/g, '>')
+                ?.replace(/&#39;/g, "'") || '';
+              
+              combinedItems.push({
+                id: `blog-${idx}`,
+                tag: '블로그',
+                title: item.title
+                  ?.replace(/<[^>]*>/g, '')
+                  ?.replace(/&quot;/g, '"')
+                  ?.replace(/&amp;/g, '&')
+                  ?.replace(/&lt;/g, '<')
+                  ?.replace(/&gt;/g, '>')
+                  ?.replace(/&#39;/g, "'") || '제목 없음',
+                date: item.date || item.postdate || new Date().toLocaleDateString('ko-KR'),
+                source: description.substring(0, 50) + (description.length > 50 ? '...' : ''),
+                footer: item.bloggername ? `블로거: ${item.bloggername}` : '',
+                link: item.link,
+                originalData: item
+              });
+            });
+          }
+        } catch (e) {
+          console.error('블로그 데이터 가져오기 실패:', e);
+        }
+
+        // 카페와 블로그 데이터를 섮어서 표시
+        const shuffled = combinedItems.sort(() => Math.random() - 0.5);
+        
+        if (shuffled.length > 0) {
+          setNewsItems(shuffled);
+        } else {
+          // 기본 데이터
+          setNewsItems([
+            {
+              id: 'default-1',
+              tag: '카페',
+              title: '서산시 소식을 검색해보세요',
+              date: new Date().toLocaleDateString('ko-KR'),
+              source: '카페와 블로그에서',
+              footer: '우리동네 소식을 확인해보세요'
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error('로컬 뉴스 데이터 가져오기 실패:', error);
+        // 에러 시 기본 데이터
+        setNewsItems([
+          {
+            id: 'default-1',
+            tag: '카페',
+            title: '서산시 소식을 검색해보세요',
+            date: new Date().toLocaleDateString('ko-KR'),
+            source: '카페와 블로그에서',
+            footer: '우리동네 소식을 확인해보세요'
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLocalNews();
+  }, []);
 
   const itemsPerPage = 4;
   const totalPages = Math.ceil(newsItems.length / itemsPerPage);
 
   const handleCardClick = (item) => {
-    // Explore 페이지로 이동하면서 상세보기 모드로 설정
-    navigate('/explore', { 
-      state: { 
-        selectedItem: {
-          id: item.id,
-          title: item.title,
-          content: `${item.source}\n${item.footer}`,
-          tag: item.tag,
-          date: item.date,
-          type: item.tag
-        },
-        tab: item.tag,
-        view: 'detail'
-      }
-    });
+    // 링크가 있는 경우 직접 이동
+    if (item.link && item.link !== '#') {
+      window.open(item.link, '_blank');
+    } else {
+      // Explore 페이지로 이동하면서 상세보기 모드로 설정
+      navigate('/explore', { 
+        state: { 
+          selectedItem: {
+            id: item.id,
+            title: item.title,
+            content: `${item.source}\n${item.footer}`,
+            body: `${item.source}\n${item.footer}`,
+            tag: item.tag,
+            date: item.date,
+            type: item.tag,
+            link: item.link,
+            originalData: item.originalData
+          },
+          tab: item.tag,
+          view: 'detail',
+          scrollToTop: true
+        }
+      });
+    }
   };
 
   const handlePageChange = (direction) => {
@@ -116,16 +190,15 @@ const LocalNews = () => {
         ) : (
           <h2 className="local-news-title">우리동네 소식이 궁금하다면?</h2>
         )}
-        <button className="local-news-search" aria-label="검색">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="11" cy="11" r="8" stroke="#2ad0c9" strokeWidth="2"/>
-            <path d="M21 21l-4.35-4.35" stroke="#2ad0c9" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-        </button>
       </div>
 
       <div className="local-news-grid">
-        {displayedItems.map((item) => (
+        {loading ? (
+          <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: '#666' }}>
+            우리동네 카페/블로그 소식을 불러오는 중...
+          </div>
+        ) : (
+          displayedItems.map((item) => (
           <div 
             key={item.id}
             className="local-news-card"
@@ -162,7 +235,8 @@ const LocalNews = () => {
               )}
             </div>
           </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* 페이지네이션 */}
@@ -199,10 +273,6 @@ const LocalNews = () => {
         </button>
       </div>
 
-      {/* 우측 텍스트 */}
-      <div className="local-news-sidebar">
-        <p>링크, 카페url 빼고 다 추가</p>
-      </div>
     </div>
   );
 };
