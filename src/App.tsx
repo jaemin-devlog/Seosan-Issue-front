@@ -4,7 +4,7 @@ import './App.css';
 import { AppProvider } from './contexts/AppContext';
 import ErrorBoundary from './components/ErrorBoundary';
 // @ts-ignore
-import Header from './Header/Header.jsx';
+import Header from './Header/Header.tsx';
 import { LoadingSpinner } from './components/LoadingStates';
 
 // Lazy loading으로 초기 번들 크기 감소

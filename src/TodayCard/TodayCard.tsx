@@ -1,3 +1,4 @@
+// src/YourPath/TodayCard.tsx
 import React from "react";
 import styles from "./TodayCard.module.css";
 import Event from "../assets/event.png";
@@ -6,6 +7,21 @@ import TrendUpIcon from "../assets/trending-up.png";
 import CardBG from "../assets/TodayCardBG.png";
 import ChainIcon from "../assets/chain.png"; // 링크 아이콘
 
+type EventItem = {
+  date: string;
+  time: string;
+  title: string;
+  url?: string;
+};
+
+export interface TodayCardProps {
+  totalCount?: number;
+  todayCollected?: number;
+  totalDelta?: number;
+  todayDelta?: number;
+  events?: ReadonlyArray<EventItem>;
+}
+
 export default function TodayCard({
   totalCount = 1432,
   todayCollected = 18,
@@ -13,17 +29,17 @@ export default function TodayCard({
   todayDelta = 7,
   events = [
     { date: "9월26일(금)", time: "19 : 00", title: "서산해미읍성축제" },
-    { date: "10월 중",      time: "미정",     title: "서산어리굴젓 축제" },
-    { date: "11월 중",      time: "미정",     title: "서산국화축제" },
-    { date: "11월 중",      time: "미정",     title: "뻘낙지먹물축제" },
+    { date: "10월 중", time: "미정", title: "서산어리굴젓 축제" },
+    { date: "11월 중", time: "미정", title: "서산국화축제" },
+    { date: "11월 중", time: "미정", title: "뻘낙지먹물축제" },
   ],
-}) {
+}: TodayCardProps) {
   // 제목 → 공식 페이지 링크 매핑
-  const linkByTitle = {
-    "서산해미읍성축제": "https://www.seosan.go.kr/tour/contents.do?key=6105",
+  const linkByTitle: Record<string, string> = {
+    서산해미읍성축제: "https://www.seosan.go.kr/tour/contents.do?key=6105",
     "서산어리굴젓 축제": "https://www.seosan.go.kr/tour/contents.do?key=6141",
-    "서산국화축제":"https://www.seosan.go.kr/tour/contents.do?key=6138",
-    "뻘낙지먹물축제": "https://www.seosan.go.kr/tour/contents.do?key=6144",
+    서산국화축제: "https://www.seosan.go.kr/tour/contents.do?key=6138",
+    뻘낙지먹물축제: "https://www.seosan.go.kr/tour/contents.do?key=6144",
   };
 
   return (
@@ -35,14 +51,22 @@ export default function TodayCard({
         <div className={styles.panel}>
           <div className={styles.statsGrid}>
             {/* 전체 콘텐츠 */}
-            <div className={styles.metricCard} style={{ backgroundImage: `url(${CardBG})` }}>
+            <div
+              className={styles.metricCard}
+              style={{ backgroundImage: `url(${CardBG})` }}
+            >
               <div className={styles.metricCircle}>
                 <div className={styles.metricLabel}>전체 콘텐츠</div>
-                <div className={styles.metricNumber}>{totalCount.toLocaleString()}</div>
+                <div className={styles.metricNumber}>
+                  {totalCount.toLocaleString()}
+                </div>
               </div>
               <div className={styles.metricFooter}>
                 <span className={styles.metricSub}>전일 대비 증가</span>
-                <span className={styles.deltaBadge} aria-label={`전일 대비 ${totalDelta}% 증가`}>
+                <span
+                  className={styles.deltaBadge}
+                  aria-label={`전일 대비 ${totalDelta}% 증가`}
+                >
                   <img src={TrendUpIcon} alt="" className={styles.deltaIcon} />
                   <span>+ {totalDelta}%</span>
                 </span>
@@ -50,14 +74,22 @@ export default function TodayCard({
             </div>
 
             {/* 오늘의 수집 */}
-            <div className={styles.metricCard} style={{ backgroundImage: `url(${CardBG})` }}>
+            <div
+              className={styles.metricCard}
+              style={{ backgroundImage: `url(${CardBG})` }}
+            >
               <div className={styles.metricCircle}>
                 <div className={styles.metricLabel}>오늘의 수집</div>
-                <div className={styles.metricNumber}>{todayCollected.toLocaleString()}</div>
+                <div className={styles.metricNumber}>
+                  {todayCollected.toLocaleString()}
+                </div>
               </div>
               <div className={styles.metricFooter}>
                 <span className={styles.metricSub}>전일 대비 증가</span>
-                <span className={styles.deltaBadge} aria-label={`전일 대비 ${todayDelta}% 증가`}>
+                <span
+                  className={styles.deltaBadge}
+                  aria-label={`전일 대비 ${todayDelta}% 증가`}
+                >
                   <img src={TrendUpIcon} alt="" className={styles.deltaIcon} />
                   <span>+ {todayDelta}%</span>
                 </span>
@@ -70,18 +102,23 @@ export default function TodayCard({
       {/* 오른쪽: 다가오는 이벤트 */}
       <div className={styles.rightCol}>
         <h2 className={styles.sectionTitle}>
-          다가오는 이벤트 <span className={styles.party}><img src={Event} alt=""/></span>
+          다가오는 이벤트{" "}
+          <span className={styles.party}>
+            <img src={Event} alt="" />
+          </span>
         </h2>
 
         <div className={styles.panel}>
           <ul className={styles.eventList}>
             {events.map((e, idx) => {
               // 1순위 e.url, 2순위 제목 매핑, 3순위 네이버 검색
-              const fallbackSearch = `https://search.naver.com/search.naver?query=${encodeURIComponent(e.title)}`;
+              const fallbackSearch = `https://search.naver.com/search.naver?query=${encodeURIComponent(
+                e.title
+              )}`;
               const link = e.url ?? linkByTitle[e.title] ?? fallbackSearch;
 
               return (
-                <li key={idx} className={styles.eventItem}>
+                <li key={`${e.title}-${idx}`} className={styles.eventItem}>
                   <div className={styles.eventTop}>
                     <img src={ClockIcon} alt="" className={styles.clock} />
                     <strong className={styles.eventDate}>{e.date}</strong>

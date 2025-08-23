@@ -78,7 +78,7 @@ const OFFICIAL_LINKS: Record<string, string> = {
   '삼길포 우럭 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6102',
   '어리굴젓 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6141',
   '서산 국화 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6138',
-  '서산 뻘낙지먹물축제': 'https://www.seosan.go.kr/tour/contents.do?key=6144'
+  '서산 뻘낙지먹물 축제': 'https://www.seosan.go.kr/tour/contents.do?key=6144'
 };
 
 const getOfficialLink = (name: string) => OFFICIAL_LINKS[name] || '';
@@ -220,7 +220,7 @@ const FESTIVALS: ReadonlyArray<Festival> = [
   },
   {
     month: '11월',
-    name: '서산뻘낙지먹물축제',
+    name: '서산 뻘낙지먹물 축제',
     description: '조선시대 군사 요충지였던 해미읍성에서 펼쳐지는 역사문화축제로, 전통 무예 시연과 다양한 체험 프로그램이 진행됩니다.',
     details: [
       { icon: Calendar, text: '매년 11월경' },
@@ -430,7 +430,7 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
     if (index !== currentFestivalIndex) setCurrentFestivalIndex(index);
   }, [currentFestivalIndex]);
 
-  // ⭐ 체험 페이징 네비게이션
+  // 체험 페이징 네비게이션
   const handlePrevExpPage = useCallback(() => {
     setHoveredMarkerId(null);
     setFocusedMarkerId(null);

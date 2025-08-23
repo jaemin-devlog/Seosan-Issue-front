@@ -1,3 +1,4 @@
+// src/Mainpage/Mainpage.tsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Mainpage.css";
@@ -13,10 +14,13 @@ import topicTab from "../assets/topicBG.png";
 import SearchBalloon from "../assets/search (2).png";
 import Weather from "../Weather/Weather";
 import TodayCard from "../TodayCard/TodayCard";
-import History from "../assets/History.png";
+import History from "../assets/refresh_gray.gif";
 
-/** 트렌딩 토픽 데이터: 일간 / 주간 */
-const trendingDaily = [
+type Period = "daily" | "weekly";
+type Topic = { title: string; isNew?: boolean };
+
+// ✅ 트렌딩 토픽 데이터: 일간 / 주간
+const trendingDaily: ReadonlyArray<Topic> = [
   { title: "서산 맛집" },
   { title: "복지" },
   { title: "해미읍성" },
@@ -25,7 +29,7 @@ const trendingDaily = [
   { title: "서산 카페", isNew: true },
 ];
 
-const trendingWeekly = [
+const trendingWeekly: ReadonlyArray<Topic> = [
   { title: "서산 카페" },
   { title: "복지 신청" },
   { title: "서산 축제 일정" },
@@ -35,46 +39,50 @@ const trendingWeekly = [
 ];
 
 // ✅ 최근 검색 키워드 세트 (아이콘 클릭 시 순환)
-const recentSearchPool = [
+const recentSearchPool: ReadonlyArray<ReadonlyArray<string>> = [
   ["문화 혜택", "서산 맛집 추천", "복지 혜택 신청", "서산 교통편"],
   ["교통정보", "서산시 행사", "서산 카페", "전통시장"],
   ["서산 명소", "주말 이벤트", "체육시설", "노인복지관"],
 ];
 
 // 환경변수 기반 API 베이스 URL (없으면 로컬 기본값)
-const API_BASE =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:8083/api/v1";
+const API_BASE: string =
+  (import.meta as any)?.env?.VITE_API_BASE_URL ??
+  (process.env as any)?.REACT_APP_API_BASE_URL ??
+  "http://localhost:8083/api/v1";
 
 // 결과가 비었는지 유연하게 판별
-const hasResults = (data) => {
-  if (!data) return false;
+const hasResults = (data: unknown): boolean => {
+  if (data == null) return false;
   if (Array.isArray(data)) return data.length > 0;
   if (typeof data === "object") {
-    if (typeof data.total === "number") return data.total > 0;
-    if (typeof data.count === "number") return data.count > 0;
+    const obj = data as Record<string, unknown>;
+    if (typeof obj.total === "number") return (obj.total as number) > 0;
+    if (typeof obj.count === "number") return (obj.count as number) > 0;
     for (const k of ["items", "results", "data", "list"]) {
-      if (Array.isArray(data[k])) return data[k].length > 0;
+      const v = obj[k];
+      if (Array.isArray(v)) return v.length > 0;
     }
   }
   // 구조를 모르면 '있다'로 간주(오탐 경고 방지)
   return true;
 };
 
-export default function Mainpage() {
-  const [inputValue, setInputValue] = useState("");
-  const [period, setPeriod] = useState("daily"); // "daily" | "weekly"
-  const [aiLoading, setAiLoading] = useState(false);
-  const [recentIndex, setRecentIndex] = useState(0); // 최근검색 세트 인덱스
+const Mainpage: React.FC = () => {
+  const [inputValue, setInputValue] = useState<string>("");
+  const [period, setPeriod] = useState<Period>("daily");
+  const [aiLoading, setAiLoading] = useState<boolean>(false);
+  const [recentIndex, setRecentIndex] = useState<number>(0);
   const navigate = useNavigate();
 
   const topics = period === "daily" ? trendingDaily : trendingWeekly;
 
   // ★ ExplorePremium으로 이동할 URL 헬퍼
-  const exploreTo = (tab) =>
+  const exploreTo = (tab: string): string =>
     `/explore?view=list&tab=${encodeURIComponent(tab)}&page=1`;
 
   // ★ AI 검색 → 백엔드 연동 + 빈 결과 알람 + 결과 페이지 이동
-  const handleAiSearch = async () => {
+  const handleAiSearch = async (): Promise<void> => {
     const query = inputValue.trim();
     if (!query || aiLoading) return;
 
@@ -87,10 +95,11 @@ export default function Mainpage() {
       });
 
       if (!res.ok) throw new Error(`AI search HTTP ${res.status}`);
-      const data = await res.json();
+      const data = (await res.json()) as unknown;
 
       const empty = !hasResults(data);
       if (empty) {
+        // eslint-disable-next-line no-alert
         alert("검색 결과가 없습니다.");
       }
 
@@ -111,6 +120,7 @@ export default function Mainpage() {
       );
     } catch (err) {
       console.error(err);
+      // eslint-disable-next-line no-alert
       alert("검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
       // 오류 시에도 최소한 검색 페이지로 이동
       navigate(
@@ -124,12 +134,13 @@ export default function Mainpage() {
     }
   };
 
-  const toDaily = () => setPeriod("daily");
-  const toWeekly = () => setPeriod("weekly");
-  const togglePeriod = () => setPeriod((p) => (p === "daily" ? "weekly" : "daily"));
+  const toDaily = (): void => setPeriod("daily");
+  const toWeekly = (): void => setPeriod("weekly");
+  const togglePeriod = (): void =>
+    setPeriod((p) => (p === "daily" ? "weekly" : "daily"));
 
-  //  최근검색: History 아이콘 클릭 시 다음 세트로
-  const handleRecentRefresh = () =>
+  // 최근검색: History 아이콘 클릭 시 다음 세트로
+  const handleRecentRefresh = (): void =>
     setRecentIndex((i) => (i + 1) % recentSearchPool.length);
 
   return (
@@ -138,6 +149,7 @@ export default function Mainpage() {
         <div className="mainpage-left">
           <img src={logo1} alt="오늘 서산에 무슨일 issue?" className="main-title-img" />
           <Weather />
+
           {/* ------- 트렌딩 토픽 ------- */}
           <div className="trending-card-wrap">
             <div className="trending-tab-img">
@@ -202,8 +214,10 @@ export default function Mainpage() {
                   className="balloonInput"
                   placeholder="키워드로 검색해주새요"
                   value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setInputValue(e.target.value)
+                  }
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                     if (e.key === "Enter") handleAiSearch();
                   }}
                   aria-busy={aiLoading ? "true" : "false"}
@@ -215,8 +229,11 @@ export default function Mainpage() {
                   role="button"
                   aria-label="AI 검색 실행"
                   aria-disabled={aiLoading ? "true" : "false"}
-                  style={{ cursor: aiLoading ? "not-allowed" : "pointer", opacity: aiLoading ? 0.7 : 1 }}
-                  onKeyDown={(e) => {
+                  style={{
+                    cursor: aiLoading ? "not-allowed" : "pointer",
+                    opacity: aiLoading ? 0.7 : 1,
+                  }}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLSpanElement>) => {
                     if (e.key === "Enter") handleAiSearch();
                   }}
                 >
@@ -237,7 +254,7 @@ export default function Mainpage() {
                 aria-label="최근 검색 새로고침"
                 title="최근 검색 새로고침"
                 onClick={handleRecentRefresh}
-                onKeyDown={(e) => {
+                onKeyDown={(e: React.KeyboardEvent<HTMLImageElement>) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     handleRecentRefresh();
@@ -283,7 +300,8 @@ export default function Mainpage() {
                 <div>
                   <div className="balloon-card-title">복지</div>
                   <div className="balloon-card-desc">
-                    복지혜택, 찾기 힘드신가요?<br />
+                    복지혜택, 찾기 힘드신가요?
+                    <br />
                     통합 정보를 확인하세요
                   </div>
                 </div>
@@ -330,4 +348,6 @@ export default function Mainpage() {
       </div>
     </div>
   );
-}
+};
+
+export default Mainpage;
