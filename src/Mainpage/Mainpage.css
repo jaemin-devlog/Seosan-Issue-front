@@ -274,17 +274,18 @@ body {
 }
 .balloon-tags {
   display: flex;
-  gap: 22px;
-  font-size: 1.21rem;
-  font-weight: 900;
-  color: #6e919e;
+  gap: 17px;
+  font-size: 18px;
+  font-weight: 100;
+  color: #737373;
   margin-left: 0px;
   margin-top: 6px;
   font-family: inherit;
+  cursor: pointer;
 }
 .balloon-tags span {
-  font-weight: 900;
-  color: #6e919e;
+  font-weight: 400;
+  color: #c1c1c1;
   letter-spacing: -0.5px;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -438,7 +439,7 @@ body {
   isolation: isolate;
   overflow: visible;
 }
-.trending-tab-wrap { position: relative; margin-top: 20px; }
+.trending-tab-wrap { position: relative; margin-top: 40px; }
 .trending-tab {
   position: absolute;
   top: -95px;
@@ -456,9 +457,9 @@ body {
 }
 .trending-card-wrap { 
   position: relative; 
-  margin-top: 20px; 
-  margin-bottom: 15px;
-  width: 100%;
+  margin-top: 30px;
+  margin-bottom: -30px; 
+   width: 100%;
   max-width: 380px;
   display: flex;
   justify-content: center;

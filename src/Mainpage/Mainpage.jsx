@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Mainpage.css";
 import "./Mainpage-responsive.css";
@@ -15,7 +15,7 @@ import topicTab from "../assets/topicBG.png";
 import SearchBalloon from "../assets/search (2).png";
 import Weather from "../Weather/Weather";
 import TodayCard from "../TodayCard/TodayCard";
-import History from "../assets/History.png";
+import History from "../assets/refresh_gray.gif";
 
 const Mainpage = memo(() => {
   const navigate = useNavigate();
@@ -25,12 +25,42 @@ const Mainpage = memo(() => {
   const [trendingTopics, setTrendingTopics] = useState({ daily: [], weekly: [] });
   const [notices, setNotices] = useState([]);
   const [trendingLoading, setTrendingLoading] = useState(true);
-  
+
   const topics = trendingTopics[period] || [];
 
-  // ★ ExplorePremium으로 이동할 URL 헬퍼
-  const exploreTo = useCallback((tab) =>
-    `/explore?view=list&tab=${encodeURIComponent(tab)}&page=1`, []);
+  // ▼ 추천 검색어 세트 (여러개) — History 아이콘 클릭 시 순환됩니다.
+  const recommendedSets = useMemo(
+    () => [
+      ["맛집", "노인복지", "서산 교통", "해미"],
+      ["서산 카페", "문화혜택", "서산시 행사", "버스시간표"],
+      ["해미읍성", "아이돌봄", "날씨", "미세먼지"],
+    ],
+    []
+  );
+  const [recIdx, setRecIdx] = useState(0);
+  const currentTags = recommendedSets[recIdx % recommendedSets.length];
+  const rotateDeg = recIdx * 180; // 아이콘 회전용
+
+  // ExplorePremium으로 이동할 URL 헬퍼
+  const exploreTo = useCallback(
+    (tab) => `/explore?view=list&tab=${encodeURIComponent(tab)}&page=1`,
+    []
+  );
+
+  // 추천 키워드 클릭 → ai-search 로 이동
+  const handleKeywordClick = useCallback(
+    (keyword) => {
+      const q = String(keyword).trim();
+      if (!q) return;
+      navigate(`/ai-search?q=${encodeURIComponent(q)}`);
+    },
+    [navigate]
+  );
+
+  // 추천 세트 새로고침(순환)
+  const handleRefreshTags = useCallback(() => {
+    setRecIdx((v) => (v + 1) % recommendedSets.length);
+  }, [recommendedSets.length]);
 
   // API 데이터 로드
   useEffect(() => {
@@ -42,25 +72,24 @@ const Mainpage = memo(() => {
     setTrendingLoading(true);
     try {
       const data = await mainPageAPI.getTrendingKeywords();
-      
-      if (data && typeof data === 'object') {
+
+      if (data && typeof data === "object") {
         if (data.daily && data.weekly) {
-          // 6개로 제한하고 포맷팅
-          const formattedDaily = Array.isArray(data.daily) 
-            ? data.daily.slice(0, 6).map((title, index) => ({ 
-                title: String(title), 
-                isNew: index >= 4  // 5번째부터 new 표시
-              })) 
+          const formattedDaily = Array.isArray(data.daily)
+            ? data.daily.slice(0, 6).map((title, index) => ({
+                title: String(title),
+                isNew: index >= 4, // 5번째부터 new 표시
+              }))
             : [];
-          const formattedWeekly = Array.isArray(data.weekly) 
-            ? data.weekly.slice(0, 6).map(title => ({ 
-                title: String(title) 
-              })) 
+          const formattedWeekly = Array.isArray(data.weekly)
+            ? data.weekly.slice(0, 6).map((title) => ({
+                title: String(title),
+              }))
             : [];
-          
+
           setTrendingTopics({
             daily: formattedDaily,
-            weekly: formattedWeekly
+            weekly: formattedWeekly,
           });
         } else {
           setTrendingTopics({ daily: [], weekly: [] });
@@ -69,8 +98,8 @@ const Mainpage = memo(() => {
         setTrendingTopics({ daily: [], weekly: [] });
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('트렌딩 키워드 로드 실패:', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("트렌딩 키워드 로드 실패:", error);
       }
       setTrendingTopics({ daily: [], weekly: [] });
     } finally {
@@ -80,7 +109,7 @@ const Mainpage = memo(() => {
 
   const fetchNotices = async () => {
     try {
-      const data = await seosanAPI.getNotices('대산읍', 0, 2);
+      const data = await seosanAPI.getNotices("대산읍", 0, 2);
       if (data && data.length > 0) {
         setNotices(data);
       }
@@ -91,24 +120,22 @@ const Mainpage = memo(() => {
           id: 1,
           title: "2025 서산시 혁신 아이디어 공모 국민 선호도 조사 실시 안내",
           date: "2025-01-15",
-          category: "공지사항"
+          category: "공지사항",
         },
         {
           id: 2,
           title: "서산시 겨울철 한파 대비 안전 수칙 안내",
           date: "2025-01-14",
-          category: "공지사항"
-        }
+          category: "공지사항",
+        },
       ]);
     }
   };
 
-  // ★ AI 검색 → 백엔드 연동 + 빈 결과 알람 + 결과 페이지 이동
+  // AI 검색 → 결과 페이지 이동
   const handleAiSearch = useCallback(async () => {
     const query = inputValue.trim();
     if (!query || aiLoading) return;
-
-    // AI 검색 페이지로 이동하면서 검색어 전달
     navigate(`/ai-search?q=${encodeURIComponent(query)}`);
     setInputValue("");
   }, [inputValue, aiLoading, navigate]);
@@ -121,7 +148,7 @@ const Mainpage = memo(() => {
       <div className="mainpage-container">
         <div className="mainpage-left">
           <img src={logo1} alt="오늘 서산에 무슨일 issue?" className="main-title-img" />
-          
+
           {/* 날씨 섹션 */}
           <div className="weather-section">
             <h2 className="weather-title">날씨</h2>
@@ -136,34 +163,59 @@ const Mainpage = memo(() => {
             </div>
 
             <div className="trending-card" role="region" aria-label="트렌딩 토픽">
-              <ul className="trending-list" aria-live="polite" aria-label={`${period === 'daily' ? '일간' : '주간'} 트렌딩 토픽 목록`}>
+              <ul
+                className="trending-list"
+                aria-live="polite"
+                aria-label={`${period === "daily" ? "일간" : "주간"} 트렌딩 토픽 목록`}
+              >
                 {trendingLoading ? (
-                  <li className="trending-row" style={{ textAlign: 'center', padding: '30px 20px', border: 'none' }}>
-                    <span style={{ color: '#999', fontSize: '14px' }}>트렌딩 데이터를 불러오는 중...</span>
+                  <li
+                    className="trending-row"
+                    style={{ textAlign: "center", padding: "30px 20px", border: "none" }}
+                  >
+                    <span style={{ color: "#999", fontSize: "14px" }}>
+                      트렌딩 데이터를 불러오는 중...
+                    </span>
                   </li>
                 ) : topics && topics.length > 0 ? (
                   topics.map((t, i) => (
-                    <li 
-                      className="trending-row" 
+                    <li
+                      className="trending-row"
                       key={`${period}-${i}`}
                       role="button"
                       tabIndex={0}
-                      aria-label={`${i + 1}위: ${typeof t === 'object' ? t.title : t}${typeof t === 'object' && t.isNew ? ' (신규)' : ''}`}
+                      aria-label={`${i + 1}위: ${
+                        typeof t === "object" ? t.title : t
+                      }${typeof t === "object" && t.isNew ? " (신규)" : ""}`}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
+                        if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault();
-                          // 클릭 이벤트와 동일한 동작
+                          // 원하면 클릭 동작까지 연결
+                          // handleKeywordClick(typeof t === "object" ? t.title : t);
                         }
                       }}
                     >
-                      <span className="trending-num" aria-hidden="true">{i + 1}</span>
-                      <span className="trending-text">{typeof t === 'object' ? t.title : t}</span>
-                      {typeof t === 'object' && t.isNew && <span className="trending-new" aria-label="신규">new</span>}
+                      <span className="trending-num" aria-hidden="true">
+                        {i + 1}
+                      </span>
+                      <span className="trending-text">
+                        {typeof t === "object" ? t.title : t}
+                      </span>
+                      {typeof t === "object" && t.isNew && (
+                        <span className="trending-new" aria-label="신규">
+                          new
+                        </span>
+                      )}
                     </li>
                   ))
                 ) : (
-                  <li className="trending-row" style={{ textAlign: 'center', padding: '30px 20px', border: 'none' }}>
-                    <span style={{ color: '#999', fontSize: '14px' }}>트렌딩 데이터가 없습니다.</span>
+                  <li
+                    className="trending-row"
+                    style={{ textAlign: "center", padding: "30px 20px", border: "none" }}
+                  >
+                    <span style={{ color: "#999", fontSize: "14px" }}>
+                      트렌딩 데이터가 없습니다.
+                    </span>
                   </li>
                 )}
               </ul>
@@ -181,9 +233,7 @@ const Mainpage = memo(() => {
                   ‹
                 </button>
 
-                <span className="trending-mode">
-                  {period === "daily" ? "일간" : "주간"}
-                </span>
+                <span className="trending-mode">{period === "daily" ? "일간" : "주간"}</span>
 
                 <button
                   type="button"
@@ -204,7 +254,13 @@ const Mainpage = memo(() => {
         <div className="mainpage-right">
           <div className="bgBox">
             <div className="aiSearchBalloonBox">
-              <img src={SearchBalloon} alt="검색 말풍선" className="balloonBg" />
+              {/* 배경 이미지가 클릭을 가로채지 않도록 */}
+              <img
+                src={SearchBalloon}
+                alt="검색 말풍선"
+                className="balloonBg"
+                style={{ pointerEvents: "none" }}
+              />
               <div className="balloonContent">
                 <input
                   className="balloonInput"
@@ -223,28 +279,59 @@ const Mainpage = memo(() => {
                   role="button"
                   aria-label="AI 검색 실행"
                   aria-disabled={aiLoading ? "true" : "false"}
-                  style={{ cursor: aiLoading ? "not-allowed" : "pointer", opacity: aiLoading ? 0.7 : 1 }}
+                  style={{
+                    cursor: aiLoading ? "not-allowed" : "pointer",
+                    opacity: aiLoading ? 0.7 : 1,
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleAiSearch();
                   }}
                 >
-                  <span className="aiSearchBold">{aiLoading ? "검색 중..." : "AI 검색"}</span>
+                  <span className="aiSearchBold">
+                    {aiLoading ? "검색 중..." : "AI 검색"}
+                  </span>
                   <img src={SparkleIcon} alt="" className="sparkleIcon" aria-hidden="true" />
                 </span>
               </div>
             </div>
 
-            <div className="balloon-keywords">
-              <img src={History} alt="" className="History-Icon"/>
-              <span className ="History-Bar">|</span>
-              <span className="balloon-popular">최근 검색</span>
+            {/* ▼ 추천 태그 + 새로고침 순환 ▼ */}
+            <div className="balloon-keywords" style={{ position: "relative", zIndex: 10 }}>
+              <img
+                src={History}
+                alt="추천 검색 새로고침"
+                className="History-Icon"
+                title="다른 추천 보기"
+                onClick={handleRefreshTags}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleRefreshTags()}
+                style={{
+                  transform: `rotate(${rotateDeg}deg)`,
+                  transition: "transform .35s ease",
+                }}
+              />
+              <span className="History-Bar">|</span>
+              <span className="balloon-popular">추천 검색</span>
+
               <div className="balloon-tags">
-                <span>#맛집</span>
-                <span>#노인복지</span>
-                <span>#서산교통</span>
-                <span>#해미</span>
+                {currentTags.map((tag, i) => (
+                  <span
+                    key={`${recIdx}-${i}-${tag}`}
+                    role="button"
+                    tabIndex={0}
+                    title={`${tag} 검색`}
+                    onClick={() => handleKeywordClick(tag)}
+                    onKeyDown={(e) =>
+                      (e.key === "Enter" || e.key === " ") && handleKeywordClick(tag)
+                    }
+                  >
+                    #{tag.replace(/\s+/g, "")}
+                  </span>
+                ))}
               </div>
             </div>
+            {/* ▲ 추천 태그 끝 ▲ */}
 
             <div className="balloon-cards">
               <div className="balloon-card">
@@ -254,7 +341,8 @@ const Mainpage = memo(() => {
                 <div>
                   <div className="balloon-card-title">뉴스</div>
                   <div className="balloon-card-desc">
-                    서산의 최근 소식을 여기서,<br />
+                    서산의 최근 소식을 여기서,
+                    <br />
                     바로 알아보세요
                   </div>
                 </div>
@@ -266,6 +354,7 @@ const Mainpage = memo(() => {
                   <img src={arrowIcon} alt="" />
                 </Link>
               </div>
+
               <div className="balloon-card">
                 <div className="balloon-icon-wrap">
                   <img src={healthIcon} alt="복지" />
@@ -273,7 +362,8 @@ const Mainpage = memo(() => {
                 <div>
                   <div className="balloon-card-title">복지</div>
                   <div className="balloon-card-desc">
-                    전 연령대 복지 정책,<br />
+                    전 연령대 복지 정책,
+                    <br />
                     한눈에 확인하세요
                   </div>
                 </div>
@@ -311,7 +401,9 @@ const Mainpage = memo(() => {
                     <span className="news-label">최근 공지사항</span>
                     <span className="news-org">서산시청</span>
                   </div>
-                  <span className="news-text">2025 서산시 혁신 아이디어 공모 국민 선호도 조사 실시 안내</span>
+                  <span className="news-text">
+                    2025 서산시 혁신 아이디어 공모 국민 선호도 조사 실시 안내
+                  </span>
                 </div>
                 <div className="news-item">
                   <img src={news1Icon} alt="뉴스" />
@@ -330,6 +422,5 @@ const Mainpage = memo(() => {
   );
 });
 
-Mainpage.displayName = 'Mainpage';
-
+Mainpage.displayName = "Mainpage";
 export default Mainpage;

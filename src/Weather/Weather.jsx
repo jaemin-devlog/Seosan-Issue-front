@@ -1,11 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { fetchWeatherData } from "../api/Weather.api.js";
 import "./Weather.css";
 
 import Sun from "../assets/sun.png";
 import Cloud from "../assets/cloud.png";
 import Rain from "../assets/rain.png";
 import Snow from "../assets/snow.png";
+
+const DEBUG = false;
+
+const API_BASE =
+  process.env.NODE_ENV === "development"
+    ? "/api"
+    : "https://seosan-issue.shop/api/v1";
 
 /** 고정 지역 순서 */
 const LOCATIONS = [
@@ -20,36 +26,6 @@ const WEATHER_INFO = {
   snow:   { icon: Snow,  label: "눈"   },
 };
 
-/** 예보/실황 모두 대응: 항목 정규화 */
-function normalizeItems(raw) {
-  const items =
-    Array.isArray(raw?.response?.body?.items?.item) ? raw.response.body.items.item :
-    Array.isArray(raw?.response?.body?.items)       ? raw.response.body.items :
-    Array.isArray(raw?.items)                        ? raw.items : [];
-  const obj = {};
-  for (const it of items) {
-    const k = it?.category;
-    const v = it?.fcstValue ?? it?.obsrValue ?? it?.value ?? it?.obsValue;
-    if (k && v !== undefined && v !== null) obj[k] = String(v);
-  }
-  return obj;
-}
-
-function parseWeatherType(o = {}) {
-  // PTY: 0없음 1비 2비/눈 3눈 4소나기 / SKY: 1맑음 3구름많음 4흐림
-  if (o.PTY === "1" || o.PTY === "4") return "rain";
-  if (o.PTY === "2" || o.PTY === "3") return "snow";
-  if (o.SKY === "1") return "sunny";
-  if (o.SKY === "3" || o.SKY === "4") return "cloudy";
-  return "sunny";
-}
-
-function windDirectionLabel(deg) {
-  const d = ["북풍","북북동","북동","동북동","동","동남동","남동","남남동","남","남남서","남서","서남서","서","서북서","북서","북북서"];
-  const i = Math.round((Number(deg) || 0) / 22.5) % 16;
-  return d[i] || "남서풍";
-}
-
 function formatKoDate(now = new Date()) {
   const m = now.getMonth() + 1;
   const day = now.getDate();
@@ -59,13 +35,35 @@ function formatKoDate(now = new Date()) {
   return `${m}월 ${day}일 ${ap} ${h12}시`;
 }
 
+/** /weather/cards?city=... 호출 */
+async function fetchWeatherCards(city) {
+  const params = new URLSearchParams({ city });
+  const url = `${API_BASE}/weather/cards?${params.toString()}`;
+  const res = await fetch(url, { headers: { "Content-Type": "application/json" } });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`HTTP ${res.status} | ${url} | ${text.slice(0, 200)}`);
+  return { url, json: JSON.parse(text) };
+}
+
+function koConditionToType(t = "") {
+  if (!t) return "sunny";
+  if (t.includes("비") || t.includes("소나기")) return "rain";
+  if (t.includes("눈")) return "snow";
+  if (t.includes("흐림") || t.includes("구름")) return "cloudy";
+  if (t.includes("맑")) return "sunny";
+  return "sunny";
+}
+
 export default function Weather() {
   const [idx, setIdx] = useState(0); // 기본: 해미면
   const activeLoc = LOCATIONS[idx];
 
   const [loading, setLoading] = useState(true);
-  const [wx, setWx] = useState(null); // { temp, humidity, windSpeed, windDir, type }
+  const [wx, setWx] = useState(null);      // { temp, humidity, windSpeed, windDir, type }
   const [now, setNow] = useState(new Date());
+  const [raw, setRaw] = useState(null);
+  const [reqUrl, setReqUrl] = useState("");
+  const [err, setErr] = useState(null);
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 60_000);
@@ -76,45 +74,47 @@ export default function Weather() {
     (async () => {
       try {
         setLoading(true);
-        const raw = await fetchWeatherData(activeLoc);
-        
-        // API 응답이 직접 객체로 오는 경우 처리
-        if (raw && raw.temperature) {
-          const temp = Math.round(parseFloat(raw.temperature));
-          const humidity = raw.humidity || "53";
-          const windSpeed = raw.windSpeed || "2.2";
-          
-          // 날씨 타입 결정
-          let type = "sunny";
-          if (raw.pty === "1" || raw.pty === "4") type = "rain";
-          else if (raw.pty === "2" || raw.pty === "3") type = "snow";
-          else if (raw.sky === "3" || raw.sky === "4") type = "cloudy";
-          
-          setWx({
-            temp: String(temp),
-            humidity: String(humidity),
-            windSpeed: windSpeed,
-            windDir: "남서풍",
-            type: type,
-          });
-        } else {
-          // 기상청 API 형식
-          const o = normalizeItems(raw);
-          const temp = o.TMP ?? o.T1H ?? "32";
-          const humidity = o.REH ?? "53";
-          const wsd = o.WSD ?? "2.2";
-          const vec = o.VEC;
+        setErr(null);
 
-          setWx({
-            temp: String(Math.round(parseFloat(temp))),
-            humidity: String(humidity),
-            windSpeed: Number(wsd).toFixed(1),
-            windDir: vec !== undefined ? windDirectionLabel(vec) : "남서풍",
-            type: parseWeatherType(o),
-          });
+        const { url, json } = await fetchWeatherCards(activeLoc);
+        setReqUrl(url);
+        setRaw(json);
+
+        // ✅ 응답이 { cards:[...] } 형태
+        let card = null;
+        if (json && Array.isArray(json.cards)) {
+          card =
+            json.cards.find((c) => c?.region === activeLoc) ||
+            json.cards.find((c) => c?.region?.includes(activeLoc)) ||
+            json.cards[0];
+        } else if (Array.isArray(json)) {
+          // 혹시 배열로 직접 올 때
+          card =
+            json.find((c) => c?.region === activeLoc) ||
+            json.find((c) => c?.region?.includes(activeLoc)) ||
+            json[0];
+        } else {
+          // 단일 객체일 때
+          card = json;
         }
-      } catch {
-        // 폴백(네트워크 실패 등)
+
+        if (!card) throw new Error("No weather card found in response");
+
+        const temp = Math.round(Number(card.temperature ?? 32));
+        const humidity = String(card.humidity ?? 53);
+        const windSpeed = String(card.windSpeed ?? 2.2);
+        const windDir = String(card.windDirection ?? "남서풍");
+        const type = koConditionToType(String(card.condition ?? ""));
+
+        setWx({
+          temp: String(temp),
+          humidity,
+          windSpeed,
+          windDir,
+          type,
+        });
+      } catch (e) {
+        setErr(e instanceof Error ? e.message : String(e));
         setWx({ temp: "32", humidity: "53", windSpeed: "2.2", windDir: "남서풍", type: "sunny" });
       } finally {
         setLoading(false);
@@ -133,10 +133,10 @@ export default function Weather() {
     return <div className="wx-card"><div className="wx-loading">로딩중…</div></div>;
   }
 
-  const { icon, label } = WEATHER_INFO[wx.type];
+  const info = WEATHER_INFO[wx.type] || WEATHER_INFO.sunny;
 
   return (
-    <div className="wx-card" aria-label="현재 날씨">
+    <div className="wx-card" aria-label="현재 날씨" style={{ minHeight: 170, position: "relative" }}>
       {/* 좌/우 원형 버튼 */}
       <button
         type="button"
@@ -165,7 +165,7 @@ export default function Weather() {
         {/* 왼쪽 */}
         <div className="wx-left">
           <div className="wx-temp">{wx.temp}°</div>
-          <div className="wx-cond">{label}</div>
+          <div className="wx-cond">{info.label}</div>
 
           <div className="wx-meta">
             <div>습도 {wx.humidity}%</div>
@@ -180,8 +180,34 @@ export default function Weather() {
         </div>
 
         {/* 우하단 아이콘 */}
-        <img src={icon} alt={label} className={`wx-hero wx-${wx.type}`} />
+        <img src={info.icon} alt={info.label} className={`wx-hero wx-${wx.type}`} />
       </div>
+
+      {DEBUG && (
+        <div
+          style={{
+            position: "absolute",
+            inset: "auto 10px 10px 10px",
+            background: "rgba(0,0,0,0.7)",
+            color: "#fff",
+            padding: 10,
+            borderRadius: 10,
+            fontSize: 12,
+            maxHeight: 180,
+            overflow: "auto",
+          }}
+        >
+          <div style={{ marginBottom: 6, fontWeight: 700 }}>DEBUG — Weather</div>
+          {err && <div style={{ color: "#ff9a9a" }}>Error: {String(err)}</div>}
+          <div style={{ opacity: 0.8, marginBottom: 4 }}>Request: {reqUrl || "(아직 없음)"}</div>
+          <div>
+            Raw:
+            <pre style={{ whiteSpace: "pre-wrap", margin: 0 }}>
+              {typeof raw === "string" ? raw : JSON.stringify(raw, null, 2)}
+            </pre>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

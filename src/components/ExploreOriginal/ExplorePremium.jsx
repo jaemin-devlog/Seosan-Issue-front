@@ -67,6 +67,15 @@ const MOCK = Array.from({ length: 15 }).map((_, i) => {
 
 const PAGE_SIZE = 5;
 
+/* 불릿 변환(요약 문자열 → 줄 배열) */
+function toBullets(s) {
+  if (!s) return [];
+  return s
+    .split(/\n+|•|▪|●|▲|-\s+/g)
+    .map((t) => t.replace(/^[•▪●▲-]\s*/, "").trim())
+    .filter(Boolean);
+}
+
 /* ===== 상세 화면 ===== */
 function DetailView({
   item,
@@ -82,10 +91,17 @@ function DetailView({
 }) {
   const [detailData, setDetailData] = useState(item);
   const [loading, setLoading] = useState(false);
+
+  // (비뉴스) AI 요약 버튼 상태
   const [summary, setSummary] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
-  
-  // AI 요약 API 호출
+
+  // (뉴스 전용) 자동 요약 상태
+  const [newsSummary, setNewsSummary] = useState("");
+  const [newsSummaryLoading, setNewsSummaryLoading] = useState(false);
+  const [newsSummaryError, setNewsSummaryError] = useState("");
+
+  // (비뉴스) AI 요약 API 호출 버튼
   const handleSummarize = async () => {
     setSummaryLoading(true);
     try {
@@ -95,93 +111,70 @@ function DetailView({
         setSummaryLoading(false);
         return;
       }
-      
-      console.log('요약 요청 시작, 내용 길이:', content.length);
-      
-      // API 호출
-      const url = process.env.NODE_ENV === 'development' 
+
+      const url = process.env.NODE_ENV === 'development'
         ? '/flask/summarize'
         : 'https://seosan-issue.shop/flask/summarize';
-      
-      console.log('API 호출:', url);
-      
+
       const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: content
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: content })
       });
-      
-      console.log('API 응답 상태:', response.status);
-      
+
       if (response.ok) {
         const data = await response.json();
-        console.log('API 응답 데이터:', data);
         setSummary(data.summary || data.result || data.text || '요약 결과가 없습니다.');
       } else {
-        const errorText = await response.text();
-        console.error('API 에러 응답:', errorText);
         setSummary('요약 서비스가 일시적으로 이용 불가능합니다. 잠시 후 다시 시도해주세요.');
       }
     } catch (error) {
-      console.error('AI 요약 실패:', error);
       setSummary('요약 중 오류가 발생했습니다. 네트워크 연결을 확인해주세요.');
     } finally {
       setSummaryLoading(false);
     }
   };
-  
+
   // 게시글 상세 조회 API 호출
   useEffect(() => {
     const fetchDetail = async () => {
-      // 네이버 API나 기타 클라이언트 데이터는 API 호출 안함
       const skipCategories = ["뉴스", "카페", "블로그"];
       if (!itemId || skipCategories.includes(categoryLabel)) {
         setDetailData(item);
         return;
       }
-      
-      // 백엔드 카테고리(복지, 서산시청, 문화관광)일 때만 상세 API 호출
       const backendCategories = ["복지", "서산시청", "문화관광"];
       if (!backendCategories.includes(categoryLabel)) {
         setDetailData(item);
         return;
       }
-      
+
       setLoading(true);
       try {
-        console.log('게시글 상세 조회 시작:', { itemId, categoryLabel });
         const { postsAPI } = await import('../../api/backend.api');
         const data = await postsAPI.getDetail(itemId);
-        console.log('상세 API 응답:', data);
-        
         if (data) {
           const updatedData = {
-            ...item,  // 기존 데이터 유지
-            ...data,  // API 데이터로 덮어쓰기
+            ...item,
+            ...data,
             title: data.title || item.title || '제목 없음',
             body: data.content || data.description || data.body || item.body || '내용 없음',
             date: data.pubDate || data.date || item.date || new Date().toLocaleDateString('ko-KR'),
-            link: data.link || item.link,  // '#' 제거하여 링크가 없으면 undefined
+            link: data.link || item.link,
             categoryPath: item.categoryPath || `${categoryLabel} > ${activeRegion || '전체'}`
           };
-          console.log('업데이트된 상세 데이터:', updatedData);
-          console.log('링크 필드:', updatedData.link);
           setDetailData(updatedData);
         }
       } catch (error) {
-        console.error('게시글 상세 조회 실패:', error);
         setDetailData(item);
       } finally {
         setLoading(false);
       }
     };
-    
     fetchDetail();
   }, [itemId, item, categoryLabel, activeRegion]);
+
+  // 날짜
   const todayStr = useMemo(() => {
     const d = new Date();
     const y = d.getFullYear();
@@ -194,12 +187,68 @@ function DetailView({
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const isNews = /^뉴스/.test(categoryLabel || "");
-  const newsBullets = useMemo(
+
+  // (뉴스 전용) 자동 요약: 제목+본문을 합쳐 요청
+  useEffect(() => {
+    if (!isNews) return;
+
+    const title = detailData?.title || "";
+    const body = detailData?.body || "";
+    const content = `${title}\n\n${body}`.trim();
+    if (!content) {
+      setNewsSummary("");
+      setNewsSummaryError("");
+      setNewsSummaryLoading(false);
+      return;
+    }
+
+    let aborted = false;
+    (async () => {
+      try {
+        setNewsSummaryLoading(true);
+        setNewsSummaryError("");
+
+        const url = process.env.NODE_ENV === 'development'
+          ? '/flask/summarize'
+          : 'https://seosan-issue.shop/flask/summarize';
+
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: `다음 뉴스의 핵심만 한국어로 3~5개의 불릿으로 요약해줘.
+장소/기간/주체/수치가 있으면 포함해.\n\n${content}`
+          }),
+        });
+
+        if (!res.ok) {
+          const t = await res.text().catch(()=>"");
+          throw new Error(`HTTP ${res.status} ${t.slice(0,120)}`);
+        }
+        const j = await res.json().catch(()=> ({}));
+        const s = j.summary || j.result || j.text || "";
+        if (!aborted) setNewsSummary(s);
+      } catch (e) {
+        if (!aborted) {
+          setNewsSummary("");
+          setNewsSummaryError(e instanceof Error ? e.message : String(e));
+        }
+      } finally {
+        if (!aborted) setNewsSummaryLoading(false);
+      }
+    })();
+
+    return () => { aborted = true; };
+  }, [isNews, detailData?.title, detailData?.body]);
+
+  // 폴백: 본문을 줄 단위로
+  const fallbackNewsLines = useMemo(
     () =>
       String(detailData?.body || "-")
         .split(/\n+/)
         .map((s) => s.trim())
-        .filter(Boolean),
+        .filter(Boolean)
+        .slice(0, 5),
     [detailData?.body]
   );
 
@@ -222,6 +271,9 @@ function DetailView({
     );
   }
 
+  // 뉴스 요약 불릿
+  const newsBullets = newsSummary ? toBullets(newsSummary) : fallbackNewsLines;
+
   return (
     <>
       <div className={styles.breadcrumb}>{categoryLabel}</div>
@@ -240,10 +292,12 @@ function DetailView({
           <div className={styles.newsSummary}>
             <div className={styles.newsBadge}>
               <img src={sparkleIcon} alt="" />
-              <span>AI 요약 완료</span>
+              <span>
+                {newsSummaryLoading ? "AI 요약 중…" : newsSummary ? "AI 요약 완료" : (newsSummaryError ? "요약 실패(원문 요약 표시)" : "AI 요약")}
+              </span>
             </div>
             <p className={styles.newsLead}>
-              {(detailData?.title || "해당 뉴스") + "에 대한 주요 내용은 다음과 같아요."}
+              {(detailData?.title || "해당 뉴스") + "의 핵심 요약입니다."}
             </p>
             <ul className={styles.newsList}>
               {newsBullets.map((line, i) => (
@@ -545,7 +599,6 @@ export default function ExplorePremium() {
             }
             // 복지 데이터 형식 변환 및 상세 내용 가져오기
             if (data && Array.isArray(data)) {
-              // 각 아이템의 상세 정보를 병렬로 가져오기
               const detailPromises = data.map(async (item) => {
                 try {
                   const detailData = await postsAPI.getDetail(item.id);
@@ -558,7 +611,6 @@ export default function ExplorePremium() {
                     link: detailData?.link || item.link
                   };
                 } catch (error) {
-                  console.error(`상세 정보 가져오기 실패 (ID: ${item.id}):`, error);
                   return {
                     id: item.id || 0,
                     title: item.title || '제목 없음',
@@ -575,8 +627,7 @@ export default function ExplorePremium() {
           }
             
           case "서산시청": {
-            // 서산시청 API
-            const currentPage = page - 1;  // API는 0부터 시작
+            const currentPage = page - 1;
             if (activeSub === "공지사항") {
               data = await seosanAPI.getNotices(activeRegion === "전체" ? null : activeRegion, currentPage, PAGE_SIZE);
             } else if (activeSub === "보도자료") {
@@ -584,19 +635,14 @@ export default function ExplorePremium() {
             } else if (activeSub === "보건/건강") {
               data = await seosanAPI.getHealth(activeRegion === "전체" ? null : activeRegion, currentPage, PAGE_SIZE);
             } else {
-              // 기본값으로 공지사항
               data = await seosanAPI.getNotices(activeRegion === "전체" ? null : activeRegion, currentPage, PAGE_SIZE);
             }
-            // 서버 응답에서 전체 개수 정보 가져오기
             if (data && data.totalCount !== undefined) {
               setTotalCount(data.totalCount);
             } else if (Array.isArray(data)) {
-              // 배열만 반환되는 경우 임시로 데이터 길이 * 10 으로 추정
               setTotalCount(data.length * 10);
             }
-            // 서산시청 데이터 형식 변환 및 상세 내용 가져오기
             if (data && Array.isArray(data)) {
-              // 각 아이템의 상세 정보를 병렬로 가져오기
               const detailPromises = data.map(async (item) => {
                 try {
                   const detailData = await postsAPI.getDetail(item.id);
@@ -609,7 +655,6 @@ export default function ExplorePremium() {
                     link: detailData?.link || item.link
                   };
                 } catch (error) {
-                  console.error(`상세 정보 가져오기 실패 (ID: ${item.id}):`, error);
                   return {
                     id: item.id || 0,
                     title: item.title || '제목 없음',
@@ -626,8 +671,7 @@ export default function ExplorePremium() {
           }
             
           case "문화관광": {
-            // 문화 API
-            const currentPage = page - 1;  // API는 0부터 시작
+            const currentPage = page - 1;
             if (activeSub === "문화소식") {
               data = await cultureAPI.getCultureNews(activeRegion === "전체" ? null : activeRegion, currentPage, PAGE_SIZE);
             } else if (activeSub === "시티투어") {
@@ -635,19 +679,14 @@ export default function ExplorePremium() {
             } else if (activeSub === "관광 / 안내") {
               data = await cultureAPI.getTourGuide(activeRegion === "전체" ? null : activeRegion, currentPage, PAGE_SIZE);
             } else {
-              // 기본값으로 문화소식
               data = await cultureAPI.getCultureNews(activeRegion === "전체" ? null : activeRegion, currentPage, PAGE_SIZE);
             }
-            // 서버 응답에서 전체 개수 정보 가져오기
             if (data && data.totalCount !== undefined) {
               setTotalCount(data.totalCount);
             } else if (Array.isArray(data)) {
-              // 배열만 반환되는 경우 임시로 데이터 길이 * 10 으로 추정
               setTotalCount(data.length * 10);
             }
-            // 문화 데이터 형식 변환 및 상세 내용 가져오기
             if (data && Array.isArray(data)) {
-              // 각 아이템의 상세 정보를 병렬로 가져오기
               const detailPromises = data.map(async (item) => {
                 try {
                   const detailData = await postsAPI.getDetail(item.id);
@@ -660,7 +699,6 @@ export default function ExplorePremium() {
                     link: detailData?.link || item.link
                   };
                 } catch (error) {
-                  console.error(`상세 정보 가져오기 실패 (ID: ${item.id}):`, error);
                   return {
                     id: item.id || 0,
                     title: item.title || '제목 없음',
@@ -678,19 +716,16 @@ export default function ExplorePremium() {
             
           case "카페":
           case "블로그":
-            // 네이버 카페/블로그 검색 API
             try {
               const searchQuery = activeRegion === "전체" ? "서산시" : `서산시 ${activeRegion}`;
               const searchType = activeTab === "카페" ? 'cafearticle' : 'blog';
-              const searchResult = await naverSearchAPI.search(searchQuery, searchType, 20);  // 클라이언트 사이드 페이징을 위해 더 많이 가져옴
-              
-              // API가 배열을 직접 반환
+              const searchResult = await naverSearchAPI.search(searchQuery, searchType, 20);
               if (searchResult && Array.isArray(searchResult) && searchResult.length > 0) {
                 data = searchResult.map((item, idx) => ({
                   id: idx + 1,
                   title: item.title
                     ? item.title
-                        .replace(/<[^>]*>/g, '')  // HTML 태그 제거
+                        .replace(/<[^>]*>/g, '')
                         .replace(/&quot;/g, '"')
                         .replace(/&amp;/g, '&')
                         .replace(/&lt;/g, '<')
@@ -713,7 +748,6 @@ export default function ExplorePremium() {
                   bloggername: item.bloggername || ''
                 }));
               } else {
-                // 검색 결과가 없을 경우
                 data = [{
                   id: 1,
                   title: '검색 결과가 없습니다',
@@ -724,8 +758,6 @@ export default function ExplorePremium() {
                 setTotalCount(0);
               }
             } catch (error) {
-              console.error(`네이버 ${activeTab} API 에러:`, error);
-              // 에러 발생 시 기본 데이터
               data = [{
                 id: 1,
                 title: 'API 연결 오류',
@@ -737,19 +769,16 @@ export default function ExplorePremium() {
             break;
             
           default:
-            // 기본값으로 MOCK 데이터 사용
             data = MOCK;
         }
         
         setApiData(data || []);
       } catch (err) {
         setError(err.message);
-        // 뉴스/카페/블로그는 에러가 발생해도 mock 데이터를 사용
         if (activeTab === "뉴스" || activeTab === "카페" || activeTab === "블로그") {
-          // 여기서는 빈 배열로 설정하여 상위의 MOCK 데이터가 사용되도록 함
           setApiData([]);
         } else {
-          setApiData([]); // 다른 탭은 에러 시 빈 배열
+          setApiData([]);
         }
       } finally {
         setLoading(false);
@@ -765,7 +794,6 @@ export default function ExplorePremium() {
     setActiveSub(subFromUrl || "");
     setMode(viewFromUrl === "detail" ? "detail" : "list");
     if (idFromUrl) setSelectedId(Number(idFromUrl));
-    // URL 파라미터가 변경되면 상단으로 스크롤
     window.scrollTo(0, 0);
   }, [regionFromUrl, tabFromUrl, subFromUrl, viewFromUrl, idFromUrl]);
 
@@ -778,17 +806,14 @@ export default function ExplorePremium() {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
-  // 페이지 로드 시 상단으로 스크롤
   useEffect(() => { 
     window.scrollTo(0, 0); 
   }, []);
   
-  // 지역이나 탭이 변경될 때마다 상단으로 스크롤
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [activeRegion, activeTab]);
   
-  // location state에서 scrollToTop이 true면 상단으로 스크롤
   useEffect(() => {
     if (location.state?.scrollToTop) {
       setTimeout(() => {
@@ -797,9 +822,7 @@ export default function ExplorePremium() {
     }
   }, [location]);
 
-  // location.state에서 전달된 selectedItem 또는 tab 처리
   useEffect(() => {
-    // tab만 전달된 경우도 처리
     if (location.state?.tab) {
       const tab = location.state.tab;
       if (tab && TABS.some(t => t.label === tab)) {
@@ -812,48 +835,33 @@ export default function ExplorePremium() {
       const tab = location.state.tab || item.tag;
       const view = location.state.view || 'detail';
       
-      // 탭 설정
       if (tab && TABS.some(t => t.label === tab)) {
         setActiveTab(tab);
       }
-      
-      // 상세보기 모드로 전환
       if (view === 'detail') {
         setMode('detail');
-        
-        // 전달받은 item을 적절한 형태로 변환
         const itemWithBody = {
           ...item,
-          id: Number(item.id), // id를 숫자로 통일
+          id: Number(item.id),
           body: item.content || item.description || item.date || '상세 내용이 없습니다.',
           categoryPath: item.categoryPath || `${tab} > ${item.tag || '일반'}`
         };
-        
-        // 기존 apiData가 있으면 유지하고, 없으면 새로 설정
         const existingData = apiData.length > 0 ? apiData : MOCK;
-        
-        // 전달받은 item이 기존 데이터에 없으면 추가
         const itemExists = existingData.some(d => Number(d.id) === Number(item.id));
         if (!itemExists) {
           setApiData([itemWithBody, ...existingData]);
         } else {
-          // 이미 있으면 해당 item 업데이트
           setApiData(existingData.map(d => 
             Number(d.id) === Number(item.id) ? itemWithBody : d
           ));
         }
-        
         setSelectedId(Number(item.id));
       }
-      
-      // URL 파라미터 업데이트
       const newParams = new URLSearchParams(searchParams);
       newParams.set('view', 'detail');
       newParams.set('tab', tab);
       newParams.set('id', String(item.id));
       setSearchParams(newParams, { replace: true });
-      
-      // 상단으로 스크롤
       window.scrollTo(0, 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -884,7 +892,6 @@ export default function ExplorePremium() {
           next.delete("id");
           setSearchParams(next);
           setIsTransitioning(false);
-          // 지역 변경 시 상단으로 스크롤
           window.scrollTo(0, 0);
         }, 150);
       }
@@ -988,7 +995,6 @@ export default function ExplorePremium() {
     if (currentIndex < dataToUse.length - 1) openDetail(dataToUse[currentIndex + 1].id);
   }, [currentIndex, openDetail, dataToUse]);
 
-  // 전체 결과 개수 계산 (서버 사이드 페이징일 때는 totalCount 사용)
   const countText = useMemo(() => {
     const total = isClientSidePaging ? dataToUse.length : totalCount;
     return `결과 ${total.toLocaleString()}개`;
