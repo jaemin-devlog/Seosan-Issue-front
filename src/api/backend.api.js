@@ -231,7 +231,10 @@ export const regionAPI = {
 export const mainPageAPI = {
   // 일간/주간 검색어 - Flask 엔드포인트 사용 (프록시 경유)
   getTrendingKeywords: async (period = 'daily') => {
-    const url = '/api/flask/crawl_popular_terms';
+    // 프로덕션 환경에서는 직접 호출, 개발 환경에서는 프록시 사용
+    const url = process.env.NODE_ENV === 'production' 
+      ? 'https://seosan-issue.shop/flask/crawl_popular_terms'
+      : '/flask/crawl_popular_terms';
     
     try {
       console.log('트렌딩 키워드 API 요청:', url);

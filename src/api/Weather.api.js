@@ -1,7 +1,7 @@
 // 백엔드 날씨 API 엔드포인트 - 프록시 사용
 const WEATHER_API_URL = process.env.NODE_ENV === 'development' 
-  ? "/api/weather"  // 프록시 경로
-  : "http://34.64.60.156:8083/api/v1/weather";
+  ? "/api/weather/cards"  // 프록시 경로 (/api/v1/weather/cards로 변환됨)
+  : "https://seosan-issue.shop/api/v1/weather/cards";
 
 
 // 기상청 단기/초단기예보에 맞는 base_date, base_time 생성 함수
@@ -36,11 +36,14 @@ function getBaseDateTime() {
 
 // 지역명으로 날씨 데이터 요청 (백엔드 API에 맞게 수정)
 export async function fetchWeatherData(region = "서산시") {
+  // API는 항상 "서산시"로만 호출하면 모든 지역 데이터를 반환함
   const params = new URLSearchParams({
-    region: region
+    city: "서산시"  // 항상 서산시로 호출
   });
 
   const url = `${WEATHER_API_URL}?${params.toString()}`;
+  
+  console.log('날씨 API 호출:', url, '요청 지역:', region);
 
   try {
     const res = await fetch(url);
@@ -49,13 +52,27 @@ export async function fetchWeatherData(region = "서산시") {
     let data;
     try {
       data = JSON.parse(text);
+      console.log('날씨 API 응답:', data);
+      
+      // API가 에러를 반환한 경우
+      if (data.status && data.status >= 400) {
+        console.error('날씨 API 에러 응답:', data);
+        throw new Error(`날씨 API 에러: ${data.message || 'Unknown error'}`);
+      }
+      
+      // cards 배열이 없거나 비어있는 경우
+      if (!data.cards || !Array.isArray(data.cards) || data.cards.length === 0) {
+        console.error('날씨 API 응답에 cards 데이터가 없음:', data);
+        throw new Error("날씨 데이터를 찾을 수 없습니다.");
+      }
     } catch (jsonError) {
-      // 대부분 인증키, 파라미터 에러면 여기서 걸림
-      throw new Error("날씨 API 응답이 JSON이 아닙니다. (에러 메시지: " + text + ")");
+      console.error("날씨 API JSON 파싱 에러:", text);
+      throw new Error("날씨 API 응답을 파싱할 수 없습니다.");
     }
 
     return data;
   } catch (err) {
+    console.error('날씨 API 에러:', err);
     throw err;
   }
 }

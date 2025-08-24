@@ -27,7 +27,8 @@ const LocalNews = () => {
   useEffect(() => {
     const fetchLocalNews = async () => {
       setLoading(true);
-      const combinedItems = [];
+      const cafeItems = [];
+      const blogItems = [];
       
       try {
         // 카페 데이터 가져오기 (3개)
@@ -43,7 +44,7 @@ const LocalNews = () => {
                 ?.replace(/&gt;/g, '>')
                 ?.replace(/&#39;/g, "'") || '';
               
-              combinedItems.push({
+              cafeItems.push({
                 id: `cafe-${idx}`,
                 tag: '카페',
                 title: item.title
@@ -78,7 +79,7 @@ const LocalNews = () => {
                 ?.replace(/&gt;/g, '>')
                 ?.replace(/&#39;/g, "'") || '';
               
-              combinedItems.push({
+              blogItems.push({
                 id: `blog-${idx}`,
                 tag: '블로그',
                 title: item.title
@@ -100,11 +101,21 @@ const LocalNews = () => {
           console.error('블로그 데이터 가져오기 실패:', e);
         }
 
-        // 카페와 블로그 데이터를 섮어서 표시
-        const shuffled = combinedItems.sort(() => Math.random() - 0.5);
+        // 카페와 블로그 데이터를 번갈아가며 배치
+        const alternatingItems = [];
+        const maxLength = Math.max(cafeItems.length, blogItems.length);
         
-        if (shuffled.length > 0) {
-          setNewsItems(shuffled);
+        for (let i = 0; i < maxLength; i++) {
+          if (i < cafeItems.length) {
+            alternatingItems.push(cafeItems[i]);
+          }
+          if (i < blogItems.length) {
+            alternatingItems.push(blogItems[i]);
+          }
+        }
+        
+        if (alternatingItems.length > 0) {
+          setNewsItems(alternatingItems);
         } else {
           // 기본 데이터
           setNewsItems([

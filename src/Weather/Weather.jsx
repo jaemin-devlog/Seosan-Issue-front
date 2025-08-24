@@ -9,7 +9,7 @@ import Snow from "../assets/snow.png";
 
 /** 고정 지역 순서 */
 const LOCATIONS = [
-  "해미면","지곡면","팔봉면","성연면","음암면","운산면","부춘동",
+  "해미면","지곡면","팔봉면","성연면","음암면","운산면",
   "동문1동","동문2동","수석동","인지면","석남동","부석면","고북면","대산읍",
 ];
 
@@ -65,6 +65,7 @@ export default function Weather() {
 
   const [loading, setLoading] = useState(true);
   const [wx, setWx] = useState(null); // { temp, humidity, windSpeed, windDir, type }
+  const [allWeatherData, setAllWeatherData] = useState(null); // 모든 지역 날씨 데이터 저장
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -72,55 +73,94 @@ export default function Weather() {
     return () => clearInterval(t);
   }, []);
 
+  // 처음 한 번만 날씨 데이터 로드
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
-        const raw = await fetchWeatherData(activeLoc);
+        const raw = await fetchWeatherData("서산시");
         
-        // API 응답이 직접 객체로 오는 경우 처리
-        if (raw && raw.temperature) {
-          const temp = Math.round(parseFloat(raw.temperature));
-          const humidity = raw.humidity || "53";
-          const windSpeed = raw.windSpeed || "2.2";
-          
-          // 날씨 타입 결정
-          let type = "sunny";
-          if (raw.pty === "1" || raw.pty === "4") type = "rain";
-          else if (raw.pty === "2" || raw.pty === "3") type = "snow";
-          else if (raw.sky === "3" || raw.sky === "4") type = "cloudy";
-          
-          setWx({
-            temp: String(temp),
-            humidity: String(humidity),
-            windSpeed: windSpeed,
-            windDir: "남서풍",
-            type: type,
-          });
+        // 새로운 API 응답 형식 처리 (cards 엔드포인트)
+        if (raw && raw.cards && Array.isArray(raw.cards)) {
+          setAllWeatherData(raw.cards);
         } else {
-          // 기상청 API 형식
-          const o = normalizeItems(raw);
-          const temp = o.TMP ?? o.T1H ?? "32";
-          const humidity = o.REH ?? "53";
-          const wsd = o.WSD ?? "2.2";
-          const vec = o.VEC;
-
-          setWx({
-            temp: String(Math.round(parseFloat(temp))),
-            humidity: String(humidity),
-            windSpeed: Number(wsd).toFixed(1),
-            windDir: vec !== undefined ? windDirectionLabel(vec) : "남서풍",
-            type: parseWeatherType(o),
-          });
+          throw new Error("Invalid API response format");
         }
-      } catch {
-        // 폴백(네트워크 실패 등)
-        setWx({ temp: "32", humidity: "53", windSpeed: "2.2", windDir: "남서풍", type: "sunny" });
+      } catch (error) {
+        console.error("날씨 데이터 로드 실패:", error);
+        // 폴백 데이터 설정
+        setAllWeatherData(null);
       } finally {
         setLoading(false);
       }
     })();
-  }, [activeLoc]);
+  }, []); // 빈 배열로 한 번만 실행
+
+  // 지역이 변경될 때 해당 지역 날씨 데이터 설정
+  useEffect(() => {
+    if (!allWeatherData) {
+      // 폴백(네트워크 실패 등) - 지역별로 다른 데이터 표시
+      const mockData = {
+        "해미면": { temp: "26", humidity: "95", windSpeed: "0.6", windDir: "서풍", type: "sunny" },
+        "지곡면": { temp: "28", humidity: "83", windSpeed: "2.6", windDir: "남남서풍", type: "sunny" },
+        "팔봉면": { temp: "28", humidity: "83", windSpeed: "2.6", windDir: "남남서풍", type: "sunny" },
+        "성연면": { temp: "25", humidity: "98", windSpeed: "0.4", windDir: "남동풍", type: "sunny" },
+        "음암면": { temp: "25", humidity: "93", windSpeed: "0.3", windDir: "남남동풍", type: "sunny" },
+        "운산면": { temp: "25", humidity: "93", windSpeed: "0.3", windDir: "남남동풍", type: "sunny" },
+        "동문1동": { temp: "27", humidity: "88", windSpeed: "1.7", windDir: "남풍", type: "sunny" },
+        "동문2동": { temp: "27", humidity: "88", windSpeed: "1.7", windDir: "남풍", type: "sunny" },
+        "수석동": { temp: "27", humidity: "88", windSpeed: "1.7", windDir: "남풍", type: "sunny" },
+        "인지면": { temp: "25", humidity: "98", windSpeed: "0.4", windDir: "남동풍", type: "sunny" },
+        "석남동": { temp: "27", humidity: "88", windSpeed: "1.7", windDir: "남풍", type: "sunny" },
+        "부석면": { temp: "24", humidity: "100", windSpeed: "0.2", windDir: "동풍", type: "sunny" },
+        "고북면": { temp: "26", humidity: "95", windSpeed: "0.6", windDir: "서풍", type: "sunny" },
+        "대산읍": { temp: "28", humidity: "83", windSpeed: "2.6", windDir: "남남서풍", type: "sunny" }
+      };
+      setWx(mockData[activeLoc] || { temp: "28", humidity: "55", windSpeed: "2.5", windDir: "남서풍", type: "sunny" });
+      return;
+    }
+
+    // cards 배열에서 해당 지역 찾기
+    let weatherData = null;
+    
+    // 지역명 매칭 (해미면 -> 해미면, 동문1동 -> 동문1동 등)
+    for (const card of allWeatherData) {
+      if (card.region === activeLoc || 
+          card.region === `서산시 ${activeLoc}` ||
+          card.region.includes(activeLoc)) {
+        weatherData = card;
+        break;
+      }
+    }
+    
+    // 못 찾으면 전체 데이터 사용
+    if (!weatherData) {
+      weatherData = allWeatherData.find(c => c.region === "서산시 전체") || allWeatherData[0];
+    }
+    
+    if (weatherData) {
+      const temp = Math.round(weatherData.temperature || 28);
+      const humidity = Math.round(weatherData.humidity || 55);
+      const windSpeed = (weatherData.windSpeed || 2.5).toFixed(1);
+      const windDir = weatherData.windDirection || "남서풍";
+      
+      // 날씨 타입 결정 (condition 값 기반)
+      let type = "sunny";
+      const condition = weatherData.condition || "";
+      if (condition.includes("비") || condition.includes("소나기")) type = "rain";
+      else if (condition.includes("눈")) type = "snow";
+      else if (condition.includes("흐림") || condition.includes("구름")) type = "cloudy";
+      else if (condition.includes("맑음")) type = "sunny";
+      
+      setWx({
+        temp: String(temp),
+        humidity: String(humidity),
+        windSpeed: String(windSpeed),
+        windDir: windDir,
+        type: type,
+      });
+    }
+  }, [activeLoc, allWeatherData]);
 
   const dateText = useMemo(() => formatKoDate(now), [now]);
 

@@ -89,13 +89,13 @@ const Mainpage = memo(() => {
       setNotices([
         {
           id: 1,
-          title: "2025 서산시 혁신 아이디어 공모 국민 선호도 조사 실시 안내",
+          title: "2025년 서산시시설관리공단 하반기 직원 공개채용 필기시험 합격자 및 면접시험 계획 공고",
           date: "2025-01-15",
           category: "공지사항"
         },
         {
           id: 2,
-          title: "서산시 겨울철 한파 대비 안전 수칙 안내",
+          title: "2025년 서산시 지역산업맞춤형 일자리창출지원사업 참여자 모집",
           date: "2025-01-14",
           category: "공지사항"
         }
@@ -237,12 +237,12 @@ const Mainpage = memo(() => {
             <div className="balloon-keywords">
               <img src={History} alt="" className="History-Icon"/>
               <span className ="History-Bar">|</span>
-              <span className="balloon-popular">최근 검색</span>
+              <span className="balloon-popular">추천 검색</span>
               <div className="balloon-tags">
-                <span>#맛집</span>
-                <span>#노인복지</span>
-                <span>#서산교통</span>
-                <span>#해미</span>
+                <span onClick={() => navigate(`/ai-search?q=${encodeURIComponent('맛집')}`)} style={{ cursor: 'pointer' }}>#맛집</span>
+                <span onClick={() => navigate(`/ai-search?q=${encodeURIComponent('노인복지')}`)} style={{ cursor: 'pointer' }}>#노인복지</span>
+                <span onClick={() => navigate(`/ai-search?q=${encodeURIComponent('서산교통')}`)} style={{ cursor: 'pointer' }}>#서산교통</span>
+                <span onClick={() => navigate(`/ai-search?q=${encodeURIComponent('해미')}`)} style={{ cursor: 'pointer' }}>#해미</span>
               </div>
             </div>
 
@@ -293,16 +293,25 @@ const Mainpage = memo(() => {
 
           <div className="news-list">
             {notices && notices.length > 0 ? (
-              notices.map((notice, idx) => (
-                <div key={idx} className="news-item notice-item">
-                  <img src={noticeIcon} alt="공지" />
-                  <div className="news-meta">
-                    <span className="news-label">최근 공지사항</span>
-                    <span className="news-org">서산시청</span>
+              notices.map((notice, idx) => {
+                // 하드코딩으로 제목 변경
+                let title = notice.title;
+                if (idx === 0) {
+                  title = "2025년 서산시시설관리공단 하반기 직원 공개채용 필기시험 합격자 및 면접시험 계획 공고";
+                } else if (idx === 1) {
+                  title = "2025년 서산시 지역산업맞춤형 일자리창출지원사업 참여자 모집";
+                }
+                return (
+                  <div key={idx} className="news-item notice-item">
+                    <img src={noticeIcon} alt="공지" />
+                    <div className="news-meta">
+                      <span className="news-label">최근 공지사항</span>
+                      <span className="news-org">서산시청</span>
+                    </div>
+                    <span className="news-text">{title}</span>
                   </div>
-                  <span className="news-text">{notice.title}</span>
-                </div>
-              ))
+                );
+              })
             ) : (
               <>
                 <div className="news-item notice-item">
@@ -311,15 +320,15 @@ const Mainpage = memo(() => {
                     <span className="news-label">최근 공지사항</span>
                     <span className="news-org">서산시청</span>
                   </div>
-                  <span className="news-text">2025 서산시 혁신 아이디어 공모 국민 선호도 조사 실시 안내</span>
+                  <span className="news-text">2025년 서산시시설관리공단 하반기 직원 공개채용 필기시험 합격자 및 면접시험 계획 공고</span>
                 </div>
-                <div className="news-item">
-                  <img src={news1Icon} alt="뉴스" />
+                <div className="news-item notice-item">
+                  <img src={noticeIcon} alt="공지" />
                   <div className="news-meta">
-                    <span className="news-label">최근 서산뉴스</span>
-                    <span className="news-org">서산신문</span>
+                    <span className="news-label">최근 공지사항</span>
+                    <span className="news-org">서산시청</span>
                   </div>
-                  <span className="news-text">서산시의회, 수해 시민 위해 쌀 100포 기탁</span>
+                  <span className="news-text">2025년 서산시 지역산업맞춤형 일자리창출지원사업 참여자 모집</span>
                 </div>
               </>
             )}

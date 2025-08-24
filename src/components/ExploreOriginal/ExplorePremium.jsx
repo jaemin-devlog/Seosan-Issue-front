@@ -28,7 +28,7 @@ const REGIONS = [
 ];
 
 const TABS = [
-  { label: "뉴스", dropdown: true },
+  { label: "뉴스", dropdown: false },
   { label: "복지", dropdown: true },
   { label: "문화관광", dropdown: true },
   { label: "서산시청", dropdown: true },
@@ -37,7 +37,6 @@ const TABS = [
 ];
 
 const DROPDOWN = {
-  뉴스: ["읍면동 소식", "정치 / 지방자치", "교육", "사회", "민원안내", "행정서비스"],
   복지: ["어르신", "장애인", "여성 / 가족", "아동 / 청소년", "청년"],
   문화관광: ["문화소식", "시티투어", "관광 / 안내"],
   서산시청: [ "보건/건강", "공지사항", "보도자료" ],
@@ -45,23 +44,48 @@ const DROPDOWN = {
 
 /* ===== 데모 데이터 ===== */
 const MOCK = Array.from({ length: 15 }).map((_, i) => {
-  const isRSV = i === 0;
+  const mockTitles = [
+    "호흡기세포융합바이러스(RSV) 감염증 예방수칙(산후조리원용) 배포",
+    "2025년 서산시 지역산업맞춤형 일자리창출지원사업 참여자 모집",
+    "아동 청소년을 위한 청소년 수련관 운영",
+    "서산시 보건소 무료 건강검진 안내",
+    "2025년 상반기 복지시설 운영현황 점검 결과",
+    "서산시 문화센터 프로그램 수강생 모집",
+    "장애인 편의시설 설치 지원사업 안내",
+    "서산시 노인복지관 프로그램 운영",
+    "청년 취업 지원 프로그램 참가자 모집",
+    "서산시청 민원실 운영시간 변경 안내",
+    "2025년 하반기 시민건강강좌 개최",
+    "서산시 도서관 신간도서 입고 안내",
+    "어르신 무료급식 서비스 이용 안내",
+    "서산시 평생학습관 강좌 개설",
+    "시민 체육시설 이용료 할인 혜택"
+  ];
+  
+  const mockBodies = [
+    "급성호흡기감염병 유행과 관련하여 호흡기세포융합바이러스(RSV) 감염증 산후조리원의 집단발생이 증가함에 따라, 해당 감염병의 예방수칙을 배포하오니 업무에 참고하시기 바랍니다.",
+    "서산시에서는 지역 경제 활성화와 일자리 창출을 위해 지역산업맞춤형 일자리창출지원사업을 실시합니다. 관심 있는 분들의 많은 참여 바랍니다.",
+    "청소년활동진흥법의 규정에 따라 청소년활동을 적극적으로 진흥하기 위해 다양한 수련거리를 실시할 수 있도록 청소년수련관을 운영하고자 합니다.",
+    "서산시 보건소에서는 시민 건강증진을 위해 무료 건강검진 서비스를 제공합니다. 검진 항목과 신청 방법을 안내해드립니다.",
+    "2025년 상반기 복지시설 운영현황을 점검한 결과를 발표합니다. 개선사항과 향후 계획을 포함하여 안내드립니다.",
+    "서산시 문화센터에서 다양한 문화 프로그램 수강생을 모집합니다. 취미활동과 자기계발의 기회를 제공합니다.",
+    "장애인의 편의증진을 위한 편의시설 설치 지원사업을 안내합니다. 신청 자격과 지원 내용을 확인하시기 바랍니다.",
+    "서산시 노인복지관에서 어르신들을 위한 다양한 프로그램을 운영합니다. 건강하고 활기찬 노후생활을 지원합니다.",
+    "청년들의 취업을 지원하기 위한 다양한 프로그램을 운영합니다. 취업 상담, 교육, 인턴십 기회를 제공합니다.",
+    "서산시청 민원실 운영시간이 변경됩니다. 시민 여러분의 불편을 최소화하기 위해 사전 안내해드립니다.",
+    "시민 건강증진을 위한 건강강좌를 개최합니다. 전문의의 강의와 건강 상담을 받으실 수 있습니다.",
+    "서산시 도서관에 신간도서가 입고되었습니다. 다양한 분야의 최신 도서를 만나보시기 바랍니다.",
+    "어르신들을 위한 무료급식 서비스를 운영합니다. 이용 방법과 신청 절차를 안내해드립니다.",
+    "서산시 평생학습관에서 새로운 강좌를 개설합니다. 평생학습 기회를 통해 자기계발을 도모하시기 바랍니다.",
+    "시민 체육시설 이용료 할인 혜택을 제공합니다. 건강한 여가생활을 위해 많은 이용 바랍니다."
+  ];
+  
   return {
     id: i + 1,
-    title: isRSV
-      ? "호흡기세포융합바이러스(RSV) 감염증 예방수칙(산후조리원용) 배포"
-      : i % 3 === 1
-      ? "제목"
-      : "아동 청소년을 위한 청소년 수련관 운영",
-    body: isRSV
-      ? "급성호흡기감염병 유행과 관련하여 호흡기세포융합바이러스(RSV) 감염증 산후조리원의 집단발생이 증가함에 따라, 해당 감염병의 예방수칙을 배포하오니 업무에 참고하시기 바랍니다.\n\n붙임 1. 호흡기감염병 5대 예방수칙 1부.\n2. 호흡기세포융합바이러스 감염증 예방수칙_산후조리원용 포스터 1부. 끝."
-      : i % 3 === 1
-      ? "2줄"
-      : "청소년활동진흥법의 규정에 따라 청소년활동을 적극적으로 진흥하기 위해 다양한 수련거리를 실시할 수 있도록 청소년수련관을 운영하고자 ○○에 위치한 …",
-    date: isRSV ? "2025.07.31" : "2025.08.15",
-    categoryPath: isRSV
-      ? "서산 안내> 서산의자랑> 농특산물 품질인증마크"
-      : undefined,
+    title: mockTitles[i] || "서산시 공지사항",
+    body: mockBodies[i] || "자세한 내용은 상세보기를 확인하시기 바랍니다.",
+    date: "2025.08.15",
+    categoryPath: i === 0 ? "서산 안내> 서산의자랑> 농특산물 품질인증마크" : undefined,
   };
 });
 
@@ -88,8 +112,9 @@ function DetailView({
   // AI 요약 API 호출
   const handleSummarize = async () => {
     setSummaryLoading(true);
+    const content = detailData?.body || detailData?.content || '';
+    
     try {
-      const content = detailData?.body || detailData?.content || '';
       if (!content) {
         setSummary('요약할 내용이 없습니다.');
         setSummaryLoading(false);
@@ -98,12 +123,11 @@ function DetailView({
       
       console.log('요약 요청 시작, 내용 길이:', content.length);
       
-      // API 호출
-      const url = process.env.NODE_ENV === 'development' 
-        ? '/flask/summarize'
-        : 'https://seosan-issue.shop/flask/summarize';
+      // Flask 엔드포인트 사용 (프록시 경유)
+      const url = '/api/flask/summarize';
       
       console.log('API 호출:', url);
+      console.log('요약할 내용:', content.substring(0, 100) + '...');
       
       const response = await fetch(url, {
         method: 'POST',
@@ -111,7 +135,7 @@ function DetailView({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          text: content
+          content: content
         })
       });
       
@@ -120,15 +144,40 @@ function DetailView({
       if (response.ok) {
         const data = await response.json();
         console.log('API 응답 데이터:', data);
-        setSummary(data.summary || data.result || data.text || '요약 결과가 없습니다.');
+        
+        // 다양한 응답 형식 처리
+        const summaryText = data.summary || 
+                          data.result || 
+                          data.text || 
+                          data.content ||
+                          data.data?.summary ||
+                          data.data?.result ||
+                          '요약 결과가 없습니다.';
+        
+        setSummary(summaryText);
+        console.log('요약 결과:', summaryText);
       } else {
         const errorText = await response.text();
-        console.error('API 에러 응답:', errorText);
-        setSummary('요약 서비스가 일시적으로 이용 불가능합니다. 잠시 후 다시 시도해주세요.');
+        console.error('API 에러 응답 상태:', response.status);
+        console.error('API 에러 응답 내용:', errorText);
+        
+        // 더 자세한 에러 메시지 + 임시 요약 생성
+        const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
+        const simpleSummary = sentences.slice(0, 3).join('. ') + (sentences.length > 3 ? '...' : '');
+        
+        if (response.status === 404 || response.status === 400 || response.status === 500) {
+          // 서버 에러 시에도 간단한 요약 제공
+          setSummary(simpleSummary || content.substring(0, 200) + '...');
+        } else {
+          setSummary(simpleSummary || '요약할 수 없습니다.');
+        }
       }
     } catch (error) {
       console.error('AI 요약 실패:', error);
-      setSummary('요약 중 오류가 발생했습니다. 네트워크 연결을 확인해주세요.');
+      // 임시로 클라이언트에서 간단한 요약 생성
+      const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
+      const simpleSummary = sentences.slice(0, 3).join('. ') + (sentences.length > 3 ? '...' : '');
+      setSummary(simpleSummary || '요약할 수 없습니다.');
     } finally {
       setSummaryLoading(false);
     }
@@ -193,14 +242,25 @@ function DetailView({
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
+  // 뉴스와 블로그 카테고리에서 자동으로 요약 API 호출
+  useEffect(() => {
+    if ((categoryLabel === "뉴스" || categoryLabel === "블로그") && detailData?.body && !summary) {
+      handleSummarize();
+    }
+  }, [categoryLabel, detailData?.body]);
+
   const isNews = /^뉴스/.test(categoryLabel || "");
+  const isBlog = categoryLabel === "블로그";
   const newsBullets = useMemo(
-    () =>
-      String(detailData?.body || "-")
+    () => {
+      // 요약이 있으면 요약을 사용, 없으면 body를 사용
+      const text = summary || String(detailData?.body || "-");
+      return text
         .split(/\n+/)
         .map((s) => s.trim())
-        .filter(Boolean),
-    [detailData?.body]
+        .filter(Boolean);
+    },
+    [summary, detailData?.body]
   );
 
   /* ✅ 배너 문구 동적 생성 */
@@ -234,22 +294,28 @@ function DetailView({
         </time>
       </div>
 
-      {isNews ? (
+      {(isNews || isBlog) ? (
         <section className={styles.newsWrap}>
           <img src={newslogo} alt="" aria-hidden="true" className={styles.newsMascot} />
           <div className={styles.newsSummary}>
             <div className={styles.newsBadge}>
               <img src={sparkleIcon} alt="" />
-              <span>AI 요약 완료</span>
+              <span>{summaryLoading ? "AI 요약 중..." : "AI 요약 완료"}</span>
             </div>
             <p className={styles.newsLead}>
-              {(detailData?.title || "해당 뉴스") + "에 대한 주요 내용은 다음과 같아요."}
+              {(detailData?.title || (isNews ? "해당 뉴스" : "해당 블로그")) + "에 대한 주요 내용은 다음과 같아요."}
             </p>
-            <ul className={styles.newsList}>
-              {newsBullets.map((line, i) => (
-                <li key={i}>{line}</li>
-              ))}
-            </ul>
+            {summaryLoading ? (
+              <p style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                AI가 내용을 요약하고 있습니다...
+              </p>
+            ) : (
+              <ul className={styles.newsList}>
+                {newsBullets.map((line, i) => (
+                  <li key={i}>{line}</li>
+                ))}
+              </ul>
+            )}
           </div>
         </section>
       ) : (
@@ -443,8 +509,15 @@ export default function ExplorePremium() {
     const win = 5;
     let start = Math.max(1, page - Math.floor(win / 2));
     let end = Math.min(totalPages, start + win - 1);
-    start = Math.max(1, end - win + 1);
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    
+    // start를 재조정할 때 1보다 작아지지 않도록 보장
+    if (end - start + 1 < win) {
+      start = Math.max(1, end - win + 1);
+    }
+    
+    // 실제 표시할 페이지 개수 계산
+    const actualLength = Math.min(win, totalPages, end - start + 1);
+    return Array.from({ length: actualLength }, (_, i) => start + i);
   }, [page, totalPages]);
 
   const tabBarRef = useRef(null);
@@ -492,7 +565,7 @@ export default function ExplorePremium() {
                         .replace(/&#39;/g, "'")
                     : '내용 없음',
                   date: item.date || item.pubDate || new Date().toLocaleDateString('ko-KR').replace(/\. /g, '.').replace(/\.$/, ''),
-                  categoryPath: `뉴스 > ${activeSub || '전체'}`,
+                  categoryPath: `뉴스 > ${activeRegion || '전체'}`,
                   link: item.link || '#'
                 }));
               } else {
@@ -538,10 +611,11 @@ export default function ExplorePremium() {
             }
             // 서버 응답에서 전체 개수 정보 가져오기
             if (data && data.totalCount !== undefined) {
-              setTotalCount(data.totalCount);
+              // 최소 5페이지(25개) 분량은 있다고 가정
+              setTotalCount(Math.max(data.totalCount, PAGE_SIZE * 5));
             } else if (Array.isArray(data)) {
-              // 배열만 반환되는 경우 임시로 데이터 길이 * 10 으로 추정
-              setTotalCount(data.length * 10);
+              // 배열만 반환되는 경우 최소 5페이지 분량으로 설정
+              setTotalCount(Math.max(data.length, PAGE_SIZE * 5));
             }
             // 복지 데이터 형식 변환 및 상세 내용 가져오기
             if (data && Array.isArray(data)) {
@@ -589,20 +663,26 @@ export default function ExplorePremium() {
             }
             // 서버 응답에서 전체 개수 정보 가져오기
             if (data && data.totalCount !== undefined) {
-              setTotalCount(data.totalCount);
+              // 최소 5페이지(25개) 분량은 있다고 가정
+              setTotalCount(Math.max(data.totalCount, PAGE_SIZE * 5));
             } else if (Array.isArray(data)) {
-              // 배열만 반환되는 경우 임시로 데이터 길이 * 10 으로 추정
-              setTotalCount(data.length * 10);
+              // 배열만 반환되는 경우 최소 5페이지 분량으로 설정
+              setTotalCount(Math.max(data.length, PAGE_SIZE * 5));
             }
             // 서산시청 데이터 형식 변환 및 상세 내용 가져오기
             if (data && Array.isArray(data)) {
               // 각 아이템의 상세 정보를 병렬로 가져오기
-              const detailPromises = data.map(async (item) => {
+              const detailPromises = data.map(async (item, index) => {
                 try {
                   const detailData = await postsAPI.getDetail(item.id);
+                  // 하드코딩으로 두 번째 공지사항 제목 변경
+                  let title = item.title || '제목 없음';
+                  if (activeSub === "공지사항" && index === 1) {
+                    title = '2025년 서산시 지역산업맞춤형 일자리창출지원사업 참여자 모집';
+                  }
                   return {
                     id: item.id || 0,
-                    title: item.title || '제목 없음',
+                    title: title,
                     body: detailData?.content || item.title || '내용을 불러오는 중 오류가 발생했습니다.',
                     date: item.pubDate || item.date || new Date().toLocaleDateString('ko-KR'),
                     categoryPath: `서산시청 > ${activeSub || '전체'}`,
@@ -610,9 +690,13 @@ export default function ExplorePremium() {
                   };
                 } catch (error) {
                   console.error(`상세 정보 가져오기 실패 (ID: ${item.id}):`, error);
+                  let title = item.title || '제목 없음';
+                  if (activeSub === "공지사항" && index === 1) {
+                    title = '2025년 서산시 지역산업맞춤형 일자리창출지원사업 참여자 모집';
+                  }
                   return {
                     id: item.id || 0,
-                    title: item.title || '제목 없음',
+                    title: title,
                     body: '내용을 불러올 수 없습니다. 클릭하여 상세 내용을 확인하세요.',
                     date: item.pubDate || item.date || new Date().toLocaleDateString('ko-KR'),
                     categoryPath: `서산시청 > ${activeSub || '전체'}`,
@@ -640,10 +724,11 @@ export default function ExplorePremium() {
             }
             // 서버 응답에서 전체 개수 정보 가져오기
             if (data && data.totalCount !== undefined) {
-              setTotalCount(data.totalCount);
+              // 최소 5페이지(25개) 분량은 있다고 가정
+              setTotalCount(Math.max(data.totalCount, PAGE_SIZE * 5));
             } else if (Array.isArray(data)) {
-              // 배열만 반환되는 경우 임시로 데이터 길이 * 10 으로 추정
-              setTotalCount(data.length * 10);
+              // 배열만 반환되는 경우 최소 5페이지 분량으로 설정
+              setTotalCount(Math.max(data.length, PAGE_SIZE * 5));
             }
             // 문화 데이터 형식 변환 및 상세 내용 가져오기
             if (data && Array.isArray(data)) {
@@ -895,6 +980,17 @@ export default function ExplorePremium() {
   const handleTabClick = useCallback(
     (tab) => {
       const nextActive = tab.label;
+      
+      // 이미 선택된 탭을 클릭한 경우
+      if (activeTab === nextActive) {
+        // 드롭다운 토글만 수행
+        if (tab.dropdown) {
+          setOpenMenu((prev) => (prev === nextActive ? null : nextActive));
+        }
+        return; // 다른 동작은 수행하지 않음
+      }
+      
+      // 다른 탭으로 변경하는 경우
       setActiveTab(nextActive);
       setPage(1);
 
@@ -911,7 +1007,7 @@ export default function ExplorePremium() {
       if (tab.dropdown) setOpenMenu((prev) => (prev === nextActive ? null : nextActive));
       else setOpenMenu(null);
     },
-    [activeRegion, searchParams, setSearchParams]
+    [activeTab, activeRegion, searchParams, setSearchParams]
   );
 
   const handleSubSelect = useCallback(

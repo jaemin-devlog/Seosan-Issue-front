@@ -1004,34 +1004,10 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                   onError={handleMapError}
                 />
                 
-                {/* Map Highlight Overlay */}
-                <div className="map-highlight-overlay">
-                  {activeTab === 'festival' && FESTIVALS.map((festival, index) => (
-                    <div
-                      key={`highlight-${index}`}
-                      className={`region-highlight ${index === currentFestivalIndex ? 'active' : ''}`}
-                      style={{
-                        left: festival.location.x,
-                        top: festival.location.y,
-                        width: '120px',
-                        height: '120px'
-                      }}
-                      aria-hidden="true"
-                    />
-                  ))}
-                </div>
+                {/* Map Highlight Overlay - 제거됨 */}
                 
                 
-                {/* Map Decorations - 축제 탭에서만 표시 */}
-                {activeTab === 'festival' && (
-                  <div className="map-tree-icons">
-                    <Trees className="tree-icon" style={{ top: '20%', left: '30%' }} />
-                    <Mountain className="mountain-icon" style={{ top: '15%', right: '25%' }} />
-                    <Trees className="tree-icon" style={{ bottom: '30%', left: '15%' }} />
-                    <Mountain className="mountain-icon" style={{ bottom: '40%', right: '35%' }} />
-                    <Trees className="tree-icon" style={{ top: '60%', right: '20%' }} />
-                  </div>
-                )}
+                {/* Map Decorations - 제거됨 */}
                 
                 {/* Festival Markers */}
                 {activeTab === 'festival' && FESTIVALS.map((festival, index) => {
@@ -1091,8 +1067,6 @@ const MapSection: React.FC<MapSectionProps> = memo(({ className }) => {
                       aria-label={`${region.name} 지역`}
                       aria-pressed={isSelected}
                     >
-                      <span className="dot-indicator" />
-                      <span className="ripple" />
                       <div className="info-card">
                         <h3 className="region-title">{region.name}</h3>
                       </div>

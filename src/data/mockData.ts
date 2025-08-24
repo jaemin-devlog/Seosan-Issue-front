@@ -69,19 +69,19 @@ export const mockNotices: Notice[] = [
     id: '1',
     type: 'announcement',
     source: '서산시청',
-    title: '2025년 서산시 예산안 시민 의견 수렴 공고',
-    summary: '내년도 예산 편성을 위한 시민 여러분의 소중한 의견을 기다립니다.',
+    title: '2025년 서산시시설관리공단 하반기 직원 공개채용 서류전형 합격자 및 필기시험 계획 공고',
+    summary: '서산시시설관리공단 하반기 직원 채용 서류전형 합격자 발표 및 필기시험 계획을 공고합니다.',
     date: new Date('2024-08-04'),
     url: 'https://seosan.go.kr/notice/1'
   },
   {
     id: '2',
-    type: 'news',
-    source: '서산타임즈',
-    title: '서산 해미읍성 봄 축제 성황리 개최',
-    summary: '올해로 15회째를 맞는 해미읍성 축제가 많은 관광객들의 참여로 성공적으로 진행되었습니다.',
+    type: 'announcement',
+    source: '서산시청',
+    title: '2025년 서산시 지역산업맞춤형 일자리창출지원사업 참여자 모집',
+    summary: '지역 산업 발전과 일자리 창출을 위한 참여자를 모집합니다.',
     date: new Date('2024-08-03'),
-    url: 'https://seosantimes.com/news/2'
+    url: 'https://seosan.go.kr/notice/2'
   }
 ];
 

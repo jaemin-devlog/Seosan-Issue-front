@@ -15,13 +15,13 @@ import sadLogo from "../assets/sadLogo.png";
 import happyLogo from "../assets/HappyLogo.png";
 import NewsIcon from "../assets/뉴스.png";
 
-/* ===== 최근 검색 목업 ===== */
+/* ===== 추천 검색 키워드 목업 ===== */
 const recentSearchPool = [
-  ["문화혜택", "서산 맛집 추천", "복지 혜택 신청"],
-  ["교통정보", "서산시 행사", "서산 카페"],
-  ["서산 명소", "전통시장", "주말 이벤트"],
-  ["공원 위치", "체육시설", "노인복지관"],
-  ["가족 여행지", "아이와 갈만한 곳", "주차장 위치"],
+  ["맛집", "노인복지", "서산교통"],
+  ["해미읍성", "복지 혜택", "서산 카페"],
+  ["서산 명소", "전통시장", "문화행사"],
+  ["체육시설", "서산시청", "교통정보"],
+  ["관광지", "서산 맛집", "주차장"],
 ];
 function getRandomList(prevList) {
   const candidates = recentSearchPool.filter(
@@ -312,7 +312,7 @@ export default function AiSearch() {
               className={styles.searchHistoryTitle}
               role="button"
               tabIndex={0}
-              title="최근 검색 새로고침"
+              title="추천 검색 새로고침"
               onClick={handleRefresh}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") handleRefresh();
@@ -326,7 +326,7 @@ export default function AiSearch() {
                 draggable="false"
                 style={{ cursor: "pointer" }}
               />
-              최근 검색
+              추천 검색
             </div>
             
 
@@ -452,14 +452,14 @@ export default function AiSearch() {
           <div className={styles.section}>
             <div className={styles.sectionTitle}>
               <img src={LightbulbIcon} alt="" className={styles.titleIcon} />
-              인기 질문
+              인기 키워드
             </div>
             <div className={styles.grid}>
               {[
-                { tag: "민원", text: "서산시청 민원 어떻게 넣어요?" },
-                { tag: "복지", text: "서산시 복지 혜택 정보" },
-                { tag: "행사", text: "오늘 서산에 열리는 행사 뭐 있어?" },
-                { tag: "관광", text: "서산 관광지 추천" },
+                { tag: "민원", text: "민원 신청" },
+                { tag: "복지", text: "노인복지" },
+                { tag: "행사", text: "서산 행사" },
+                { tag: "관광", text: "해미읍성" },
               ].map((q, i) => (
                 <div 
                   key={i} 

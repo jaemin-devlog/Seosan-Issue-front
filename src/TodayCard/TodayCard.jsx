@@ -73,28 +73,6 @@ export default function TodayCard() {
                   {loading ? "..." : stats.totalCount.toLocaleString()}
                 </div>
               </div>
-              <div className={styles.metricFooter}>
-                {stats.percentageIncrease !== 0 && (
-                  <>
-                    <span className={styles.metricSub}>
-                      전일 대비 {stats.percentageIncrease > 0 ? '증가' : '감소'}
-                    </span>
-                    <span 
-                      className={`${styles.deltaBadge} ${stats.percentageIncrease < 0 ? styles.negative : ''}`} 
-                      aria-label={`전일 대비 ${Math.abs(stats.percentageIncrease)}% ${stats.percentageIncrease > 0 ? '증가' : '감소'}`}
-                    >
-                      <img 
-                        src={TrendUpIcon} 
-                        alt="" 
-                        className={`${styles.deltaIcon} ${stats.percentageIncrease < 0 ? styles.iconRotate : ''}`} 
-                      />
-                      <span>
-                        {stats.percentageIncrease > 0 ? '+' : ''}{stats.percentageIncrease.toFixed(1)}%
-                      </span>
-                    </span>
-                  </>
-                )}
-              </div>
             </div>
 
             {/* 오늘의 수집 */}
@@ -104,13 +82,6 @@ export default function TodayCard() {
                 <div className={styles.metricNumber}>
                   {loading ? "..." : stats.todayCollected.toLocaleString()}
                 </div>
-              </div>
-              <div className={styles.metricFooter}>
-                <span className={styles.metricSub}>실시간 업데이트</span>
-                <span className={styles.liveBadge}>
-                  <span className={styles.liveDot}></span>
-                  <span>LIVE</span>
-                </span>
               </div>
             </div>
           </div>
