@@ -39,9 +39,6 @@ const MainContent: React.FC = memo(() => {
     }
   ];
   const noticesLoading = false;
-  
-  // 디버깅용 로그
-  console.log('하드코딩된 공지사항:', notices);
 
   useEffect(() => {
     const timer = setTimeout(() => setWeatherAnimated(true), 500);

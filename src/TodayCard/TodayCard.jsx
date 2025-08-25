@@ -39,7 +39,7 @@ export default function TodayCard() {
           });
         }
       } catch (error) {
-        console.error('Failed to fetch content stats:', error);
+        // 에러 발생 시 기본값 유지
       } finally {
         setLoading(false);
       }

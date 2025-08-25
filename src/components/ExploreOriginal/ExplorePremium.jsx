@@ -196,8 +196,6 @@ function DetailView({
     if (!isSummarizable) return;
 
     const searchUrl = detailData?.originallink || detailData?.link
-    console.log("뉴스 블로그 자동 요약")
-    console.log("요약할 URL:", searchUrl)
     
     let aborted = false;
     (async () => {
@@ -208,14 +206,10 @@ function DetailView({
         // 개발 환경에서도 직접 API 호출 (프록시 우회 테스트)
         const url = 'https://seosan-issue.shop/api/v1/explore/summary';
 
-        console.log("API 요청 URL:", url)
-
         // API 요청 - Postman과 동일한 형식 사용
         const requestBody = {
           url: searchUrl  // Postman에서 확인된 형식: {"url": "..."}
         };
-        
-        console.log("요청 데이터:", requestBody)
         
         const res = await fetch(url, {
           method: "POST",
@@ -229,11 +223,8 @@ function DetailView({
           body: JSON.stringify(requestBody),
         });
 
-        console.log("API 응답 상태:", res.status)
-
         // 204 No Content 처리
         if (res.status === 204) {
-          console.warn("API가 204 No Content를 반환했습니다.");
           // 본문 첫 부분을 요약으로 사용
           const bodyText = detailData?.body || "";
           const cleanBody = bodyText.replace(/<[^>]*>/g, '').trim();
@@ -247,7 +238,6 @@ function DetailView({
 
         if (!res.ok) {
           const errorText = await res.text().catch(() => "");
-          console.error("API 에러 응답:", res.status, errorText);
           
           // 400 에러 시 본문 첫 부분 사용 (API가 URL을 처리할 수 없음)
           if (res.status === 400) {
@@ -265,16 +255,13 @@ function DetailView({
         }
         
         const j = await res.json();
-        console.log("API 응답 데이터:", j);
         
         // API 응답 형식: {"url":"...", "title":"...", "summary":"...", "sourceType":"...", "publishedAt":null}
         const s = j.summary || j.result || j.text || "";
-        console.log("추출된 요약:", s);
         
         if (!aborted) setNewsSummary(s || "요약을 생성할 수 없습니다.");
       } catch (e) {
         if (!aborted) {
-          console.error("요약 API 에러:", e);
           setNewsSummary("");
           setNewsSummaryError(e instanceof Error ? e.message : String(e));
         }
@@ -586,7 +573,6 @@ export default function ExplorePremium() {
                 setTotalCount(0);
               }
             } catch (newsError) {
-              console.error('네이버 뉴스 API 에러:', newsError);
               data = [{
                 id: 1,
                 title: 'API 연결 오류',

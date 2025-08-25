@@ -19,9 +19,13 @@ export async function getPopularTerms(
   { signal }: GetPopularTermsOptions = {}
 ): Promise<PopularTermsResult> {
   // ❶ 실제 API가 있다면 여기 순서대로 시도
+  const baseUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://seosan-issue.shop' 
+    : '';
+    
   const candidates = [
-    "/api/v1/trending",
-    "/flask/crawl_popular_terms",
+    `${baseUrl}/flask/crawl_popular_terms`,  // Flask API가 정상 작동 중
+    `${baseUrl}/api/v1/trending`,            // 백엔드 500 에러 (백업용)
   ];
 
   for (const url of candidates) {
