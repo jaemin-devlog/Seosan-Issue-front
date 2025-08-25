@@ -274,23 +274,24 @@ body {
 }
 .balloon-tags {
   display: flex;
-  gap: 22px;
-  font-size: 1.21rem;
-  font-weight: 900;
-  color: #6e919e;
+  gap: 17px;
+  font-size: 18px;
+  font-weight: 100;
+  color: #737373;
   margin-left: 0px;
   margin-top: 6px;
   font-family: inherit;
+  cursor: pointer;
 }
 .balloon-tags span {
-  font-weight: 900;
-  color: #6e919e;
+  font-weight: 400;
+  color: #c1c1c1;
   letter-spacing: -0.5px;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
 }
-.balloon-tags span:hover { color: #20a59e; transform: translateY(-2px); }
+.balloon-tags span:hover { color: #20a59e; transform: translateY(-5px); }
 .balloon-tags span::after {
   content: '';
   position: absolute;
@@ -302,6 +303,7 @@ body {
   transition: width 0.3s ease;
 }
 .balloon-tags span:hover::after { width: 100%; }
+
 
 /* 카드 2개 */
 .balloon-cards {

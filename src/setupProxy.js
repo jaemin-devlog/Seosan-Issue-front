@@ -14,6 +14,24 @@ module.exports = function(app) {
       }
     })
   );
+app.use(
+    "/api/v1/weather/ncst",
+    createProxyMiddleware({
+      target: "https://seosan-issue.shop",
+      changeOrigin: true,
+      // 일부 환경에서 TLS 이슈가 있을 수 있으니 개발에서는 꺼둠
+      secure: false,
+      logLevel: "debug",
+      onError(err, req, res) {
+        console.error("[proxy:/api/v1/weather/ncst] error:", err?.code || err);
+        res.status(502).json({
+          status: 502,
+          message: "Proxy failed for /api/v1/weather/ncst",
+          code: err?.code || "PROXY_ERROR",
+        });
+      },
+    })
+  );
 
   // 모든 /api 요청을 프록시
   app.use(

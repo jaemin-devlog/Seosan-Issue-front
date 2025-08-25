@@ -1,11 +1,11 @@
 // src/services/weather.js
-// 백엔드 날씨 API 엔드포인트 - 프록시 사용
+// dev/prod 엔드포인트
 const WEATHER_API_URL =
   process.env.NODE_ENV === "development"
-    ? "/api/v1/weather/ncst" // CRA 프록시로 /api/v1/* 를 백엔드로 전달
+    ? "/api/v1/weather/ncst" // 프록시 통해 백엔드로 전달
     : "https://seosan-issue.shop/api/v1/weather/ncst";
 
-// (옵션) 한글 상태를 코드로 매핑 (백업용)
+// (백업용) 한글 상태 -> 코드 매핑
 function mapConditionToCode(txt = "") {
   const t = String(txt).trim();
   if (/맑/.test(t)) return "sunny";
@@ -15,7 +15,7 @@ function mapConditionToCode(txt = "") {
   return "sunny";
 }
 
-// 기상청 단기/초단기예보에 맞는 base_date, base_time 생성 함수
+// (참고) 기상청 baseDate/baseTime 계산
 // eslint-disable-next-line no-unused-vars
 function getBaseDateTime() {
   const now = new Date();
@@ -37,8 +37,7 @@ function getBaseDateTime() {
   return { baseDate, baseTime };
 }
 
-// 실제 API 요청 함수
-// 지역명으로 날씨 데이터 요청 (백엔드 API는 city=서산시로 전체 지역 반환)
+// 지역명으로 날씨 데이터 요청 (백엔드는 city=서산시 로 전체 지역 반환)
 export async function fetchWeatherData(region = "서산시") {
   const params = new URLSearchParams({ city: "서산시" });
   const url = `${WEATHER_API_URL}?${params.toString()}`;
@@ -47,36 +46,34 @@ export async function fetchWeatherData(region = "서산시") {
 
   try {
     const res = await fetch(url);
-    const text = await res.text(); // 로깅/디버깅을 위해 먼저 text로 받음
+    const text = await res.text();
 
     let data;
     try {
       data = JSON.parse(text);
       console.log("날씨 API 응답:", data);
-    } catch (jsonError) {
+    } catch {
       console.error("날씨 API JSON 파싱 에러:", text);
       throw new Error("날씨 API 응답을 파싱할 수 없습니다.");
     }
 
-    // 백엔드가 에러 포맷을 줄 수 있으니 가드
     if (data.status && data.status >= 400) {
       console.error("날씨 API 에러 응답:", data);
       throw new Error(`날씨 API 에러: ${data.message || "Unknown error"}`);
     }
 
-    // --- 스키마 정규화 ---
-    // 1) 이미 cards가 있는 구(old) 스키마면 그대로 통과
+    // 구 스키마(cards) 지원
     if (Array.isArray(data.cards) && data.cards.length > 0) {
       return data;
     }
 
-    // 2) 새 스키마: { city, results: [...], count }
+    // 신 스키마(results) -> cards 로 정규화
     if (Array.isArray(data.results) && data.results.length > 0) {
       const cards = data.results.map((r, idx) => ({
         id: idx,
         region: r.region,
-        condition: r.condition, // "맑음"
-        conditionCode: r.conditionCode || mapConditionToCode(r.condition), // "sunny"
+        condition: r.condition,
+        conditionCode: r.conditionCode || mapConditionToCode(r.condition),
         temperature: r.temperature,
         humidity: r.humidity,
         windSpeed: r.windSpeed,
@@ -90,7 +87,7 @@ export async function fetchWeatherData(region = "서산시") {
       return {
         city: data.city || region,
         count: data.count ?? cards.length,
-        cards, // ✅ UI는 여전히 cards 배열만 보면 됨
+        cards, // UI는 cards만 보면 됨
       };
     }
 
@@ -102,6 +99,4 @@ export async function fetchWeatherData(region = "서산시") {
   }
 }
 
-export default {
-  fetchWeatherData,
-};
+export default { fetchWeatherData };

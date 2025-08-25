@@ -5,6 +5,7 @@
   margin-top: 100px;
   position: relative;
   text-align: center;
+  height: 100px;
 }
 
 /* 로고 중앙 배치 */
@@ -17,8 +18,8 @@
 
 /* 큰 로고 스타일 */
 .footer-logo-large {
-  height: 120px;
-  width: auto;
+  height: 50px;
+  width: 50px;
   opacity: 0.9;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));

@@ -3,7 +3,7 @@ import { LoadingSpinner } from '../components/LoadingStates';
 
 // Lazy loading으로 초기 번들 크기 감소
 // @ts-ignore
-const Mainpage = lazy(() => import('../Mainpage/Mainpage.jsx'));
+const Mainpage = lazy(() => import('../Mainpage/Mainpage.tsx'));
 const MapSection = lazy(() => import('../components/MapSection'));
 // @ts-ignore
 const RecommendInfo = lazy(() => import('../components/RecommendInfo/RecommendInfo.jsx'));

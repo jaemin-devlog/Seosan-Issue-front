@@ -8,7 +8,7 @@ import ChatCircleDots from "../assets/ChatCircleDots.png";
 import BlackCircle from "../assets/blackcircle.png";
 import HealthIcon from "../assets/Health2.png";
 import LightbulbIcon from "../assets/Lightbulb.png";
-import History from "../assets/History.png";
+import History from "../assets/refresh_gray.gif";
 import SearchBalloon from "../assets/searchBalloon.png";
 import SparkleIcon from "../assets/sparkle.png";
 import sadLogo from "../assets/sadLogo.png";
