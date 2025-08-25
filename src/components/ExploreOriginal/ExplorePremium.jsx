@@ -197,34 +197,84 @@ function DetailView({
 
     const searchUrl = detailData?.originallink || detailData?.link
     console.log("뉴스 블로그 자동 요약")
-
+    console.log("요약할 URL:", searchUrl)
+    
     let aborted = false;
     (async () => {
       try {
         setNewsSummaryLoading(true);
         setNewsSummaryError("");
+        
+        // 개발 환경에서도 직접 API 호출 (프록시 우회 테스트)
+        const url = 'https://seosan-issue.shop/api/v1/explore/summary';
 
-        const url = process.env.NODE_ENV === 'development'
-          ? '/api/v1/explore/summary'
-          : 'https://seosan-issue.shop/api/v1/explore/summary';
+        console.log("API 요청 URL:", url)
 
+        // API 요청 - Postman과 동일한 형식 사용
+        const requestBody = {
+          url: searchUrl  // Postman에서 확인된 형식: {"url": "..."}
+        };
+        
+        console.log("요청 데이터:", requestBody)
+        
         const res = await fetch(url, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            text: searchUrl
-          }),
+          mode: 'cors',
+          credentials: 'omit',
+          headers: { 
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Origin": "http://localhost:3000"
+          },
+          body: JSON.stringify(requestBody),
         });
 
-        if (!res.ok) {
-          const t = await res.text().catch(()=>"");
-          throw new Error(`HTTP ${res.status} ${t.slice(0,120)}`);
+        console.log("API 응답 상태:", res.status)
+
+        // 204 No Content 처리
+        if (res.status === 204) {
+          console.warn("API가 204 No Content를 반환했습니다.");
+          // 본문 첫 부분을 요약으로 사용
+          const bodyText = detailData?.body || "";
+          const cleanBody = bodyText.replace(/<[^>]*>/g, '').trim();
+          const fallbackSummary = cleanBody.length > 200 
+            ? cleanBody.substring(0, 200) + "..." 
+            : cleanBody;
+          
+          if (!aborted) setNewsSummary(fallbackSummary || "요약을 생성할 수 없습니다.");
+          return;
         }
-        const j = await res.json().catch(()=> ({}));
+
+        if (!res.ok) {
+          const errorText = await res.text().catch(() => "");
+          console.error("API 에러 응답:", res.status, errorText);
+          
+          // 400 에러 시 본문 첫 부분 사용 (API가 URL을 처리할 수 없음)
+          if (res.status === 400) {
+            const bodyText = detailData?.body || "";
+            const cleanBody = bodyText.replace(/<[^>]*>/g, '').trim();
+            const fallbackSummary = cleanBody.length > 200 
+              ? cleanBody.substring(0, 200) + "..." 
+              : cleanBody;
+            
+            if (!aborted) setNewsSummary(fallbackSummary || "요약을 생성할 수 없습니다.");
+            return;
+          }
+          
+          throw new Error(`HTTP ${res.status}: ${errorText.slice(0, 100)}`);
+        }
+        
+        const j = await res.json();
+        console.log("API 응답 데이터:", j);
+        
+        // API 응답 형식: {"url":"...", "title":"...", "summary":"...", "sourceType":"...", "publishedAt":null}
         const s = j.summary || j.result || j.text || "";
-        if (!aborted) setNewsSummary(s);
+        console.log("추출된 요약:", s);
+        
+        if (!aborted) setNewsSummary(s || "요약을 생성할 수 없습니다.");
       } catch (e) {
         if (!aborted) {
+          console.error("요약 API 에러:", e);
           setNewsSummary("");
           setNewsSummaryError(e instanceof Error ? e.message : String(e));
         }
@@ -293,7 +343,7 @@ function DetailView({
       ) : (
         <section className={styles.noticeWrap}>
           <div className={styles.infoPanel}>
-            {/* ✅ 모든 카테고리에서 AI 요약 버튼과 캐릭터 표시 (뉴스/블로그 제외) */}
+            {/* ✅ 모든 카테고리에서 캐릭터와 안내 메시지 표시 (뉴스/블로그 제외) */}
             <div className={styles.aiSummaryContainer}>
               <img
                 className={styles.aiCharacterBottom}
@@ -302,23 +352,15 @@ function DetailView({
                 aria-hidden="true"
               />
               <div
-                className={`${styles.aiBubbleButton} ${summary ? styles.aiBubbleExpanded : ''}`}
-                onClick={!summary ? handleSummarize : undefined}
-                style={{ cursor: !summary ? 'pointer' : 'default' }}
+                className={styles.aiBubbleButton}
+                style={{ cursor: 'default' }}
               >
                 <div className={styles.aiBubbleHeader}>
                   <img src={sparkleIcon} alt="" className={styles.aiSparkle} />
                   <span className={styles.aiBubbleText}>
-                    {summaryLoading ? "AI가 요약 중입니다..." :
-                      summary ? "AI 요약" :
-                        "AI 요약하기"}
+                    게시물 링크는 아래 있습니다.
                   </span>
                 </div>
-                {summary && (
-                  <div className={styles.aiBubbleContent}>
-                    {summary}
-                  </div>
-                )}
               </div>
             </div>
 

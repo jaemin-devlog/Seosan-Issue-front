@@ -139,28 +139,21 @@ const Mainpage = memo(() => {
     };
 
     const fetchNotices = async () => {
-      try {
-        const data = await seosanAPI.getNotices("대산읍", 0, 2);
-        if (data && data.length > 0) {
-          setNotices(data as Notice[]);
-        }
-      } catch (error) {
-        // Mock 데이터 설정 - API 실패시 기본 공지사항 표시
-        setNotices([
-          {
-            id: 1,
-            title: "2025 서산시 혁신 아이디어 공모 국민 선호도 조사 실시 안내",
-            date: "2025-01-15",
-            category: "공지사항",
-          },
-          {
-            id: 2,
-            title: "서산시 겨울철 한파 대비 안전 수칙 안내",
-            date: "2025-01-14",
-            category: "공지사항",
-          },
-        ]);
-      }
+      // 하드코딩된 공지사항 데이터만 사용 (API 호출 완전 제거)
+      setNotices([
+        {
+          id: 1,
+          title: "2025년 서산시 지역산업맞춤형 일자리창출지원사업 참여자 모집",
+          date: "2025-01-25",
+          category: "공지사항",
+        },
+        {
+          id: 2,
+          title: "서산시 청년창업 지원센터 입주기업 모집 공고",
+          date: "2025-01-24",
+          category: "공지사항",
+        },
+      ]);
     };
 
     fetchTrendingKeywords();

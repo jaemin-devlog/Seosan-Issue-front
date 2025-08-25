@@ -14,12 +14,12 @@ module.exports = function(app) {
       }
     })
   );
-app.use(
+
+  app.use(
     "/api/v1/weather/ncst",
     createProxyMiddleware({
       target: "https://seosan-issue.shop",
       changeOrigin: true,
-      // 일부 환경에서 TLS 이슈가 있을 수 있으니 개발에서는 꺼둠
       secure: false,
       logLevel: "debug",
       onError(err, req, res) {
@@ -33,6 +33,49 @@ app.use(
     })
   );
 
+  // explore/summary 엔드포인트 전용 프록시
+  app.use(
+    '/api/explore/summary',
+    createProxyMiddleware({
+      target: 'https://seosan-issue.shop',
+      changeOrigin: true,
+      secure: false,
+      timeout: 60000,
+      pathRewrite: {
+        '^/api/explore/summary': '/api/v1/explore/summary'
+      },
+      onProxyReq: (proxyReq, req, res) => {
+        console.log('Summary API Proxying:', req.method, req.url);
+        
+        // 요청 헤더 설정
+        proxyReq.setHeader('origin', 'https://seosan-issue.shop');
+        proxyReq.setHeader('referer', 'https://seosan-issue.shop/');
+        
+        // POST 요청 body 처리
+        if (req.method === 'POST') {
+          let bodyData = '';
+          req.on('data', (chunk) => {
+            bodyData += chunk;
+          });
+          req.on('end', () => {
+            console.log('Request body:', bodyData);
+            proxyReq.setHeader('Content-Type', 'application/json');
+            proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+            proxyReq.write(bodyData);
+            proxyReq.end();
+          });
+        }
+      },
+      onProxyRes: (proxyRes, req, res) => {
+        console.log('Summary API Response:', proxyRes.statusCode);
+        // CORS 헤더 추가
+        proxyRes.headers['access-control-allow-origin'] = '*';
+        proxyRes.headers['access-control-allow-methods'] = 'GET,PUT,POST,DELETE,OPTIONS';
+        proxyRes.headers['access-control-allow-headers'] = 'Content-Type';
+      }
+    })
+  );
+
   // 모든 /api 요청을 프록시
   app.use(
     '/api',
@@ -40,7 +83,7 @@ app.use(
       target: 'https://seosan-issue.shop',
       changeOrigin: true,
       secure: false,
-      timeout: 60000,  // 타임아웃을 60초로 증가
+      timeout: 60000,
       pathRewrite: function (path, req) {
         // Flask 엔드포인트
         if (path.startsWith('/api/flask')) {
@@ -63,14 +106,11 @@ app.use(
           finalPath = req.url.replace('/api', '/api/v1');
         }
         console.log('Proxying:', req.method, req.url, '->', finalPath);
-        // Content-Length 헤더 제거
-        proxyReq.removeHeader('content-length');
       },
       onProxyRes: (proxyRes, req, res) => {
-        // Content-Length 헤더 제거 (응답에서도)
-        delete proxyRes.headers['content-length'];
-      },
-      selfHandleResponse: false
+        // CORS 헤더 추가
+        proxyRes.headers['access-control-allow-origin'] = '*';
+      }
     })
   );
 };

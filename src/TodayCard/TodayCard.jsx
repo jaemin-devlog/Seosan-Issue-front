@@ -85,6 +85,15 @@ export default function TodayCard() {
               </div>
             </div>
           </div>
+          
+          {/* Live 업데이트 표시 */}
+          <div className={styles.liveUpdate}>
+            <span className={styles.liveText}>실시간 업데이트</span>
+            <div className={styles.liveIndicator}>
+              <span className={styles.liveDot}></span>
+              <span className={styles.liveLabel}>LIVE</span>
+            </div>
+          </div>
         </div>
       </div>
 

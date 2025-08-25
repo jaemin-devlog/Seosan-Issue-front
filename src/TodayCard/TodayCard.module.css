@@ -55,9 +55,9 @@
 .leftCol .panel{
   position:relative;
   z-index:1;
-  overflow:hidden;          /* 패널 밖으로 못 나가게 */
-  min-height: 380px;         /* 다가오는 이벤트와 동일한 높이 */
-  height: 380px;
+  overflow:visible;          /* Live 인디케이터가 보이도록 */
+  min-height: 420px;         /* Live 인디케이터 공간 확보 */
+  height: auto;
 }
 .rightCol .panel{
   position:relative;
@@ -423,5 +423,63 @@
   
   .metricNumber {
     font-size: 32px;
+  }
+}
+
+/* ===== Live 업데이트 표시 ===== */
+.liveUpdate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 10px 0;
+}
+
+.liveText {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: -0.2px;
+}
+
+.liveIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(255, 99, 71, 0.08);
+  border-radius: 20px;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FF6347;
+  animation: pulse 2s infinite;
+  box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.2);
+}
+
+.liveLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #FF6347;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }

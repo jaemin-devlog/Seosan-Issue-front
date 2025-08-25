@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import './MainContent.css';
 import { useApi } from '../hooks';
-import { weatherAPI, trendingAPI, taskAPI, teamAPI, noticeAPI } from '../services/api';
+import { weatherAPI, trendingAPI, taskAPI, teamAPI } from '../services/api';
 import { Weather as WeatherType, TrendingTopic, TaskSummary, TeamOverview, Notice } from '../types';
 import { formatPercentage, formatDate } from '../utils/formatters';
 import { LoadingStates } from './LoadingStates';
@@ -18,7 +18,30 @@ const MainContent: React.FC = memo(() => {
   const { data: trending, loading: trendingLoading } = useApi<TrendingTopic[]>(() => trendingAPI.getTopics());
   const { data: taskSummary, loading: taskLoading } = useApi<TaskSummary>(() => taskAPI.getSummary());
   const { data: teamOverview, loading: teamLoading } = useApi<TeamOverview>(() => teamAPI.getOverview());
-  const { data: notices, loading: noticesLoading } = useApi<Notice[]>(() => noticeAPI.getRecent(2));
+  
+  // 하드코딩된 공지사항 데이터 (API 사용 안함)
+  const notices: Notice[] = [
+    {
+      id: 'hardcoded-1',
+      title: '2025년 서산시 지역산업맞춤형 일자리창출지원사업 참여자 모집',
+      type: 'announcement',
+      source: '서산시청',
+      date: new Date(),
+      url: '#'
+    },
+    {
+      id: 'hardcoded-2',
+      title: '서산시 청년창업 지원센터 입주기업 모집 공고',
+      type: 'announcement',
+      source: '서산시청',
+      date: new Date(),
+      url: '#'
+    }
+  ];
+  const noticesLoading = false;
+  
+  // 디버깅용 로그
+  console.log('하드코딩된 공지사항:', notices);
 
   useEffect(() => {
     const timer = setTimeout(() => setWeatherAnimated(true), 500);
