@@ -292,7 +292,7 @@ export default function AiSearch() {
             <div className={styles.balloonContent}>
               <input
                 className={styles.balloonInput}
-                placeholder="찾으시는 소식이 있나요?"
+                placeholder="키워드로 입력하세요"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAiSearch()}

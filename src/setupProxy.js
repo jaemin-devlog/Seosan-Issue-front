@@ -2,18 +2,18 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function(app) {
   // Flask 전용 프록시
-  app.use(
-    '/flask',
-    createProxyMiddleware({
-      target: 'https://seosan-issue.shop',
-      changeOrigin: true,
-      secure: false,
-      timeout: 60000,
-      onProxyReq: (proxyReq, req, res) => {
-        console.log('Proxying:', req.method, req.url, '->', req.url);
-      }
-    })
-  );
+app.use(
+  '/flask',
+  createProxyMiddleware({
+    target: 'https://seosan-issue.shop',
+    changeOrigin: true,
+    secure: false,
+    timeout: 60000,
+    onProxyReq: (proxyReq, req, res) => {
+      console.log('Proxying:', req.method, req.url, '->', req.url);
+    }
+  })
+);
 app.use(
     "/api/v1/weather/ncst",
     createProxyMiddleware({
