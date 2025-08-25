@@ -5,6 +5,7 @@ import Logo from '../assets/로고.png';
 const Footer: React.FC = () => {
   return (
     <footer className="footer-minimal">
+      <div className="logo-with-line">
       <div className="footer-logo-centered">
         <img
           src={Logo}
@@ -13,6 +14,7 @@ const Footer: React.FC = () => {
           loading="lazy"
           decoding="async"
         />
+      </div>
       </div>
     </footer>
   );

@@ -459,7 +459,7 @@ export default function AiSearch() {
                 { tag: "민원", text: "민원 신청" },
                 { tag: "복지", text: "노인복지" },
                 { tag: "행사", text: "서산 행사" },
-                { tag: "관광", text: "해미읍성" },
+                { tag: "관광", text: "해미 읍성" },
               ].map((q, i) => (
                 <div 
                   key={i} 
